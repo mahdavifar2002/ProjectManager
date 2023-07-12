@@ -1,8 +1,8 @@
 from time import sleep
 
-import conf
-from message import Message
-from user import User
+from model import conf
+from model.message import Message
+from model.user import User
 
 # conf.drop_db()
 conf.init_db()

@@ -1,5 +1,4 @@
-import conf
-import message
+from model import conf, message
 
 
 class User(conf.Base):

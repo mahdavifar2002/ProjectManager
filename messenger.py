@@ -4,11 +4,10 @@ from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
-import sys
 
-import conf
-from message import Message
-from user import User
+from model import conf
+from model.message import Message
+from model.user import User
 
 
 class MessengerUI(QWidget):

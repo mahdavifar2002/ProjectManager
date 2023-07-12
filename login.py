@@ -7,7 +7,7 @@ import sys
 from sqlalchemy.exc import NoResultFound
 
 from messenger import MessengerUI
-from user import User
+from model.user import User
 
 
 class LoginUI(QWidget):
