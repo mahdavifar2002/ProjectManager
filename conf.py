@@ -1,0 +1,74 @@
+import os
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime
+from sqlalchemy import and_, or_
+from sqlalchemy import func
+
+db_name = "test"
+db_user_name = "alireza"
+db_user_pass = "96321"
+db_url = "localhost"
+db_port = "3306"
+
+# Communicates directly to SQL
+engine = create_engine("mysql://{0}:{1}@{2}:{3}/{4}".format(db_user_name, db_user_pass, db_url, db_port, db_name))
+# engine = create_engine('mysql://root:root@127.0.0.1:3306', convert_unicode=True)
+# Maps classes to database tables
+Base = declarative_base()
+
+# establishes all conversations with the database
+# and represents a "staging zone" for all the objects
+# loaded into the database session object.
+
+db_session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# db_session = scoped_session(db_session)
+
+# Any change made against the objects in the
+# session won't be persisted into the database
+# until you call session.commit(). If you're not
+# happy about the changes, you can revert all of
+# them back to the last commit by calling session.rollback()
+session = db_session()
+
+
+def create_db():
+    global engine
+
+    engine = create_engine("mysql://{0}:{1}@{2}:{3}".format(db_user_name, db_user_pass, db_url, db_port))
+
+    # Creates database only if it does not exist
+    with engine.connect() as conn:
+        conn.execute(text("CREATE DATABASE IF NOT EXISTS {0}".format(db_name)))
+        conn.execute(text("USE {0}".format(db_name)))
+
+    engine = create_engine("mysql://{0}:{1}@{2}:{3}/{4}".format(db_user_name, db_user_pass, db_url, db_port, db_name))
+
+
+def init_db():
+    # Create the DB in MySQL before initializing it
+    create_db()
+
+    # Creates all the tables in the database
+    # Will skip already created tables
+    Base.metadata.create_all(engine)
+    Base.metadata.bind = engine
+
+    print("---Initialized DB!---")
+
+
+def drop_db():
+    # Drops database only if it exists
+    with engine.connect() as conn:
+        conn.execute(text("DROP DATABASE IF EXISTS {0}".format(db_name)))
+
+    print("---Dropped DB!---")
+
+
+def save_to_db(record):
+    try:
+        session.add(record)
+        session.commit()
+    except Exception as e:
+        print(e)
