@@ -15,6 +15,8 @@
 # ///////////////////////////////////////////////////////////////
 import traceback
 
+import jdatetime
+
 # MAIN FILE
 # ///////////////////////////////////////////////////////////////
 from main import *
@@ -142,8 +144,10 @@ def reloadTasks():
 
     if user is not None:
         for task in user.tasks():
+            date = str(jdatetime.datetime.fromgregorian(datetime=task.time_created))
+
             rowPosition = widgets.userTasksTableWidget.rowCount()
             widgets.userTasksTableWidget.insertRow(rowPosition)
             widgets.userTasksTableWidget.setItem(rowPosition, 0, QTableWidgetItem(task.assigner_username))
-            widgets.userTasksTableWidget.setItem(rowPosition, 1, QTableWidgetItem(str(task.time_created)))
+            widgets.userTasksTableWidget.setItem(rowPosition, 1, QTableWidgetItem(date))
             widgets.userTasksTableWidget.setItem(rowPosition, 2, QTableWidgetItem(task.description))
