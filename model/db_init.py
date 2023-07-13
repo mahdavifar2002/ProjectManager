@@ -2,6 +2,7 @@ from time import sleep
 
 from model import conf
 from model.message import Message
+from model.task import Task
 from model.user import User
 
 # conf.drop_db()
@@ -20,5 +21,5 @@ sleep(1)
 message = Message(sender_username="mahdavifar", receiver_username="alireza", text="I'm fine, thank you.")
 message.save()
 sleep(1)
-message = Message(sender_username="alireza", receiver_username="mahdavifar", text="Line 1.\nLine 2.\nLine 3.")
-message.save()
+task = Task(assigner_username="alireza", assignee_username="mahdavifar", description="Creating project management program.")
+task.save()

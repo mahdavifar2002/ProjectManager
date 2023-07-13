@@ -1,4 +1,4 @@
-from model import conf, message
+from model import conf, message, task
 
 
 class User(conf.Base):
@@ -30,3 +30,8 @@ class User(conf.Base):
 
         messages.sort(key=lambda x: x.time_created)
         return messages
+
+    def tasks(self):
+        tasks = conf.session.query(task.Task).filter(task.Task.assignee_username == self.username).all()
+        tasks.sort(key=lambda x: x.time_created, reverse=True)
+        return tasks

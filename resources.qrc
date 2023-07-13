@@ -2,6 +2,8 @@
   <qresource prefix="images">
     <file>images/images/PyDracula.png</file>
     <file>images/images/logo.png</file>
+    <file>images/images/user.jpg</file>
+    <file>images/images/icon.png</file>
     <file>images/images/PyDracula_vertical.png</file>
   </qresource>
   <qresource prefix="icons">
