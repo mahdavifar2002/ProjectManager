@@ -7,6 +7,8 @@ class User(conf.Base):
     username = conf.Column(conf.String(50), primary_key=True)
     password = conf.Column(conf.String(50), nullable=False)
     fullname = conf.Column(conf.String(50))
+    time_created = conf.Column(conf.DateTime(timezone=True), server_default=conf.func.now())
+    time_updated = conf.Column(conf.DateTime(timezone=True), onupdate=conf.func.now())
 
     @classmethod
     def search_by_username(cls, username):
