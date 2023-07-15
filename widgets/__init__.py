@@ -15,3 +15,4 @@
 # ///////////////////////////////////////////////////////////////
 
 from . custom_grips import CustomGrip
+from . auto_resizing_text_edit import AutoResizingTextEdit

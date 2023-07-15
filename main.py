@@ -76,6 +76,7 @@ class MainWindow(QMainWindow):
         # LEFT MENUS
         widgets.btn_home.clicked.connect(self.buttonClick)
         widgets.btn_widgets.clicked.connect(self.buttonClick)
+        widgets.btn_messenger.clicked.connect(self.buttonClick)
         widgets.btn_add.clicked.connect(self.buttonClick)
         widgets.btn_new.clicked.connect(self.buttonClick)
         widgets.btn_save.clicked.connect(self.buttonClick)
@@ -100,21 +101,29 @@ class MainWindow(QMainWindow):
 
         # SET CUSTOM THEME
         # ///////////////////////////////////////////////////////////////
-        useCustomTheme = False
-        themeFile = "themes\py_dracula_light.qss"
+        useCustomTheme = True
+        themeFiles = ["themes\\py_dracula_dark.qss", "themes\\py_dracula_light.qss"]
+        themeCounter = 0
 
-        # SET THEME AND HACKS
-        if useCustomTheme:
-            # LOAD AND APPLY STYLE
-            UIFunctions.theme(self, themeFile, True)
+        def toggleTheme():
+            nonlocal themeCounter
+            # SET THEME AND HACKS
+            if useCustomTheme:
+                # LOAD AND APPLY STYLE
+                UIFunctions.theme(self, themeFiles[themeCounter % 2], True)
+                themeCounter += 1
 
-            # SET HACKS
-            AppFunctions.setThemeHack(self)
+                # SET HACKS
+                AppFunctions.setThemeHack(self)
+
+        toggleTheme()
+        widgets.themeBtn.clicked.connect(toggleTheme)
 
         # SET HOME PAGE AND SELECT MENU
         # ///////////////////////////////////////////////////////////////
         prepareHomePage()
         prepareAddTaskPage()
+        prepareMessengerPage()
         prepareShowTasks()
         widgets.stackedWidget.setCurrentWidget(widgets.home)
         widgets.btn_home.setStyleSheet(UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
@@ -143,6 +152,12 @@ class MainWindow(QMainWindow):
         # SHOW WIDGETS PAGE
         if btnName == "btn_widgets":
             widgets.stackedWidget.setCurrentWidget(widgets.widgets)
+            UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+
+        # SHOW MESSENGER PAGE
+        if btnName == "btn_messenger":
+            widgets.stackedWidget.setCurrentWidget(widgets.messenger)
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
@@ -189,4 +204,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

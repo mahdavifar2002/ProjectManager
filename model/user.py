@@ -21,6 +21,10 @@ class User(conf.Base):
     def save(self):
         conf.save_to_db(self)
 
+    @staticmethod
+    def users():
+        return conf.session.query(User).all()
+
     def messages(self, target_username):
         messages = conf.session.query(message.Message).filter(conf.or_(
             conf.and_(message.Message.sender_username == self.username,

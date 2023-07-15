@@ -685,6 +685,18 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_8.addWidget(self.btn_widgets)
 
+        self.btn_messenger = QPushButton(self.topMenu)
+        self.btn_messenger.setObjectName(u"btn_messenger")
+        sizePolicy.setHeightForWidth(self.btn_messenger.sizePolicy().hasHeightForWidth())
+        self.btn_messenger.setSizePolicy(sizePolicy)
+        self.btn_messenger.setMinimumSize(QSize(0, 45))
+        self.btn_messenger.setFont(font)
+        self.btn_messenger.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_messenger.setLayoutDirection(Qt.LeftToRight)
+        self.btn_messenger.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-envelope-open.png);")
+
+        self.verticalLayout_8.addWidget(self.btn_messenger)
+
         self.btn_add = QPushButton(self.topMenu)
         self.btn_add.setObjectName(u"btn_add")
         sizePolicy.setHeightForWidth(self.btn_add.sizePolicy().hasHeightForWidth())
@@ -965,14 +977,26 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setSpacing(5)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.themeBtn = QPushButton(self.rightButtons)
+        self.themeBtn.setObjectName(u"themeBtn")
+        self.themeBtn.setMinimumSize(QSize(28, 28))
+        self.themeBtn.setMaximumSize(QSize(28, 28))
+        self.themeBtn.setCursor(QCursor(Qt.PointingHandCursor))
+        icon1 = QIcon()
+        icon1.addFile(u":/icons/images/icons/cil-lightbulb.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.themeBtn.setIcon(icon1)
+        self.themeBtn.setIconSize(QSize(20, 20))
+
+        self.horizontalLayout_2.addWidget(self.themeBtn)
+
         self.settingsTopBtn = QPushButton(self.rightButtons)
         self.settingsTopBtn.setObjectName(u"settingsTopBtn")
         self.settingsTopBtn.setMinimumSize(QSize(28, 28))
         self.settingsTopBtn.setMaximumSize(QSize(28, 28))
         self.settingsTopBtn.setCursor(QCursor(Qt.PointingHandCursor))
-        icon1 = QIcon()
-        icon1.addFile(u":/icons/images/icons/icon_settings.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.settingsTopBtn.setIcon(icon1)
+        icon2 = QIcon()
+        icon2.addFile(u":/icons/images/icons/icon_settings.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.settingsTopBtn.setIcon(icon2)
         self.settingsTopBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_2.addWidget(self.settingsTopBtn)
@@ -982,9 +1006,9 @@ class Ui_MainWindow(object):
         self.minimizeAppBtn.setMinimumSize(QSize(28, 28))
         self.minimizeAppBtn.setMaximumSize(QSize(28, 28))
         self.minimizeAppBtn.setCursor(QCursor(Qt.PointingHandCursor))
-        icon2 = QIcon()
-        icon2.addFile(u":/icons/images/icons/icon_minimize.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.minimizeAppBtn.setIcon(icon2)
+        icon3 = QIcon()
+        icon3.addFile(u":/icons/images/icons/icon_minimize.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.minimizeAppBtn.setIcon(icon3)
         self.minimizeAppBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_2.addWidget(self.minimizeAppBtn)
@@ -1001,9 +1025,9 @@ class Ui_MainWindow(object):
         font3.setStyleStrategy(QFont.PreferDefault)
         self.maximizeRestoreAppBtn.setFont(font3)
         self.maximizeRestoreAppBtn.setCursor(QCursor(Qt.PointingHandCursor))
-        icon3 = QIcon()
-        icon3.addFile(u":/icons/images/icons/icon_maximize.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.maximizeRestoreAppBtn.setIcon(icon3)
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/images/icons/icon_maximize.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.maximizeRestoreAppBtn.setIcon(icon4)
         self.maximizeRestoreAppBtn.setIconSize(QSize(20, 20))
 
         self.horizontalLayout_2.addWidget(self.maximizeRestoreAppBtn)
@@ -1091,7 +1115,7 @@ class Ui_MainWindow(object):
 
         self.usernameLineEdit = QLineEdit(self.logInArea)
         self.usernameLineEdit.setObjectName(u"usernameLineEdit")
-        self.usernameLineEdit.setStyleSheet(u"background-color: rgb(33, 37, 43);")
+        self.usernameLineEdit.setStyleSheet(u"")
 
         self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.usernameLineEdit)
 
@@ -1102,14 +1126,14 @@ class Ui_MainWindow(object):
 
         self.passwordLineEdit = QLineEdit(self.logInArea)
         self.passwordLineEdit.setObjectName(u"passwordLineEdit")
-        self.passwordLineEdit.setStyleSheet(u"background-color: rgb(33, 37, 43);")
+        self.passwordLineEdit.setStyleSheet(u"")
         self.passwordLineEdit.setEchoMode(QLineEdit.Password)
 
         self.formLayout_2.setWidget(1, QFormLayout.FieldRole, self.passwordLineEdit)
 
         self.loginPushButton = QPushButton(self.logInArea)
         self.loginPushButton.setObjectName(u"loginPushButton")
-        self.loginPushButton.setStyleSheet(u"background-color: rgb(52, 59, 72);")
+        self.loginPushButton.setStyleSheet(u"")
 
         self.formLayout_2.setWidget(2, QFormLayout.FieldRole, self.loginPushButton)
 
@@ -1131,13 +1155,7 @@ class Ui_MainWindow(object):
 
         self.logOutArea = QWidget(self.home)
         self.logOutArea.setObjectName(u"logOutArea")
-        self.logOutArea.setStyleSheet(u"QLineEdit {\n"
-"	background-color: rgb(33, 37, 43);\n"
-"}\n"
-"\n"
-"QPushButton {\n"
-"	background-color: rgb(52, 59, 72);\n"
-"}")
+        self.logOutArea.setStyleSheet(u"")
         self.verticalLayout_23 = QVBoxLayout(self.logOutArea)
         self.verticalLayout_23.setObjectName(u"verticalLayout_23")
         self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
@@ -1360,9 +1378,9 @@ class Ui_MainWindow(object):
         self.pushButton.setFont(font)
         self.pushButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.pushButton.setStyleSheet(u"background-color: rgb(52, 59, 72);")
-        icon4 = QIcon()
-        icon4.addFile(u":/icons/images/icons/cil-folder-open.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pushButton.setIcon(icon4)
+        icon5 = QIcon()
+        icon5.addFile(u":/icons/images/icons/cil-folder-open.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushButton.setIcon(icon5)
 
         self.gridLayout.addWidget(self.pushButton, 0, 1, 1, 1)
 
@@ -1485,9 +1503,9 @@ class Ui_MainWindow(object):
         self.commandLinkButton.setObjectName(u"commandLinkButton")
         self.commandLinkButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.commandLinkButton.setStyleSheet(u"")
-        icon5 = QIcon()
-        icon5.addFile(u":/icons/images/icons/cil-link.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.commandLinkButton.setIcon(icon5)
+        icon6 = QIcon()
+        icon6.addFile(u":/icons/images/icons/cil-link.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.commandLinkButton.setIcon(icon6)
 
         self.gridLayout_2.addWidget(self.commandLinkButton, 1, 6, 1, 1)
 
@@ -1647,6 +1665,81 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.row_3)
 
         self.stackedWidget.addWidget(self.widgets)
+        self.messenger = QWidget()
+        self.messenger.setObjectName(u"messenger")
+        self.horizontalLayout_7 = QHBoxLayout(self.messenger)
+        self.horizontalLayout_7.setSpacing(0)
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.verticalLayout_25 = QVBoxLayout()
+        self.verticalLayout_25.setObjectName(u"verticalLayout_25")
+        self.label_6 = QLabel(self.messenger)
+        self.label_6.setObjectName(u"label_6")
+
+        self.verticalLayout_25.addWidget(self.label_6)
+
+        self.label_7 = QLabel(self.messenger)
+        self.label_7.setObjectName(u"label_7")
+
+        self.verticalLayout_25.addWidget(self.label_7)
+
+
+        self.horizontalLayout_7.addLayout(self.verticalLayout_25)
+
+        self.verticalLayout_26 = QVBoxLayout()
+        self.verticalLayout_26.setObjectName(u"verticalLayout_26")
+        self.chatScrollArea = QScrollArea(self.messenger)
+        self.chatScrollArea.setObjectName(u"chatScrollArea")
+        self.chatScrollArea.setStyleSheet(u"background-color: transparent;\n"
+"border: none;")
+        self.chatScrollArea.setWidgetResizable(True)
+        self.chatScrollAreaWidgetContents = QWidget()
+        self.chatScrollAreaWidgetContents.setObjectName(u"chatScrollAreaWidgetContents")
+        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 763, 317))
+        self.chatScrollArea.setWidget(self.chatScrollAreaWidgetContents)
+
+        self.verticalLayout_26.addWidget(self.chatScrollArea)
+
+        self.horizontalWidget = QWidget(self.messenger)
+        self.horizontalWidget.setObjectName(u"horizontalWidget")
+        self.horizontalWidget.setMaximumSize(QSize(16777215, 100))
+        self.horizontalWidget.setStyleSheet(u"background-color: rgb(33, 37, 43);")
+        self.horizontalLayout_10 = QHBoxLayout(self.horizontalWidget)
+        self.horizontalLayout_10.setSpacing(9)
+        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
+        self.horizontalLayout_10.setContentsMargins(9, 9, 9, 9)
+        self.messengerTextEdit = QTextEdit(self.horizontalWidget)
+        self.messengerTextEdit.setObjectName(u"messengerTextEdit")
+        self.messengerTextEdit.setLayoutDirection(Qt.LeftToRight)
+        self.messengerTextEdit.setStyleSheet(u"QTextEdit {\n"
+"	background-color: transparent;\n"
+"}\n"
+"\n"
+"QTextEdit:hover {\n"
+"	border: 0;\n"
+"}\n"
+"QTextEdit:focus {\n"
+"	border: 0;\n"
+"}")
+
+        self.horizontalLayout_10.addWidget(self.messengerTextEdit)
+
+        self.pushButton_2 = QPushButton(self.horizontalWidget)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.pushButton_2.setStyleSheet(u"border: 0;")
+        icon7 = QIcon()
+        icon7.addFile(u":/icons/images/icons/cil-paper-plane.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushButton_2.setIcon(icon7)
+        self.pushButton_2.setIconSize(QSize(32, 32))
+
+        self.horizontalLayout_10.addWidget(self.pushButton_2)
+
+
+        self.verticalLayout_26.addWidget(self.horizontalWidget)
+
+
+        self.horizontalLayout_7.addLayout(self.verticalLayout_26)
+
+        self.stackedWidget.addWidget(self.messenger)
         self.add_task = QWidget()
         self.add_task.setObjectName(u"add_task")
         self.verticalLayout_20 = QVBoxLayout(self.add_task)
@@ -1846,7 +1939,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(3)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -1859,6 +1952,7 @@ class Ui_MainWindow(object):
         self.toggleButton.setText(QCoreApplication.translate("MainWindow", u"Hide", None))
         self.btn_home.setText(QCoreApplication.translate("MainWindow", u"Home", None))
         self.btn_widgets.setText(QCoreApplication.translate("MainWindow", u"Widgets", None))
+        self.btn_messenger.setText(QCoreApplication.translate("MainWindow", u"Widgets", None))
         self.btn_add.setText(QCoreApplication.translate("MainWindow", u"Add Task", None))
         self.btn_new.setText(QCoreApplication.translate("MainWindow", u"New", None))
         self.btn_save.setText(QCoreApplication.translate("MainWindow", u"Save", None))
@@ -1891,6 +1985,10 @@ class Ui_MainWindow(object):
 "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#ffffff;\">pyside6-rcc resources.qrc -o resources_rc.py</span></p></body></html>", None))
         self.titleRightInfo.setText(QCoreApplication.translate("MainWindow", u"Ayandenegar APP - Theme with colors based on Dracula for Python.", None))
 #if QT_CONFIG(tooltip)
+        self.themeBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Toggle theme", None))
+#endif // QT_CONFIG(tooltip)
+        self.themeBtn.setText("")
+#if QT_CONFIG(tooltip)
         self.settingsTopBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Settings", None))
 #endif // QT_CONFIG(tooltip)
         self.settingsTopBtn.setText("")
@@ -1908,7 +2006,9 @@ class Ui_MainWindow(object):
         self.closeAppBtn.setText("")
         self.label_4.setText("")
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Username", None))
+        self.usernameLineEdit.setText(QCoreApplication.translate("MainWindow", u"mahdavifar", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Password", None))
+        self.passwordLineEdit.setText(QCoreApplication.translate("MainWindow", u"96321", None))
         self.loginPushButton.setText(QCoreApplication.translate("MainWindow", u"Log in", None))
         self.loginResult.setText("")
         self.userImage.setText("")
@@ -2018,6 +2118,9 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem38.setText(QCoreApplication.translate("MainWindow", u"24", None));
         self.tableWidget.setSortingEnabled(__sortingEnabled1)
 
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.label_7.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.pushButton_2.setText("")
         self.label.setText(QCoreApplication.translate("MainWindow", u"ADD TASK", None))
         self.assignUserLabel.setText(QCoreApplication.translate("MainWindow", u"Assign to user", None))
         self.taskDescriptionLabel.setText(QCoreApplication.translate("MainWindow", u"Task Description", None))

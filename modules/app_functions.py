@@ -52,6 +52,9 @@ class AppFunctions(MainWindow):
         self.ui.verticalScrollBar.setStyleSheet("background-color: #6272a4;")
         self.ui.commandLinkButton.setStyleSheet("color: #ff79c6;")
 
+        # REMOVE STACKED WIDGET TRANSPARENT BACKGROUND
+        widgets.stackedWidget.setStyleSheet("")
+
 
 def prepareHomePage():
     if user is None:
@@ -76,7 +79,6 @@ def logoutUser():
 
     widgets.loginResult.setStyleSheet("color: green;")
     widgets.loginResult.setText("You logged out successfully")
-
 
 
 def loginUser():
@@ -118,7 +120,6 @@ def prepareAddTaskPage():
 
 
 def addTask():
-
     if widgets.assignUserComboBox.currentIndex() != -1:
         task = Task(assigner_username=user.username,
                     assignee_username=widgets.assignUserComboBox.currentText(),
@@ -128,11 +129,27 @@ def addTask():
         widgets.assignUserComboBox.setCurrentIndex(-1)
         widgets.taskPlainTextEdit.setPlainText("")
 
+
 def setUsersForAddTask():
     widgets.assignUserComboBox.clear()
 
-    for user in conf.session.query(User).all():
-        widgets.assignUserComboBox.addItem(user.username)
+    for other_user in User.users():
+        widgets.assignUserComboBox.addItem(other_user.username)
+
+
+def prepareMessengerPage():
+    new_text_edit = AutoResizingTextEdit()
+    # palette = new_text_edit.palette()
+    # palette.setColor(QPalette.ColorRole.Base, "red")
+    # new_text_edit.setPalette(palette)
+    # option = new_text_edit.document().defaultTextOption()
+    # option.setTextDirection(Qt.LayoutDirection.RightToLeft)
+    # new_text_edit.document().setDefaultTextOption(option)
+    # new_text_edit.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+    new_text_edit.setStyleSheet(widgets.messengerTextEdit.styleSheet())
+    widgets.horizontalLayout_10.replaceWidget(widgets.messengerTextEdit, new_text_edit)
+    widgets.messengerTextEdit.setParent(None)
+    widgets.messengerTextEdit = new_text_edit
 
 
 def prepareShowTasks():
