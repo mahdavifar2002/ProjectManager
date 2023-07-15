@@ -45,6 +45,10 @@ Bg App */
 	border: 1px solid rgb(44, 49, 58);
 }
 
+#stackedWidget .QWidget {
+	background-color: rgb(40, 44, 52);
+}
+
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 Left Menu */
 #leftMenuBg {

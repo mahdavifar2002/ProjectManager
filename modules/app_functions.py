@@ -31,7 +31,7 @@ user: Optional[User] = None
 # WITH ACCESS TO MAIN WINDOW WIDGETS
 # ///////////////////////////////////////////////////////////////
 class AppFunctions(MainWindow):
-    def setThemeHack(self):
+    def setThemeHack(self, is_light):
         Settings.BTN_LEFT_BOX_COLOR = "background-color: #495474;"
         Settings.BTN_RIGHT_BOX_COLOR = "background-color: #495474;"
         Settings.MENU_SELECTED_STYLESHEET = MENU_SELECTED_STYLESHEET = """
@@ -55,6 +55,11 @@ class AppFunctions(MainWindow):
         # REMOVE STACKED WIDGET TRANSPARENT BACKGROUND
         widgets.stackedWidget.setStyleSheet("")
 
+        # STYLE THE chatTextBox
+        if is_light:
+            widgets.chatTextBox.setStyleSheet("background-color: #6272a4; color: #ffffff;")
+        else:
+            widgets.chatTextBox.setStyleSheet("background-color: rgb(33, 37, 43); color: #ffffff;")
 
 def prepareHomePage():
     if user is None:
@@ -148,13 +153,14 @@ def prepareMessengerPage():
     # new_text_edit.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
     new_text_edit.setStyleSheet(widgets.messengerTextEdit.styleSheet())
     widgets.horizontalLayout_10.replaceWidget(widgets.messengerTextEdit, new_text_edit)
-    widgets.messengerTextEdit.setParent(None)
+    # widgets.messengerTextEdit.setParent(None)
+    widgets.messengerTextEdit.deleteLater()
     widgets.messengerTextEdit = new_text_edit
 
     # widgets.chatScrollAreaWidgetContents.setLayout(widgets.chatGridLayout)
 
     for i in range(50):
-        widgets.chatGridLayout.addWidget(QPushButton("Message"))
+        widgets.chatGridLayout.addWidget(QLabel("Message"))
 
 
 

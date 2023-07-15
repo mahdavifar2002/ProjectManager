@@ -111,10 +111,10 @@ class MainWindow(QMainWindow):
             if useCustomTheme:
                 # LOAD AND APPLY STYLE
                 UIFunctions.theme(self, themeFiles[themeCounter % 2], True)
-                themeCounter += 1
 
                 # SET HACKS
-                AppFunctions.setThemeHack(self)
+                AppFunctions.setThemeHack(self, themeCounter % 2)
+                themeCounter += 1
 
         toggleTheme()
         widgets.themeBtn.clicked.connect(toggleTheme)

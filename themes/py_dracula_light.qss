@@ -46,6 +46,10 @@ Bg App */
     color: #44475a;
 }
 
+#stackedWidget .QWidget {
+	background-color: #f8f8f2;
+}
+
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 Left Menu */
 #leftMenuBg {	
