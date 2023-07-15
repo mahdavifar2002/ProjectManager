@@ -3423,22 +3423,145 @@ background-repeat: no-repeat;</string>
                         <number>0</number>
                        </property>
                        <item>
-                        <layout class="QVBoxLayout" name="verticalLayout_25">
-                         <item>
-                          <widget class="QLabel" name="label_6">
-                           <property name="text">
-                            <string>TextLabel</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item>
-                          <widget class="QLabel" name="label_7">
-                           <property name="text">
-                            <string>TextLabel</string>
-                           </property>
-                          </widget>
-                         </item>
-                        </layout>
+                        <widget class="QWidget" name="contactsWidget" native="true">
+                         <property name="maximumSize">
+                          <size>
+                           <width>240</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">background-color: transparent;</string>
+                         </property>
+                         <layout class="QVBoxLayout" name="verticalLayout_25">
+                          <property name="leftMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>0</number>
+                          </property>
+                          <item>
+                           <layout class="QHBoxLayout" name="horizontalLayout_15">
+                            <item>
+                             <widget class="QLineEdit" name="lineEdit_2">
+                              <property name="placeholderText">
+                               <string>Search</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QPushButton" name="pushButton_3">
+                              <property name="styleSheet">
+                               <string notr="true">border: none;
+background-color: transparent;</string>
+                              </property>
+                              <property name="text">
+                               <string/>
+                              </property>
+                              <property name="icon">
+                               <iconset resource="resources.qrc">
+                                <normaloff>:/icons/images/icons/cil-magnifying-glass.png</normaloff>:/icons/images/icons/cil-magnifying-glass.png</iconset>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </item>
+                          <item>
+                           <widget class="QScrollArea" name="contactsScrollArea">
+                            <property name="maximumSize">
+                             <size>
+                              <width>240</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="widgetResizable">
+                             <bool>true</bool>
+                            </property>
+                            <widget class="QWidget" name="contactsScrollAreaWidgetContents">
+                             <property name="geometry">
+                              <rect>
+                               <x>0</x>
+                               <y>0</y>
+                               <width>238</width>
+                               <height>392</height>
+                              </rect>
+                             </property>
+                             <property name="styleSheet">
+                              <string notr="true"/>
+                             </property>
+                             <layout class="QVBoxLayout" name="verticalLayout_45">
+                              <property name="spacing">
+                               <number>0</number>
+                              </property>
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item>
+                               <widget class="QPushButton" name="pushButton_5">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>0</width>
+                                  <height>60</height>
+                                 </size>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true"/>
+                                </property>
+                                <property name="text">
+                                 <string>User</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QPushButton" name="pushButton_6">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>0</width>
+                                  <height>60</height>
+                                 </size>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true"/>
+                                </property>
+                                <property name="text">
+                                 <string>User</string>
+                                </property>
+                               </widget>
+                              </item>
+                              <item>
+                               <spacer name="verticalSpacer_7">
+                                <property name="orientation">
+                                 <enum>Qt::Vertical</enum>
+                                </property>
+                                <property name="sizeHint" stdset="0">
+                                 <size>
+                                  <width>20</width>
+                                  <height>40</height>
+                                 </size>
+                                </property>
+                               </spacer>
+                              </item>
+                             </layout>
+                            </widget>
+                           </widget>
+                          </item>
+                         </layout>
+                        </widget>
                        </item>
                        <item>
                         <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -3456,10 +3579,15 @@ border: none;</string>
                              <rect>
                               <x>0</x>
                               <y>0</y>
-                              <width>763</width>
+                              <width>578</width>
                               <height>317</height>
                              </rect>
                             </property>
+                            <layout class="QVBoxLayout" name="verticalLayout_44">
+                             <item>
+                              <layout class="QGridLayout" name="chatGridLayout"/>
+                             </item>
+                            </layout>
                            </widget>
                           </widget>
                          </item>
@@ -3497,14 +3625,14 @@ border: none;</string>
                               </property>
                               <property name="styleSheet">
                                <string notr="true">QTextEdit {
-	background-color: transparent;
+	border: none;
 }
 
 QTextEdit:hover {
-	border: 0;
+	border: none;
 }
 QTextEdit:focus {
-	border: 0;
+	border: none;
 }</string>
                               </property>
                              </widget>
@@ -3906,7 +4034,7 @@ QTextEdit:focus {
                    </font>
                   </property>
                   <property name="text">
-                   <string>By: Wanderson M. Pimenta</string>
+                   <string>By: Ali Mahdavifar (Original credit for Wanderson M. Pimenta)</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

@@ -151,6 +151,12 @@ def prepareMessengerPage():
     widgets.messengerTextEdit.setParent(None)
     widgets.messengerTextEdit = new_text_edit
 
+    # widgets.chatScrollAreaWidgetContents.setLayout(widgets.chatGridLayout)
+
+    for i in range(50):
+        widgets.chatGridLayout.addWidget(QPushButton("Message"))
+
+
 
 def prepareShowTasks():
     reloadTasks()

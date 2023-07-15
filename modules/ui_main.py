@@ -1670,20 +1670,69 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7 = QHBoxLayout(self.messenger)
         self.horizontalLayout_7.setSpacing(0)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.verticalLayout_25 = QVBoxLayout()
+        self.contactsWidget = QWidget(self.messenger)
+        self.contactsWidget.setObjectName(u"contactsWidget")
+        self.contactsWidget.setMaximumSize(QSize(240, 16777215))
+        self.contactsWidget.setStyleSheet(u"background-color: transparent;")
+        self.verticalLayout_25 = QVBoxLayout(self.contactsWidget)
         self.verticalLayout_25.setObjectName(u"verticalLayout_25")
-        self.label_6 = QLabel(self.messenger)
-        self.label_6.setObjectName(u"label_6")
+        self.verticalLayout_25.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_15 = QHBoxLayout()
+        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
+        self.lineEdit_2 = QLineEdit(self.contactsWidget)
+        self.lineEdit_2.setObjectName(u"lineEdit_2")
 
-        self.verticalLayout_25.addWidget(self.label_6)
+        self.horizontalLayout_15.addWidget(self.lineEdit_2)
 
-        self.label_7 = QLabel(self.messenger)
-        self.label_7.setObjectName(u"label_7")
+        self.pushButton_3 = QPushButton(self.contactsWidget)
+        self.pushButton_3.setObjectName(u"pushButton_3")
+        self.pushButton_3.setStyleSheet(u"border: none;\n"
+"background-color: transparent;")
+        icon7 = QIcon()
+        icon7.addFile(u":/icons/images/icons/cil-magnifying-glass.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushButton_3.setIcon(icon7)
 
-        self.verticalLayout_25.addWidget(self.label_7)
+        self.horizontalLayout_15.addWidget(self.pushButton_3)
 
 
-        self.horizontalLayout_7.addLayout(self.verticalLayout_25)
+        self.verticalLayout_25.addLayout(self.horizontalLayout_15)
+
+        self.contactsScrollArea = QScrollArea(self.contactsWidget)
+        self.contactsScrollArea.setObjectName(u"contactsScrollArea")
+        self.contactsScrollArea.setMaximumSize(QSize(240, 16777215))
+        self.contactsScrollArea.setWidgetResizable(True)
+        self.contactsScrollAreaWidgetContents = QWidget()
+        self.contactsScrollAreaWidgetContents.setObjectName(u"contactsScrollAreaWidgetContents")
+        self.contactsScrollAreaWidgetContents.setGeometry(QRect(0, 0, 238, 392))
+        self.contactsScrollAreaWidgetContents.setStyleSheet(u"")
+        self.verticalLayout_45 = QVBoxLayout(self.contactsScrollAreaWidgetContents)
+        self.verticalLayout_45.setSpacing(0)
+        self.verticalLayout_45.setObjectName(u"verticalLayout_45")
+        self.verticalLayout_45.setContentsMargins(0, 0, 0, 0)
+        self.pushButton_5 = QPushButton(self.contactsScrollAreaWidgetContents)
+        self.pushButton_5.setObjectName(u"pushButton_5")
+        self.pushButton_5.setMinimumSize(QSize(0, 60))
+        self.pushButton_5.setStyleSheet(u"")
+
+        self.verticalLayout_45.addWidget(self.pushButton_5)
+
+        self.pushButton_6 = QPushButton(self.contactsScrollAreaWidgetContents)
+        self.pushButton_6.setObjectName(u"pushButton_6")
+        self.pushButton_6.setMinimumSize(QSize(0, 60))
+        self.pushButton_6.setStyleSheet(u"")
+
+        self.verticalLayout_45.addWidget(self.pushButton_6)
+
+        self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_45.addItem(self.verticalSpacer_7)
+
+        self.contactsScrollArea.setWidget(self.contactsScrollAreaWidgetContents)
+
+        self.verticalLayout_25.addWidget(self.contactsScrollArea)
+
+
+        self.horizontalLayout_7.addWidget(self.contactsWidget)
 
         self.verticalLayout_26 = QVBoxLayout()
         self.verticalLayout_26.setObjectName(u"verticalLayout_26")
@@ -1694,7 +1743,14 @@ class Ui_MainWindow(object):
         self.chatScrollArea.setWidgetResizable(True)
         self.chatScrollAreaWidgetContents = QWidget()
         self.chatScrollAreaWidgetContents.setObjectName(u"chatScrollAreaWidgetContents")
-        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 763, 317))
+        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 578, 317))
+        self.verticalLayout_44 = QVBoxLayout(self.chatScrollAreaWidgetContents)
+        self.verticalLayout_44.setObjectName(u"verticalLayout_44")
+        self.chatGridLayout = QGridLayout()
+        self.chatGridLayout.setObjectName(u"chatGridLayout")
+
+        self.verticalLayout_44.addLayout(self.chatGridLayout)
+
         self.chatScrollArea.setWidget(self.chatScrollAreaWidgetContents)
 
         self.verticalLayout_26.addWidget(self.chatScrollArea)
@@ -1711,14 +1767,14 @@ class Ui_MainWindow(object):
         self.messengerTextEdit.setObjectName(u"messengerTextEdit")
         self.messengerTextEdit.setLayoutDirection(Qt.LeftToRight)
         self.messengerTextEdit.setStyleSheet(u"QTextEdit {\n"
-"	background-color: transparent;\n"
+"	border: none;\n"
 "}\n"
 "\n"
 "QTextEdit:hover {\n"
-"	border: 0;\n"
+"	border: none;\n"
 "}\n"
 "QTextEdit:focus {\n"
-"	border: 0;\n"
+"	border: none;\n"
 "}")
 
         self.horizontalLayout_10.addWidget(self.messengerTextEdit)
@@ -1726,9 +1782,9 @@ class Ui_MainWindow(object):
         self.pushButton_2 = QPushButton(self.horizontalWidget)
         self.pushButton_2.setObjectName(u"pushButton_2")
         self.pushButton_2.setStyleSheet(u"border: 0;")
-        icon7 = QIcon()
-        icon7.addFile(u":/icons/images/icons/cil-paper-plane.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pushButton_2.setIcon(icon7)
+        icon8 = QIcon()
+        icon8.addFile(u":/icons/images/icons/cil-paper-plane.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushButton_2.setIcon(icon8)
         self.pushButton_2.setIconSize(QSize(32, 32))
 
         self.horizontalLayout_10.addWidget(self.pushButton_2)
@@ -2118,8 +2174,10 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem38.setText(QCoreApplication.translate("MainWindow", u"24", None));
         self.tableWidget.setSortingEnabled(__sortingEnabled1)
 
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.label_7.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.lineEdit_2.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search", None))
+        self.pushButton_3.setText("")
+        self.pushButton_5.setText(QCoreApplication.translate("MainWindow", u"User", None))
+        self.pushButton_6.setText(QCoreApplication.translate("MainWindow", u"User", None))
         self.pushButton_2.setText("")
         self.label.setText(QCoreApplication.translate("MainWindow", u"ADD TASK", None))
         self.assignUserLabel.setText(QCoreApplication.translate("MainWindow", u"Assign to user", None))
@@ -2128,7 +2186,7 @@ class Ui_MainWindow(object):
         self.btn_message.setText(QCoreApplication.translate("MainWindow", u"Message", None))
         self.btn_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
         self.btn_logout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))
-        self.creditsLabel.setText(QCoreApplication.translate("MainWindow", u"By: Wanderson M. Pimenta", None))
+        self.creditsLabel.setText(QCoreApplication.translate("MainWindow", u"By: Ali Mahdavifar (Original credit for Wanderson M. Pimenta)", None))
         self.version.setText(QCoreApplication.translate("MainWindow", u"v1.0.3", None))
     # retranslateUi
 
