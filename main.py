@@ -45,6 +45,7 @@ class MainWindow(QMainWindow):
         global widgets
         widgets = self.ui
         app_functions.widgets = widgets
+        app_functions.mainWindow = self
 
         # USE CUSTOM TITLE BAR | USE AS "False" FOR MAC OR LINUX
         # ///////////////////////////////////////////////////////////////

@@ -13,7 +13,6 @@
 # https://doc.qt.io/qtforpython/licenses.html
 #
 # ///////////////////////////////////////////////////////////////
-import traceback
 
 import jdatetime
 
@@ -25,6 +24,7 @@ from model.task import Task
 from model.user import User
 
 widgets: Optional[Ui_MainWindow] = None
+mainWindow: Optional[MainWindow] = None
 user: Optional[User] = None
 
 
@@ -159,9 +159,36 @@ def prepareMessengerPage():
 
     # widgets.chatScrollAreaWidgetContents.setLayout(widgets.chatGridLayout)
 
-    for i in range(50):
-        widgets.chatGridLayout.addWidget(QLabel("Message"))
+    users = User.users()
 
+    user_buttons = [None for i in range(len(users))]
+
+    for i, other_user in enumerate(User.users()):
+        image_url = f"{os.getcwd()}\\resources\\images\\{other_user.username}.jpg"
+
+        user_buttons[i] = QPushButton("   " + other_user.fullname + "   ")
+        user_buttons[i].setToolTip(other_user.username)
+        user_buttons[i].setIcon(QIcon(image_url))
+        user_buttons[i].setIconSize(QSize(45, 45))
+        user_buttons[i].setMinimumHeight(60)
+        user_buttons[i].setStyleSheet("text-align: left;")
+        user_buttons[i].clicked.connect(lambda j=i: reloadChat(user_buttons[i].toolTip()))
+        widgets.contactsVerticalLayout.addWidget(user_buttons[i])
+
+    widgets.contactsVerticalLayout.addStretch()
+
+    for i in range(50):
+        label = AutoResizingTextEdit("Message\nMessage\nMessage" if i%2 else "پیام")
+        # label.setReadOnly(True)
+        label.setObjectName("from-me" if i%2 else "from-them")
+        widgets.chatGridLayout.addWidget(label, i, (i%2), 1, 2)
+
+
+def reloadChat(target_username: str):
+    print(mainWindow.sender())
+    print(target_username)
+    widgets.stackedWidget.setCurrentWidget(widgets.messenger)
+    widgets.chatStackedWidget.setCurrentWidget(widgets.chatPage)
 
 
 def prepareShowTasks():

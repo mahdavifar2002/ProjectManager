@@ -128,7 +128,7 @@ Left Menu */
 
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 Extra Tab */
-#extraLeftBox {	
+#extraLeftBox, #contactsScrollAreaWidgetContents {
 	background-color: #495474;
     color: #f8f8f2;
 }
@@ -518,17 +518,17 @@ CommandLinkButton */
 
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 Button */
-#pagesContainer QPushButton {
+#pagesContainer QPushButton , #extraContent QPushButton {
 	border: 2px solid #6272a4;
 	border-radius: 5px;	
 	background-color: #6272a4;
     color: #f8f8f2;
 }
-#pagesContainer QPushButton:hover {
+#pagesContainer QPushButton:hover , #extraContent QPushButton:hover {
 	background-color: #7082b6;
 	border: 2px solid #7082b6;
 }
-#pagesContainer QPushButton:pressed {	
+#pagesContainer QPushButton:pressed , #extraContent QPushButton:pressed {
 	background-color: #546391;
 	border: 2px solid #ff79c6;
 }

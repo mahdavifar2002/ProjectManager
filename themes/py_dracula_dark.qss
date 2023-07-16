@@ -124,7 +124,7 @@ Left Menu */
 
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 Extra Tab */
-#extraLeftBox {
+#extraLeftBox, #contactsScrollAreaWidgetContents {
 	background-color: rgb(44, 49, 58);
 }
 #extraTopBg{
@@ -504,20 +504,34 @@ QCommandLinkButton:pressed {
 }
 
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
+Messenger */
+
+QTextEdit[objectName^="from-me"] {
+    background-color: hsl(270, 25%, 30%);
+    color: white;
+    border-radius: 5px;
+}
+
+QTextEdit[objectName^="from-them"] {
+/*    background-color: rgb(37, 31, 44);*/
+    background-color: hsl(270, 30%, 15%);
+    color: white;
+    border-radius: 5px;
+}
+
+
+/* /////////////////////////////////////////////////////////////////////////////////////////////////
 Button */
-#pagesContainer QPushButton {
+#pagesContainer QPushButton , #extraContent QPushButton {
 	border: 2px solid rgb(52, 59, 72);
 	border-radius: 5px;
 	background-color: rgb(52, 59, 72);
 }
-#pagesContainer QPushButton:hover {
+#pagesContainer QPushButton:hover , #extraContent QPushButton:hover {
 	background-color: rgb(57, 65, 80);
 	border: 2px solid rgb(61, 70, 86);
 }
-#pagesContainer QPushButton:pressed {
+#pagesContainer QPushButton:pressed , #extraContent QPushButton:pressed {
 	background-color: rgb(35, 40, 49);
 	border: 2px solid rgb(43, 50, 61);
 }
-
-
-
