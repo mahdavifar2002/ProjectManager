@@ -17,6 +17,7 @@
 import sys
 import os
 import platform
+from time import sleep
 from typing import Optional
 
 from model.user import User
@@ -124,10 +125,24 @@ class MainWindow(QMainWindow):
         # ///////////////////////////////////////////////////////////////
         prepareHomePage()
         prepareAddTaskPage()
-        prepareMessengerPage()
+        user_buttons = prepareMessengerPage()
         prepareShowTasks()
         widgets.stackedWidget.setCurrentWidget(widgets.home)
         widgets.btn_home.setStyleSheet(UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
+
+        for user_button in user_buttons:
+            user_button.clicked.connect(self.contactClick)
+
+    # CONTACT CLICK
+    # ///////////////////////////////////////////////////////////////
+    def contactClick(self):
+        # GET BUTTON CLICKED
+        btn = self.sender()
+        reloadChat(btn.toolTip())
+
+        btn = widgets.btn_messenger
+        UIFunctions.resetStyle(self, btn.objectName())
+        btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
     # BUTTONS CLICK
     # Post here your functions for clicked buttons

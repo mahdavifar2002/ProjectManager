@@ -1,3 +1,5 @@
+import jdatetime
+
 from model import conf
 
 
@@ -16,6 +18,9 @@ class Task(conf.Base):
     description = conf.Column(conf.String(500))
     time_created = conf.Column(conf.DateTime(timezone=True), server_default=conf.func.now())
     time_updated = conf.Column(conf.DateTime(timezone=True), onupdate=conf.func.now())
+
+    def get_time_created(self):
+        return str(jdatetime.datetime.fromgregorian(datetime=self.time_created))
 
     def save(self):
         conf.save_to_db(self)

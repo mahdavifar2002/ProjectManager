@@ -20,12 +20,14 @@ import jdatetime
 # ///////////////////////////////////////////////////////////////
 from main import *
 from model import conf
+from model.message import Message
 from model.task import Task
 from model.user import User
 
 widgets: Optional[Ui_MainWindow] = None
 mainWindow: Optional[MainWindow] = None
 user: Optional[User] = None
+target_username: Optional[str] = None
 
 
 # WITH ACCESS TO MAIN WINDOW WIDGETS
@@ -60,6 +62,7 @@ class AppFunctions(MainWindow):
             widgets.chatTextBox.setStyleSheet("background-color: #6272a4; color: #ffffff;")
         else:
             widgets.chatTextBox.setStyleSheet("background-color: rgb(33, 37, 43); color: #ffffff;")
+
 
 def prepareHomePage():
     if user is None:
@@ -144,23 +147,12 @@ def setUsersForAddTask():
 
 def prepareMessengerPage():
     new_text_edit = AutoResizingTextEdit()
-    # palette = new_text_edit.palette()
-    # palette.setColor(QPalette.ColorRole.Base, "red")
-    # new_text_edit.setPalette(palette)
-    # option = new_text_edit.document().defaultTextOption()
-    # option.setTextDirection(Qt.LayoutDirection.RightToLeft)
-    # new_text_edit.document().setDefaultTextOption(option)
-    # new_text_edit.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
     new_text_edit.setStyleSheet(widgets.messengerTextEdit.styleSheet())
     widgets.horizontalLayout_10.replaceWidget(widgets.messengerTextEdit, new_text_edit)
-    # widgets.messengerTextEdit.setParent(None)
     widgets.messengerTextEdit.deleteLater()
     widgets.messengerTextEdit = new_text_edit
 
-    # widgets.chatScrollAreaWidgetContents.setLayout(widgets.chatGridLayout)
-
     users = User.users()
-
     user_buttons = [None for i in range(len(users))]
 
     for i, other_user in enumerate(User.users()):
@@ -172,23 +164,59 @@ def prepareMessengerPage():
         user_buttons[i].setIconSize(QSize(45, 45))
         user_buttons[i].setMinimumHeight(60)
         user_buttons[i].setStyleSheet("text-align: left;")
-        user_buttons[i].clicked.connect(lambda j=i: reloadChat(user_buttons[i].toolTip()))
+        # user_buttons[i].clicked.connect(lambda j=user_buttons[i]: reloadChat(j.toolTip()))
         widgets.contactsVerticalLayout.addWidget(user_buttons[i])
 
     widgets.contactsVerticalLayout.addStretch()
 
-    for i in range(50):
-        label = AutoResizingTextEdit("Message\nMessage\nMessage" if i%2 else "پیام")
-        # label.setReadOnly(True)
-        label.setObjectName("from-me" if i%2 else "from-them")
-        widgets.chatGridLayout.addWidget(label, i, (i%2), 1, 2)
+    # Prepare send button
+    widgets.chatSendButton.clicked.connect(sendMessage)
+
+    return user_buttons
 
 
-def reloadChat(target_username: str):
-    print(mainWindow.sender())
-    print(target_username)
+def sendMessage():
+    sender = user.username
+    receiver = target_username
+    text = widgets.messengerTextEdit.toPlainText()
+    message = Message(sender_username=sender, receiver_username=receiver, text=text)
+    message.save()
+
+    widgets.messengerTextEdit.setPlainText("")
+
+    reloadChat(target_username)
+
+
+def reloadChat(username: str):
+    global target_username
+    target_username = username
+
+    # Clear chatbox
+    clearLayout(widgets.chatGridLayout)
+
     widgets.stackedWidget.setCurrentWidget(widgets.messenger)
     widgets.chatStackedWidget.setCurrentWidget(widgets.chatPage)
+
+    messages = user.messages(username)
+
+    for i, message in enumerate(messages):
+        is_sender = (message.sender_username == user.username)
+        label = AutoResizingTextEdit()
+        label_text = message.text + "\n" + message.get_time_created()
+        label.setText(label_text)
+        # label.setReadOnly(True)
+        label.setObjectName("from-me" if is_sender else "from-them")
+        widgets.chatGridLayout.addWidget(label, 1 + i, is_sender, 1, 2)
+
+        # widgets.chatGridLayout.setRowStretch(i, 1)
+
+    # if not widgets.chatScrollArea.verticalScrollBar().isVisible():
+    #     widgets.chatScrollVerticalLayout.addStretch()
+
+    QCoreApplication.processEvents()
+    widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().maximum())
+    QCoreApplication.processEvents()
+    widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().maximum())
 
 
 def prepareShowTasks():
@@ -200,10 +228,17 @@ def reloadTasks():
 
     if user is not None:
         for task in user.tasks():
-            date = str(jdatetime.datetime.fromgregorian(datetime=task.time_created))
+            date = task.get_time_created()
 
             rowPosition = widgets.userTasksTableWidget.rowCount()
             widgets.userTasksTableWidget.insertRow(rowPosition)
             widgets.userTasksTableWidget.setItem(rowPosition, 0, QTableWidgetItem(task.assigner_username))
             widgets.userTasksTableWidget.setItem(rowPosition, 1, QTableWidgetItem(date))
             widgets.userTasksTableWidget.setItem(rowPosition, 2, QTableWidgetItem(task.description))
+
+
+def clearLayout(layout):
+    while layout.count():
+        child = layout.takeAt(0)
+        if child.widget():
+            child.widget().deleteLater()

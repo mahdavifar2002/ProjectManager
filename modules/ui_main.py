@@ -806,6 +806,7 @@ class Ui_MainWindow(object):
         self.extraIcon.setObjectName(u"extraIcon")
         self.extraIcon.setMinimumSize(QSize(20, 0))
         self.extraIcon.setMaximumSize(QSize(20, 20))
+        self.extraIcon.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-people.png);")
         self.extraIcon.setFrameShape(QFrame.NoFrame)
         self.extraIcon.setFrameShadow(QFrame.Raised)
 
@@ -1693,12 +1694,16 @@ class Ui_MainWindow(object):
         self.chatScrollAreaWidgetContents = QWidget()
         self.chatScrollAreaWidgetContents.setObjectName(u"chatScrollAreaWidgetContents")
         self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 836, 308))
-        self.verticalLayout_44 = QVBoxLayout(self.chatScrollAreaWidgetContents)
-        self.verticalLayout_44.setObjectName(u"verticalLayout_44")
+        self.chatScrollVerticalLayout = QVBoxLayout(self.chatScrollAreaWidgetContents)
+        self.chatScrollVerticalLayout.setObjectName(u"chatScrollVerticalLayout")
         self.chatGridLayout = QGridLayout()
         self.chatGridLayout.setObjectName(u"chatGridLayout")
+        self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.verticalLayout_44.addLayout(self.chatGridLayout)
+        self.chatGridLayout.addItem(self.verticalSpacer_7, 0, 0, 1, 1)
+
+
+        self.chatScrollVerticalLayout.addLayout(self.chatGridLayout)
 
         self.chatScrollArea.setWidget(self.chatScrollAreaWidgetContents)
 
@@ -1951,6 +1956,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.stackedWidget.setCurrentIndex(3)
+        self.chatStackedWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
