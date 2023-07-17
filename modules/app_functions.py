@@ -60,8 +60,10 @@ class AppFunctions(MainWindow):
         # STYLE THE chatTextBox
         if is_light:
             widgets.chatTextBox.setStyleSheet("background-color: #6272a4; color: #ffffff;")
+            widgets.contactInfoBox.setStyleSheet("background-color: #6272a4; color: #ffffff;")
         else:
             widgets.chatTextBox.setStyleSheet("background-color: rgb(33, 37, 43); color: #ffffff;")
+            widgets.contactInfoBox.setStyleSheet("background-color: rgb(33, 37, 43); color: #ffffff;")
 
 
 def prepareHomePage():
@@ -85,6 +87,8 @@ def logoutUser():
     MainWindow.setUser(user)
     prepareHomePage()
 
+    reloadChat(None)
+
     widgets.loginResult.setStyleSheet("color: green;")
     widgets.loginResult.setText("You logged out successfully")
 
@@ -94,8 +98,6 @@ def loginUser():
 
     username = widgets.usernameLineEdit.text()
     password = widgets.passwordLineEdit.text()
-
-    print(username, ":", password)
 
     try:
         logged_in_user = User.find_by_username(username)
@@ -146,25 +148,17 @@ def setUsersForAddTask():
 
 
 def prepareMessengerPage():
-    new_text_edit = AutoResizingTextEdit()
+    new_text_edit = AutoResizingTextEdit(widgets.chatTextBox)
     new_text_edit.setStyleSheet(widgets.messengerTextEdit.styleSheet())
-    widgets.horizontalLayout_10.replaceWidget(widgets.messengerTextEdit, new_text_edit)
+    widgets.chatTextBoxHorizontalLayout.replaceWidget(widgets.messengerTextEdit, new_text_edit)
     widgets.messengerTextEdit.deleteLater()
     widgets.messengerTextEdit = new_text_edit
 
     users = User.users()
-    user_buttons = [None for i in range(len(users))]
+    user_buttons = [None for _ in range(len(users))]
 
     for i, other_user in enumerate(User.users()):
-        image_url = f"{os.getcwd()}\\resources\\images\\{other_user.username}.jpg"
-
-        user_buttons[i] = QPushButton("   " + other_user.fullname + "   ")
-        user_buttons[i].setToolTip(other_user.username)
-        user_buttons[i].setIcon(QIcon(image_url))
-        user_buttons[i].setIconSize(QSize(45, 45))
-        user_buttons[i].setMinimumHeight(60)
-        user_buttons[i].setStyleSheet("text-align: left;")
-        # user_buttons[i].clicked.connect(lambda j=user_buttons[i]: reloadChat(j.toolTip()))
+        user_buttons[i] = create_user_button(other_user)
         widgets.contactsVerticalLayout.addWidget(user_buttons[i])
 
     widgets.contactsVerticalLayout.addStretch()
@@ -172,41 +166,69 @@ def prepareMessengerPage():
     # Prepare send button
     widgets.chatSendButton.clicked.connect(sendMessage)
 
+    # Set current widget to 'select a chat'
+    widgets.chatStackedWidget.setCurrentWidget(widgets.selectChatPage)
+
+    # Prepare reply area
+    widgets.replyFrame.hide()
+    widgets.closeReplyButton.clicked.connect(lambda: widgets.replyFrame.hide())
+
     return user_buttons
+
+
+def create_user_button(other_user):
+    image_url = f"{os.getcwd()}\\resources\\images\\{other_user.username}.jpg"
+    user_button = QPushButton("   " + other_user.fullname + "   ")
+    user_button.setToolTip(other_user.username)
+    user_button.setIcon(QIcon(image_url))
+    user_button.setIconSize(QSize(45, 45))
+    user_button.setMinimumHeight(60)
+    user_button.setStyleSheet("text-align: left; border: none;")
+    return user_button
 
 
 def sendMessage():
     sender = user.username
     receiver = target_username
-    text = widgets.messengerTextEdit.toPlainText()
-    message = Message(sender_username=sender, receiver_username=receiver, text=text)
-    message.save()
+    text = widgets.messengerTextEdit.toPlainText().strip()
+
+    if len(text) > 0:
+        reply_to = None if widgets.replyFrame.isHidden() else int(widgets.replyLabel.toolTip())
+        message = Message(sender_username=sender, receiver_username=receiver, text=text, reply_to=reply_to)
+        message.save()
+        reloadChat(target_username)
 
     widgets.messengerTextEdit.setPlainText("")
+    widgets.replyFrame.hide()
 
-    reloadChat(target_username)
 
-
-def reloadChat(username: str):
+def reloadChat(username: str | None):
     global target_username
     target_username = username
 
     # Clear chatbox
     clearLayout(widgets.chatGridLayout)
+    clearLayout(widgets.contactInfoHorizontalLayout)
 
-    widgets.stackedWidget.setCurrentWidget(widgets.messenger)
+    if username is None:
+        widgets.chatStackedWidget.setCurrentWidget(widgets.selectChatPage)
+        return
+
     widgets.chatStackedWidget.setCurrentWidget(widgets.chatPage)
+    widgets.stackedWidget.setCurrentWidget(widgets.messenger)
 
+    # Contact info box
+    target_user = User.find_by_username(target_username)
+    user_button = create_user_button(target_user)
+    widgets.contactInfoHorizontalLayout.addWidget(user_button)
+
+    # Messages
     messages = user.messages(username)
 
     for i, message in enumerate(messages):
         is_sender = (message.sender_username == user.username)
-        label = AutoResizingTextEdit()
-        label_text = message.text + "\n" + message.get_time_created()
-        label.setText(label_text)
-        # label.setReadOnly(True)
-        label.setObjectName("from-me" if is_sender else "from-them")
-        widgets.chatGridLayout.addWidget(label, 1 + i, is_sender, 1, 2)
+        message_widget = MessageWidget(message, widgets)
+        widgets.chatGridLayout.addWidget(message_widget, 1 + i, is_sender, 1, 2)
 
         # widgets.chatGridLayout.setRowStretch(i, 1)
 
@@ -217,6 +239,50 @@ def reloadChat(username: str):
     widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().maximum())
     QCoreApplication.processEvents()
     widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().maximum())
+
+
+class MessageWidget(QFrame):
+    def __init__(self, message: Message, widgets: Ui_MainWindow):
+        super().__init__()
+        self.widgets = widgets
+        self.message = message
+
+        text_edit = AutoResizingTextEdit()
+        main_text = message.text.replace("\n", "<br/>")
+        main_text += "\n" + "<p style='color: gray;'>" + message.get_time_created() + "</p>"
+        text_edit.setHtml(main_text)
+        text_edit.setReadOnly(True)
+        text_edit.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        text_edit.customContextMenuRequested.connect(self.contextMenuEvent)
+
+        message_vbox = QVBoxLayout()
+        self.setLayout(message_vbox)
+
+        if message.reply_to is not None:
+            replied_message = Message.find_by_id(message.reply_to)
+            replied_text = replied_message.short_text()
+            replied_label = QLabel(replied_text)
+            replied_label.setStyleSheet("margin: 3px; border-left: 3px solid; border-color: gray;")
+            message_vbox.addWidget(replied_label)
+
+        message_vbox.addWidget(text_edit)
+
+        is_sender = (message.sender_username == user.username)
+        text_edit.setObjectName("from-me" if is_sender else "from-them")
+        self.setObjectName("from-me" if is_sender else "from-them")
+
+    def contextMenuEvent(self, event):
+        self.menu = QMenu(self)
+        replyAction = QAction('Reply', self)
+        replyAction.triggered.connect(lambda: self.replySlot(event))
+        self.menu.addAction(replyAction)
+        # add other required actions
+        self.menu.popup(QCursor.pos())
+
+    def replySlot(self, event):
+        widgets.replyLabel.setText(self.message.short_text())
+        widgets.replyLabel.setToolTip(str(self.message.id))
+        widgets.replyFrame.show()
 
 
 def prepareShowTasks():

@@ -24,7 +24,7 @@ QWidget{
 
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 Tooltip */
-QToolTip {
+QToolTip , QMenu {
 	color: #ffffff;
 	background-color: rgba(33, 37, 43, 180);
 	border: 1px solid rgb(44, 49, 58);
@@ -506,19 +506,22 @@ QCommandLinkButton:pressed {
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 Messenger */
 
-QTextEdit[objectName^="from-me"] {
+#from-me {
     background-color: hsl(270, 25%, 30%);
     color: white;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
-QTextEdit[objectName^="from-them"] {
+#from-them {
 /*    background-color: rgb(37, 31, 44);*/
     background-color: hsl(270, 30%, 15%);
     color: white;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
+#contactInfoBox , #chatTextBox {
+    background-color: rgb(33, 37, 43);
+}
 
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 Button */

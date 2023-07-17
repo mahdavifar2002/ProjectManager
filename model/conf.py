@@ -1,12 +1,15 @@
 import os
+from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Boolean
 from sqlalchemy import and_, or_
 from sqlalchemy import func
 
-db_name = "test"
+db_name = "project_manager"
 db_user_name = "alireza"
 db_user_pass = "96321"
 db_url = "localhost"
@@ -72,3 +75,14 @@ def save_to_db(record):
         session.commit()
     except Exception as e:
         print(e)
+
+
+def delta_human_readable(delta: relativedelta):
+    attrs = ['years', 'months', 'days', 'hours', 'minutes', 'seconds']
+    return ['%d %s' % (getattr(delta, attr), attr if getattr(delta, attr) > 1 else attr[:-1])
+            for attr in attrs if getattr(delta, attr)][0]
+
+
+def date_human_readable(date: datetime):
+    now = datetime.now()
+    return delta_human_readable(relativedelta(now, date))

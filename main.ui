@@ -13,7 +13,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>500</width>
+    <width>560</width>
     <height>560</height>
    </size>
   </property>
@@ -1648,7 +1648,7 @@ background-color: transparent;</string>
                    </font>
                   </property>
                   <property name="text">
-                   <string>Ayandenegar APP - Theme with colors based on Dracula for Python.</string>
+                   <string>Project Manager</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -1959,7 +1959,7 @@ background-color: transparent;</string>
                       <string notr="true">background-color: rgb(40, 44, 52);</string>
                      </property>
                      <property name="currentIndex">
-                      <number>0</number>
+                      <number>3</number>
                      </property>
                      <widget class="QWidget" name="home">
                       <property name="styleSheet">
@@ -3415,6 +3415,9 @@ background-repeat: no-repeat;</string>
                        <property name="leftMargin">
                         <number>0</number>
                        </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
                        <property name="rightMargin">
                         <number>0</number>
                        </property>
@@ -3424,7 +3427,7 @@ background-repeat: no-repeat;</string>
                        <item>
                         <widget class="QStackedWidget" name="chatStackedWidget">
                          <property name="currentIndex">
-                          <number>0</number>
+                          <number>1</number>
                          </property>
                          <widget class="QWidget" name="selectChatPage">
                           <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -3444,8 +3447,45 @@ background-repeat: no-repeat;</string>
                            </item>
                           </layout>
                          </widget>
-                         <widget class="QWidget" name="chatPage" native="true">
+                         <widget class="QWidget" name="chatPage">
                           <layout class="QVBoxLayout" name="verticalLayout_26">
+                           <item>
+                            <widget class="QFrame" name="contactInfoBox">
+                             <property name="minimumSize">
+                              <size>
+                               <width>0</width>
+                               <height>60</height>
+                              </size>
+                             </property>
+                             <property name="maximumSize">
+                              <size>
+                               <width>16777215</width>
+                               <height>60</height>
+                              </size>
+                             </property>
+                             <layout class="QHBoxLayout" name="horizontalLayout_13">
+                              <property name="leftMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="topMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="rightMargin">
+                               <number>0</number>
+                              </property>
+                              <property name="bottomMargin">
+                               <number>0</number>
+                              </property>
+                              <item>
+                               <layout class="QHBoxLayout" name="contactInfoHorizontalLayout">
+                                <property name="leftMargin">
+                                 <number>9</number>
+                                </property>
+                               </layout>
+                              </item>
+                             </layout>
+                            </widget>
+                           </item>
                            <item>
                             <widget class="QScrollArea" name="chatScrollArea">
                              <property name="styleSheet">
@@ -3459,14 +3499,14 @@ background-repeat: no-repeat;</string>
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>836</width>
-                                <height>308</height>
+                                <width>820</width>
+                                <height>207</height>
                                </rect>
                               </property>
                               <layout class="QVBoxLayout" name="chatScrollVerticalLayout">
                                <item>
-                                <layout class="QGridLayout" name="chatGridLayout">
-                                 <item row="0" column="0">
+                                <layout class="QVBoxLayout" name="chatVerticalLayout">
+                                 <item>
                                   <spacer name="verticalSpacer_7">
                                    <property name="orientation">
                                     <enum>Qt::Vertical</enum>
@@ -3479,6 +3519,9 @@ background-repeat: no-repeat;</string>
                                    </property>
                                   </spacer>
                                  </item>
+                                 <item>
+                                  <layout class="QGridLayout" name="chatGridLayout"/>
+                                 </item>
                                 </layout>
                                </item>
                               </layout>
@@ -3486,45 +3529,116 @@ background-repeat: no-repeat;</string>
                             </widget>
                            </item>
                            <item>
-                            <widget class="QWidget" name="chatTextBox" native="true">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="styleSheet">
-                              <string notr="true">background-color: rgb(33, 37, 43);</string>
-                             </property>
-                             <layout class="QHBoxLayout" name="horizontalLayout_10">
-                              <property name="spacing">
-                               <number>9</number>
-                              </property>
-                              <property name="leftMargin">
-                               <number>9</number>
-                              </property>
-                              <property name="topMargin">
-                               <number>9</number>
-                              </property>
-                              <property name="rightMargin">
-                               <number>9</number>
-                              </property>
-                              <property name="bottomMargin">
-                               <number>9</number>
-                              </property>
+                            <widget class="QFrame" name="chatTextBox">
+                             <layout class="QVBoxLayout" name="verticalLayout_10">
                               <item>
-                               <widget class="QTextEdit" name="messengerTextEdit">
-                                <property name="maximumSize">
-                                 <size>
-                                  <width>16777215</width>
-                                  <height>100</height>
-                                 </size>
-                                </property>
-                                <property name="layoutDirection">
-                                 <enum>Qt::LeftToRight</enum>
-                                </property>
+                               <widget class="QFrame" name="replyFrame">
                                 <property name="styleSheet">
-                                 <string notr="true">QTextEdit {
+                                 <string notr="true">#replyFrame {
+	border-bottom: 1px solid;
+	border-color: gray;
+}</string>
+                                </property>
+                                <layout class="QHBoxLayout" name="horizontalLayout_15">
+                                 <item>
+                                  <widget class="QPushButton" name="pushButton_4">
+                                   <property name="sizePolicy">
+                                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                     <horstretch>0</horstretch>
+                                     <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                   </property>
+                                   <property name="styleSheet">
+                                    <string notr="true">border: 0;</string>
+                                   </property>
+                                   <property name="text">
+                                    <string/>
+                                   </property>
+                                   <property name="icon">
+                                    <iconset resource="resources.qrc">
+                                     <normaloff>:/icons/images/icons/cil-action-redo.png</normaloff>:/icons/images/icons/cil-action-redo.png</iconset>
+                                   </property>
+                                   <property name="iconSize">
+                                    <size>
+                                     <width>32</width>
+                                     <height>16</height>
+                                    </size>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item>
+                                  <widget class="QLabel" name="replyLabel">
+                                   <property name="text">
+                                    <string>Reply message</string>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item>
+                                  <widget class="QPushButton" name="closeReplyButton">
+                                   <property name="sizePolicy">
+                                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                     <horstretch>0</horstretch>
+                                     <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                   </property>
+                                   <property name="styleSheet">
+                                    <string notr="true">border: 0;</string>
+                                   </property>
+                                   <property name="text">
+                                    <string/>
+                                   </property>
+                                   <property name="icon">
+                                    <iconset resource="resources.qrc">
+                                     <normaloff>:/icons/images/icons/icon_close.png</normaloff>:/icons/images/icons/icon_close.png</iconset>
+                                   </property>
+                                   <property name="iconSize">
+                                    <size>
+                                     <width>32</width>
+                                     <height>16</height>
+                                    </size>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                </layout>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QFrame" name="chatWriteTextBox">
+                                <property name="sizePolicy">
+                                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                                  <horstretch>0</horstretch>
+                                  <verstretch>0</verstretch>
+                                 </sizepolicy>
+                                </property>
+                                <layout class="QHBoxLayout" name="chatTextBoxHorizontalLayout">
+                                 <property name="spacing">
+                                  <number>9</number>
+                                 </property>
+                                 <property name="leftMargin">
+                                  <number>9</number>
+                                 </property>
+                                 <property name="topMargin">
+                                  <number>9</number>
+                                 </property>
+                                 <property name="rightMargin">
+                                  <number>9</number>
+                                 </property>
+                                 <property name="bottomMargin">
+                                  <number>9</number>
+                                 </property>
+                                 <item>
+                                  <widget class="QTextEdit" name="messengerTextEdit">
+                                   <property name="maximumSize">
+                                    <size>
+                                     <width>16777215</width>
+                                     <height>100</height>
+                                    </size>
+                                   </property>
+                                   <property name="layoutDirection">
+                                    <enum>Qt::LeftToRight</enum>
+                                   </property>
+                                   <property name="styleSheet">
+                                    <string notr="true">QTextEdit {
 	border: none;
 }
 
@@ -3534,27 +3648,30 @@ QTextEdit:hover {
 QTextEdit:focus {
 	border: none;
 }</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item>
-                               <widget class="QPushButton" name="chatSendButton">
-                                <property name="styleSheet">
-                                 <string notr="true">border: 0;</string>
-                                </property>
-                                <property name="text">
-                                 <string/>
-                                </property>
-                                <property name="icon">
-                                 <iconset resource="resources.qrc">
-                                  <normaloff>:/icons/images/icons/cil-paper-plane.png</normaloff>:/icons/images/icons/cil-paper-plane.png</iconset>
-                                </property>
-                                <property name="iconSize">
-                                 <size>
-                                  <width>32</width>
-                                  <height>32</height>
-                                 </size>
-                                </property>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item>
+                                  <widget class="QPushButton" name="chatSendButton">
+                                   <property name="styleSheet">
+                                    <string notr="true">border: 0;</string>
+                                   </property>
+                                   <property name="text">
+                                    <string/>
+                                   </property>
+                                   <property name="icon">
+                                    <iconset resource="resources.qrc">
+                                     <normaloff>:/icons/images/icons/cil-paper-plane.png</normaloff>:/icons/images/icons/cil-paper-plane.png</iconset>
+                                   </property>
+                                   <property name="iconSize">
+                                    <size>
+                                     <width>32</width>
+                                     <height>32</height>
+                                    </size>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                </layout>
                                </widget>
                               </item>
                              </layout>

@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(940, 560)
-        MainWindow.setMinimumSize(QSize(500, 560))
+        MainWindow.setMinimumSize(QSize(560, 560))
         self.styleSheet = QWidget(MainWindow)
         self.styleSheet.setObjectName(u"styleSheet")
         font = QFont()
@@ -1664,7 +1664,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7 = QHBoxLayout(self.messenger)
         self.horizontalLayout_7.setSpacing(0)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.horizontalLayout_7.setContentsMargins(0, -1, 0, 0)
+        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.chatStackedWidget = QStackedWidget(self.messenger)
         self.chatStackedWidget.setObjectName(u"chatStackedWidget")
         self.selectChatPage = QWidget()
@@ -1687,41 +1687,106 @@ class Ui_MainWindow(object):
         self.chatPage.setObjectName(u"chatPage")
         self.verticalLayout_26 = QVBoxLayout(self.chatPage)
         self.verticalLayout_26.setObjectName(u"verticalLayout_26")
+        self.contactInfoBox = QFrame(self.chatPage)
+        self.contactInfoBox.setObjectName(u"contactInfoBox")
+        self.contactInfoBox.setMinimumSize(QSize(0, 60))
+        self.contactInfoBox.setMaximumSize(QSize(16777215, 60))
+        self.horizontalLayout_13 = QHBoxLayout(self.contactInfoBox)
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.contactInfoHorizontalLayout = QHBoxLayout()
+        self.contactInfoHorizontalLayout.setObjectName(u"contactInfoHorizontalLayout")
+        self.contactInfoHorizontalLayout.setContentsMargins(9, -1, -1, -1)
+
+        self.horizontalLayout_13.addLayout(self.contactInfoHorizontalLayout)
+
+
+        self.verticalLayout_26.addWidget(self.contactInfoBox)
+
         self.chatScrollArea = QScrollArea(self.chatPage)
         self.chatScrollArea.setObjectName(u"chatScrollArea")
         self.chatScrollArea.setStyleSheet(u"border: none;")
         self.chatScrollArea.setWidgetResizable(True)
         self.chatScrollAreaWidgetContents = QWidget()
         self.chatScrollAreaWidgetContents.setObjectName(u"chatScrollAreaWidgetContents")
-        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 836, 308))
+        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 820, 207))
         self.chatScrollVerticalLayout = QVBoxLayout(self.chatScrollAreaWidgetContents)
         self.chatScrollVerticalLayout.setObjectName(u"chatScrollVerticalLayout")
-        self.chatGridLayout = QGridLayout()
-        self.chatGridLayout.setObjectName(u"chatGridLayout")
+        self.chatVerticalLayout = QVBoxLayout()
+        self.chatVerticalLayout.setObjectName(u"chatVerticalLayout")
         self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.chatGridLayout.addItem(self.verticalSpacer_7, 0, 0, 1, 1)
+        self.chatVerticalLayout.addItem(self.verticalSpacer_7)
+
+        self.chatGridLayout = QGridLayout()
+        self.chatGridLayout.setObjectName(u"chatGridLayout")
+
+        self.chatVerticalLayout.addLayout(self.chatGridLayout)
 
 
-        self.chatScrollVerticalLayout.addLayout(self.chatGridLayout)
+        self.chatScrollVerticalLayout.addLayout(self.chatVerticalLayout)
 
         self.chatScrollArea.setWidget(self.chatScrollAreaWidgetContents)
 
         self.verticalLayout_26.addWidget(self.chatScrollArea)
 
-        self.chatTextBox = QWidget(self.chatPage)
+        self.chatTextBox = QFrame(self.chatPage)
         self.chatTextBox.setObjectName(u"chatTextBox")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        self.verticalLayout_10 = QVBoxLayout(self.chatTextBox)
+        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
+        self.replyFrame = QFrame(self.chatTextBox)
+        self.replyFrame.setObjectName(u"replyFrame")
+        self.replyFrame.setStyleSheet(u"#replyFrame {\n"
+"	border-bottom: 1px solid;\n"
+"	border-color: gray;\n"
+"}")
+        self.horizontalLayout_15 = QHBoxLayout(self.replyFrame)
+        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
+        self.pushButton_4 = QPushButton(self.replyFrame)
+        self.pushButton_4.setObjectName(u"pushButton_4")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy4.setHorizontalStretch(0)
         sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.chatTextBox.sizePolicy().hasHeightForWidth())
-        self.chatTextBox.setSizePolicy(sizePolicy4)
-        self.chatTextBox.setStyleSheet(u"background-color: rgb(33, 37, 43);")
-        self.horizontalLayout_10 = QHBoxLayout(self.chatTextBox)
-        self.horizontalLayout_10.setSpacing(9)
-        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
-        self.horizontalLayout_10.setContentsMargins(9, 9, 9, 9)
-        self.messengerTextEdit = QTextEdit(self.chatTextBox)
+        sizePolicy4.setHeightForWidth(self.pushButton_4.sizePolicy().hasHeightForWidth())
+        self.pushButton_4.setSizePolicy(sizePolicy4)
+        self.pushButton_4.setStyleSheet(u"border: 0;")
+        icon8 = QIcon()
+        icon8.addFile(u":/icons/images/icons/cil-action-redo.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pushButton_4.setIcon(icon8)
+        self.pushButton_4.setIconSize(QSize(32, 16))
+
+        self.horizontalLayout_15.addWidget(self.pushButton_4)
+
+        self.replyLabel = QLabel(self.replyFrame)
+        self.replyLabel.setObjectName(u"replyLabel")
+
+        self.horizontalLayout_15.addWidget(self.replyLabel)
+
+        self.closeReplyButton = QPushButton(self.replyFrame)
+        self.closeReplyButton.setObjectName(u"closeReplyButton")
+        sizePolicy4.setHeightForWidth(self.closeReplyButton.sizePolicy().hasHeightForWidth())
+        self.closeReplyButton.setSizePolicy(sizePolicy4)
+        self.closeReplyButton.setStyleSheet(u"border: 0;")
+        self.closeReplyButton.setIcon(icon)
+        self.closeReplyButton.setIconSize(QSize(32, 16))
+
+        self.horizontalLayout_15.addWidget(self.closeReplyButton)
+
+
+        self.verticalLayout_10.addWidget(self.replyFrame)
+
+        self.chatWriteTextBox = QFrame(self.chatTextBox)
+        self.chatWriteTextBox.setObjectName(u"chatWriteTextBox")
+        sizePolicy5 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.chatWriteTextBox.sizePolicy().hasHeightForWidth())
+        self.chatWriteTextBox.setSizePolicy(sizePolicy5)
+        self.chatTextBoxHorizontalLayout = QHBoxLayout(self.chatWriteTextBox)
+        self.chatTextBoxHorizontalLayout.setSpacing(9)
+        self.chatTextBoxHorizontalLayout.setObjectName(u"chatTextBoxHorizontalLayout")
+        self.chatTextBoxHorizontalLayout.setContentsMargins(9, 9, 9, 9)
+        self.messengerTextEdit = QTextEdit(self.chatWriteTextBox)
         self.messengerTextEdit.setObjectName(u"messengerTextEdit")
         self.messengerTextEdit.setMaximumSize(QSize(16777215, 100))
         self.messengerTextEdit.setLayoutDirection(Qt.LeftToRight)
@@ -1736,17 +1801,20 @@ class Ui_MainWindow(object):
 "	border: none;\n"
 "}")
 
-        self.horizontalLayout_10.addWidget(self.messengerTextEdit)
+        self.chatTextBoxHorizontalLayout.addWidget(self.messengerTextEdit)
 
-        self.chatSendButton = QPushButton(self.chatTextBox)
+        self.chatSendButton = QPushButton(self.chatWriteTextBox)
         self.chatSendButton.setObjectName(u"chatSendButton")
         self.chatSendButton.setStyleSheet(u"border: 0;")
-        icon8 = QIcon()
-        icon8.addFile(u":/icons/images/icons/cil-paper-plane.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.chatSendButton.setIcon(icon8)
+        icon9 = QIcon()
+        icon9.addFile(u":/icons/images/icons/cil-paper-plane.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.chatSendButton.setIcon(icon9)
         self.chatSendButton.setIconSize(QSize(32, 32))
 
-        self.horizontalLayout_10.addWidget(self.chatSendButton)
+        self.chatTextBoxHorizontalLayout.addWidget(self.chatSendButton)
+
+
+        self.verticalLayout_10.addWidget(self.chatWriteTextBox)
 
 
         self.verticalLayout_26.addWidget(self.chatTextBox)
@@ -1955,8 +2023,8 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(0)
-        self.chatStackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(3)
+        self.chatStackedWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -1983,7 +2051,7 @@ class Ui_MainWindow(object):
         self.lineEdit_2.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search", None))
         self.pushButton_3.setText("")
         self.btn_share.setText(QCoreApplication.translate("MainWindow", u"Share", None))
-        self.titleRightInfo.setText(QCoreApplication.translate("MainWindow", u"Ayandenegar APP - Theme with colors based on Dracula for Python.", None))
+        self.titleRightInfo.setText(QCoreApplication.translate("MainWindow", u"Project Manager", None))
 #if QT_CONFIG(tooltip)
         self.themeBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Toggle theme", None))
 #endif // QT_CONFIG(tooltip)
@@ -2119,6 +2187,9 @@ class Ui_MainWindow(object):
         self.tableWidget.setSortingEnabled(__sortingEnabled1)
 
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Select a chat to start messaging", None))
+        self.pushButton_4.setText("")
+        self.replyLabel.setText(QCoreApplication.translate("MainWindow", u"Reply message", None))
+        self.closeReplyButton.setText("")
         self.chatSendButton.setText("")
         self.label.setText(QCoreApplication.translate("MainWindow", u"ADD TASK", None))
         self.assignUserLabel.setText(QCoreApplication.translate("MainWindow", u"Assign to user", None))

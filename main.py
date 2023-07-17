@@ -54,8 +54,8 @@ class MainWindow(QMainWindow):
 
         # APP NAME
         # ///////////////////////////////////////////////////////////////
-        title = "Ayandenegar - Modern GUI"
-        description = "Ayandenegar APP - Theme with colors based on Dracula for Python."
+        title = "Project Manager"
+        description = "Project Manager"
         # APPLY TEXTS
         self.setWindowTitle(title)
         widgets.titleRightInfo.setText(description)
@@ -85,11 +85,8 @@ class MainWindow(QMainWindow):
         widgets.btn_exit.clicked.connect(self.buttonClick)
 
         # EXTRA LEFT BOX
-        def openCloseLeftBox():
-            UIFunctions.toggleLeftBox(self, True)
-
-        widgets.toggleLeftBox.clicked.connect(openCloseLeftBox)
-        widgets.extraCloseColumnBtn.clicked.connect(openCloseLeftBox)
+        widgets.toggleLeftBox.clicked.connect(self.openCloseLeftBox)
+        widgets.extraCloseColumnBtn.clicked.connect(self.openCloseLeftBox)
 
         # EXTRA RIGHT BOX
         def openCloseRightBox():
@@ -144,6 +141,22 @@ class MainWindow(QMainWindow):
         UIFunctions.resetStyle(self, btn.objectName())
         btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
+    # EXTRA LEFT BOX
+    # ///////////////////////////////////////////////////////////////
+    def openCloseLeftBox(self):
+        UIFunctions.toggleLeftBox(self, True)
+
+    def leftBoxIsOpen(self):
+        return self.ui.extraLeftBox.width() != 0
+
+    def closeLeftBox(self):
+        if self.leftBoxIsOpen():
+            self.openCloseLeftBox()
+
+    def openLeftBox(self):
+        if not self.leftBoxIsOpen():
+            self.openCloseLeftBox()
+
     # BUTTONS CLICK
     # Post here your functions for clicked buttons
     # ///////////////////////////////////////////////////////////////
@@ -151,6 +164,9 @@ class MainWindow(QMainWindow):
         # GET BUTTON CLICKED
         btn = self.sender()
         btnName = btn.objectName()
+
+        # CLOSE EXTRA LEFT BOX (CONTACTS BOX)
+        self.closeLeftBox()
 
         # SHOW HOME PAGE
         if btnName == "btn_home":
@@ -176,6 +192,7 @@ class MainWindow(QMainWindow):
             widgets.stackedWidget.setCurrentWidget(widgets.messenger)
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+            self.openLeftBox()
 
         # SHOW NEW PAGE
         if btnName == "btn_new":
