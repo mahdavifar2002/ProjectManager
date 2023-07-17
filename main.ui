@@ -1148,7 +1148,7 @@ Button */
                    <string notr="true">background-image: url(:/icons/images/icons/cil-people.png);</string>
                   </property>
                   <property name="text">
-                   <string>Messenger</string>
+                   <string>Contacts</string>
                   </property>
                  </widget>
                 </item>

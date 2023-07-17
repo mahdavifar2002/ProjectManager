@@ -260,9 +260,14 @@ class MessageWidget(QFrame):
 
         if message.reply_to is not None:
             replied_message = Message.find_by_id(message.reply_to)
-            replied_text = replied_message.short_text()
-            replied_label = QLabel(replied_text)
-            replied_label.setStyleSheet("margin: 3px; border-left: 3px solid; border-color: gray;")
+            replied_text = "<p direction='ltr' style='color: gray;'>" + User.find_by_username(replied_message.sender_username).fullname + "</p>" + \
+                           "<p>" + replied_message.short_text() + "</p>"
+            replied_label = AutoResizingTextEdit(replied_text)
+            replied_label.setReadOnly(True)
+            replied_label.setStyleSheet("background-color: transparent; margin: 3px; border: 1px solid; border-color: gray;")
+
+            replied_label.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+            replied_label.customContextMenuRequested.connect(self.contextMenuEvent)
             message_vbox.addWidget(replied_label)
 
         message_vbox.addWidget(text_edit)

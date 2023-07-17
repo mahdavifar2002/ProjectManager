@@ -2042,7 +2042,7 @@ class Ui_MainWindow(object):
         self.btn_new.setText(QCoreApplication.translate("MainWindow", u"New", None))
         self.btn_save.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.btn_exit.setText(QCoreApplication.translate("MainWindow", u"Exit", None))
-        self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"Messenger", None))
+        self.toggleLeftBox.setText(QCoreApplication.translate("MainWindow", u"Contacts", None))
         self.extraLabel.setText(QCoreApplication.translate("MainWindow", u"Contacts", None))
 #if QT_CONFIG(tooltip)
         self.extraCloseColumnBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Close left box", None))
