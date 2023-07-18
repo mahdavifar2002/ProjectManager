@@ -13,6 +13,7 @@
 # https://doc.qt.io/qtforpython/licenses.html
 #
 # ///////////////////////////////////////////////////////////////
+from typing import Optional
 
 import jdatetime
 
@@ -23,6 +24,8 @@ from model import conf
 from model.message import Message
 from model.task import Task
 from model.user import User
+from modules.server import send_broadcast
+from modules.client import receive_broadcast
 
 widgets: Optional[Ui_MainWindow] = None
 mainWindow: Optional[MainWindow] = None
@@ -33,6 +36,7 @@ target_username: Optional[str] = None
 # WITH ACCESS TO MAIN WINDOW WIDGETS
 # ///////////////////////////////////////////////////////////////
 class AppFunctions(MainWindow):
+
     def setThemeHack(self, is_light):
         Settings.BTN_LEFT_BOX_COLOR = "background-color: #495474;"
         Settings.BTN_RIGHT_BOX_COLOR = "background-color: #495474;"
@@ -82,12 +86,14 @@ def prepareHomePage():
 
 def logoutUser():
     global user
+    global target_username
 
     user = None
     MainWindow.setUser(user)
     prepareHomePage()
 
-    reloadChat(None)
+    target_username = None
+    reloadChat()
 
     widgets.loginResult.setStyleSheet("color: green;")
     widgets.loginResult.setText("You logged out successfully")
@@ -196,15 +202,16 @@ def sendMessage():
         reply_to = None if widgets.replyFrame.isHidden() else int(widgets.replyLabel.toolTip())
         message = Message(sender_username=sender, receiver_username=receiver, text=text, reply_to=reply_to)
         message.save()
-        reloadChat(target_username)
+        reloadChat()
+        send_broadcast(f"reload {receiver}")
 
     widgets.messengerTextEdit.setPlainText("")
     widgets.replyFrame.hide()
 
 
-def reloadChat(username: str | None):
+def reloadChat():
     global target_username
-    target_username = username
+    username = target_username
 
     # Clear chatbox
     clearLayout(widgets.chatGridLayout)
@@ -218,7 +225,7 @@ def reloadChat(username: str | None):
     widgets.stackedWidget.setCurrentWidget(widgets.messenger)
 
     # Contact info box
-    target_user = User.find_by_username(target_username)
+    target_user = User.find_by_username(username)
     user_button = create_user_button(target_user)
     widgets.contactInfoHorizontalLayout.addWidget(user_button)
 
@@ -260,11 +267,13 @@ class MessageWidget(QFrame):
 
         if message.reply_to is not None:
             replied_message = Message.find_by_id(message.reply_to)
-            replied_text = "<p direction='ltr' style='color: gray;'>" + User.find_by_username(replied_message.sender_username).fullname + "</p>" + \
+            replied_text = "<p direction='ltr' style='color: gray;'>" + User.find_by_username(
+                replied_message.sender_username).fullname + "</p>" + \
                            "<p>" + replied_message.short_text() + "</p>"
             replied_label = AutoResizingTextEdit(replied_text)
             replied_label.setReadOnly(True)
-            replied_label.setStyleSheet("background-color: transparent; margin: 3px; border: 1px solid; border-color: gray;")
+            replied_label.setStyleSheet(
+                "background-color: transparent; margin: 3px; border: 1px solid; border-color: gray;")
 
             replied_label.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
             replied_label.customContextMenuRequested.connect(self.contextMenuEvent)
@@ -306,6 +315,43 @@ def reloadTasks():
             widgets.userTasksTableWidget.setItem(rowPosition, 0, QTableWidgetItem(task.assigner_username))
             widgets.userTasksTableWidget.setItem(rowPosition, 1, QTableWidgetItem(date))
             widgets.userTasksTableWidget.setItem(rowPosition, 2, QTableWidgetItem(task.description))
+
+
+# Step 1: Create a worker class
+class Worker(QObject):
+    finished = Signal()
+    progress = Signal(str)
+
+    def run(self):
+        """Long-running task."""
+        while True:
+            self.progress.emit(receive_broadcast())
+        self.finished.emit()
+
+
+def actionOnBroadcast(message: str):
+    command = message.split(" ")
+
+    if command[0] == "reload":
+        if command[1] == user.username:
+            print("reloading...")
+            reloadChat()
+
+def prepareClientThread():
+    # Step 2: Create a QThread object
+    widgets.thread = QThread()
+    # Step 3: Create a worker object
+    widgets.worker = Worker()
+    # Step 4: Move worker to the thread
+    widgets.worker.moveToThread(widgets.thread)
+    # Step 5: Connect signals and slots
+    widgets.thread.started.connect(widgets.worker.run)
+    widgets.worker.finished.connect(widgets.thread.quit)
+    widgets.worker.finished.connect(widgets.worker.deleteLater)
+    widgets.thread.finished.connect(widgets.thread.deleteLater)
+    widgets.worker.progress.connect(actionOnBroadcast)
+    # Step 6: Start the thread
+    widgets.thread.start()
 
 
 def clearLayout(layout):

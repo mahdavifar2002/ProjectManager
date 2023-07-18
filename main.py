@@ -48,6 +48,10 @@ class MainWindow(QMainWindow):
         app_functions.widgets = widgets
         app_functions.mainWindow = self
 
+        # SET CLIENT FOR BROADCAST PACKAGES
+        # ///////////////////////////////////////////////////////////////
+        prepareClientThread()
+
         # USE CUSTOM TITLE BAR | USE AS "False" FOR MAC OR LINUX
         # ///////////////////////////////////////////////////////////////
         Settings.ENABLE_CUSTOM_TITLE_BAR = True
@@ -130,12 +134,14 @@ class MainWindow(QMainWindow):
         for user_button in user_buttons:
             user_button.clicked.connect(self.contactClick)
 
+
     # CONTACT CLICK
     # ///////////////////////////////////////////////////////////////
     def contactClick(self):
         # GET BUTTON CLICKED
         btn = self.sender()
-        reloadChat(btn.toolTip())
+        app_functions.target_username = btn.toolTip()
+        reloadChat()
 
         btn = widgets.btn_messenger
         UIFunctions.resetStyle(self, btn.objectName())
