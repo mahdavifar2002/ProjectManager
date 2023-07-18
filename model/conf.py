@@ -12,11 +12,12 @@ from sqlalchemy import func
 db_name = "project_manager"
 db_user_name = "alireza"
 db_user_pass = "96321"
-db_url = "localhost"
+db_url = "alireza"
 db_port = "3306"
 
 # Communicates directly to SQL
-engine = create_engine("mysql://{0}:{1}@{2}:{3}/{4}".format(db_user_name, db_user_pass, db_url, db_port, db_name))
+engine = create_engine("mysql://{0}:{1}@{2}:{3}/{4}".format(db_user_name, db_user_pass, db_url, db_port, db_name),
+                       isolation_level="READ UNCOMMITTED")
 # engine = create_engine('mysql://root:root@127.0.0.1:3306', convert_unicode=True)
 # Maps classes to database tables
 Base = declarative_base()
@@ -39,14 +40,16 @@ session = db_session()
 def create_db():
     global engine
 
-    engine = create_engine("mysql://{0}:{1}@{2}:{3}".format(db_user_name, db_user_pass, db_url, db_port))
+    engine = create_engine("mysql://{0}:{1}@{2}:{3}".format(db_user_name, db_user_pass, db_url, db_port),
+                           isolation_level="READ UNCOMMITTED")
 
     # Creates database only if it does not exist
     with engine.connect() as conn:
         conn.execute(text("CREATE DATABASE IF NOT EXISTS {0}".format(db_name)))
         conn.execute(text("USE {0}".format(db_name)))
 
-    engine = create_engine("mysql://{0}:{1}@{2}:{3}/{4}".format(db_user_name, db_user_pass, db_url, db_port, db_name))
+    engine = create_engine("mysql://{0}:{1}@{2}:{3}/{4}".format(db_user_name, db_user_pass, db_url, db_port, db_name),
+                           isolation_level="READ UNCOMMITTED")
 
 
 def init_db():
