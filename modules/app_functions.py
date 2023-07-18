@@ -297,6 +297,7 @@ class MessageWidget(QFrame):
         widgets.replyLabel.setText(self.message.short_text())
         widgets.replyLabel.setToolTip(str(self.message.id))
         widgets.replyFrame.show()
+        widgets.messengerTextEdit.setFocus()
 
 
 def prepareShowTasks():
