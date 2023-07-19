@@ -13,7 +13,7 @@
 # https://doc.qt.io/qtforpython/licenses.html
 #
 # ///////////////////////////////////////////////////////////////
-from typing import Optional
+from typing import Optional, Dict
 
 import jdatetime
 
@@ -30,6 +30,7 @@ from modules.client import receive_broadcast
 widgets: Optional[Ui_MainWindow] = None
 mainWindow: Optional[MainWindow] = None
 user: Optional[User] = None
+messages_dict: Dict[int, QWidget] = {}
 target_username: Optional[str] = None
 
 
@@ -211,6 +212,7 @@ def sendMessage():
 
 def reloadChat():
     global target_username
+    global messages_dict
     username = target_username
 
     # Clear chatbox
@@ -237,10 +239,8 @@ def reloadChat():
         message_widget = MessageWidget(message, widgets)
         widgets.chatGridLayout.addWidget(message_widget, 1 + i, is_sender, 1, 2)
 
-        # widgets.chatGridLayout.setRowStretch(i, 1)
-
-    # if not widgets.chatScrollArea.verticalScrollBar().isVisible():
-    #     widgets.chatScrollVerticalLayout.addStretch()
+        # Fill the message dictionary
+        messages_dict[message.id] = message_widget
 
     QCoreApplication.processEvents()
     widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().maximum())
@@ -266,24 +266,17 @@ class MessageWidget(QFrame):
         self.setLayout(message_vbox)
 
         if message.reply_to is not None:
-            replied_message = Message.find_by_id(message.reply_to)
-            replied_text = "<p direction='ltr' style='color: gray;'>" + User.find_by_username(
-                replied_message.sender_username).fullname + "</p>" + \
-                           "<p>" + replied_message.short_text() + "</p>"
-            replied_label = AutoResizingTextEdit(replied_text)
-            replied_label.setReadOnly(True)
-            replied_label.setStyleSheet(
-                "background-color: transparent; margin: 3px; border: 1px solid; border-color: gray;")
+            replied_widget = RepliedWidget(message)
 
-            replied_label.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-            replied_label.customContextMenuRequested.connect(self.contextMenuEvent)
-            message_vbox.addWidget(replied_label)
+            # add reply widget to the parent message
+            message_vbox.addWidget(replied_widget)
 
         message_vbox.addWidget(text_edit)
 
         is_sender = (message.sender_username == user.username)
-        text_edit.setObjectName("from-me" if is_sender else "from-them")
+        text_edit.setStyleSheet("background-color: transparent;")
         self.setObjectName("from-me" if is_sender else "from-them")
+
 
     def contextMenuEvent(self, event):
         self.menu = QMenu(self)
@@ -298,6 +291,32 @@ class MessageWidget(QFrame):
         widgets.replyLabel.setToolTip(str(self.message.id))
         widgets.replyFrame.show()
         widgets.messengerTextEdit.setFocus()
+
+
+class RepliedWidget(AutoResizingTextEdit):
+    def __init__(self, message: Message):
+        # create the replied box
+        replied_message = Message.find_by_id(message.reply_to)
+        replied_text = "<p direction='ltr' style='color: gray;'>" + User.find_by_username(
+            replied_message.sender_username).fullname + "</p>" + \
+                       "<p>" + replied_message.short_text() + "</p>"
+
+        self.message = message
+        super().__init__(replied_text)
+
+        self.setReadOnly(True)
+        self.setStyleSheet(
+            "background-color: transparent; margin: 3px; border: 1px solid; border-color: gray;")
+        # connect right click to the context menu of parent message
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.contextMenuEvent)
+
+    def mousePressEvent(self, e: QMouseEvent) -> None:
+        print("here")
+        message_widget = messages_dict[self.message.reply_to]
+        message_widget.setVisible(True)
+        widgets.chatScrollArea.ensureWidgetVisible(message_widget)
+        message_widget.setFocus()
 
 
 def prepareShowTasks():

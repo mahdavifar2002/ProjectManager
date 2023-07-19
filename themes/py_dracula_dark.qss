@@ -506,17 +506,18 @@ QCommandLinkButton:pressed {
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 Messenger */
 
-#from-me {
-    background-color: hsl(270, 25%, 30%);
+QWidget[objectName^="from"] {
     color: white;
     border-radius: 10px;
 }
-
+#from-me {
+    background-color: hsl(270, 25%, 30%);
+}
 #from-them {
-/*    background-color: rgb(37, 31, 44);*/
     background-color: hsl(270, 30%, 15%);
-    color: white;
-    border-radius: 10px;
+}
+#from-me:focus , #from-them:focus {
+    background-color: hsl(300, 30%, 25%);
 }
 
 #contactInfoBox , #chatTextBox {

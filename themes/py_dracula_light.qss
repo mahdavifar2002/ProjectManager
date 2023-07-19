@@ -519,17 +519,18 @@ CommandLinkButton */
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 Messenger */
 
-QFrame[objectName^="from-me"] {
-    background-color: hsl(270, 25%, 70%);
+QFrame[objectName^="from"] {
     color: black;
     border-radius: 10px;
 }
-
-QFrame[objectName^="from-them"] {
-/*    background-color: rgb(37, 31, 44);*/
+#from-me {
+    background-color: hsl(270, 25%, 70%);
+}
+#from-them {
     background-color: hsl(270, 30%, 85%);
-    color: black;
-    border-radius: 10px;
+}
+#from-me:focus , #from-them:focus {
+    background-color: hsl(300, 30%, 75%);
 }
 
 #contactInfoBox , #chatTextBox {
