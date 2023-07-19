@@ -61,5 +61,5 @@ class User(conf.Base):
         tasks.sort(key=lambda x: x.time_created, reverse=True)
         return tasks
 
-    def get_last_seen(self):
-        return "last seen " + conf.date_human_readable(self.last_seen) + " ago"
+    # def get_last_seen(self):
+    #     return "last seen " + conf.date_human_readable(self.last_seen) + " ago"
