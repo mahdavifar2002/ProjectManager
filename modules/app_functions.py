@@ -172,6 +172,7 @@ def prepareMessengerPage():
 
     # Prepare send button
     widgets.chatSendButton.clicked.connect(sendMessage)
+    QShortcut(QKeySequence("Ctrl+Return"), widgets.messengerTextEdit, sendMessage)
 
     # Set current widget to 'select a chat'
     widgets.chatStackedWidget.setCurrentWidget(widgets.selectChatPage)
@@ -195,6 +196,9 @@ def create_user_button(other_user):
 
 
 def sendMessage():
+    if not widgets.messengerTextEdit.hasFocus() and not widgets.chatSendButton.hasFocus():
+        return
+
     sender = user.username
     receiver = target_username
     text = widgets.messengerTextEdit.toPlainText().strip()
@@ -266,7 +270,7 @@ class MessageWidget(QFrame):
         self.setLayout(message_vbox)
 
         if message.reply_to is not None:
-            replied_widget = RepliedWidget(message)
+            replied_widget = RepliedWidget(message, self)
 
             # add reply widget to the parent message
             message_vbox.addWidget(replied_widget)
@@ -294,7 +298,7 @@ class MessageWidget(QFrame):
 
 
 class RepliedWidget(AutoResizingTextEdit):
-    def __init__(self, message: Message):
+    def __init__(self, message: Message, messageWidget: MessageWidget):
         # create the replied box
         replied_message = Message.find_by_id(message.reply_to)
         replied_text = "<p direction='ltr' style='color: gray;'>" + User.find_by_username(
@@ -302,6 +306,7 @@ class RepliedWidget(AutoResizingTextEdit):
                        "<p>" + replied_message.short_text() + "</p>"
 
         self.message = message
+        self.messageWidget = messageWidget
         super().__init__(replied_text)
 
         self.setReadOnly(True)
@@ -309,14 +314,15 @@ class RepliedWidget(AutoResizingTextEdit):
             "background-color: transparent; margin: 3px; border: 1px solid; border-color: gray;")
         # connect right click to the context menu of parent message
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.contextMenuEvent)
+        self.customContextMenuRequested.connect(messageWidget.contextMenuEvent)
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
-        print("here")
-        message_widget = messages_dict[self.message.reply_to]
-        message_widget.setVisible(True)
-        widgets.chatScrollArea.ensureWidgetVisible(message_widget)
-        message_widget.setFocus()
+        if e.button() == Qt.MouseButton.LeftButton:
+            print("here")
+            message_widget = messages_dict[self.message.reply_to]
+            message_widget.setVisible(True)
+            widgets.chatScrollArea.ensureWidgetVisible(message_widget)
+            message_widget.setFocus()
 
 
 def prepareShowTasks():
