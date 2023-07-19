@@ -21,6 +21,7 @@ class Message(conf.Base):
         conf.ForeignKey('messages.id'))
     time_created = conf.Column(conf.DateTime(timezone=True), server_default=conf.func.now())
     time_updated = conf.Column(conf.DateTime(timezone=True), onupdate=conf.func.now())
+    has_been_seen = conf.Column(conf.Boolean, default=False)
 
     def get_time_created(self):
         return str(jdatetime.datetime.fromgregorian(datetime=self.time_created))
@@ -37,7 +38,6 @@ class Message(conf.Base):
     @classmethod
     def find_by_id(cls, id_):
         return conf.session.query(Message).filter(Message.id == id_).one()
-
 
     def save(self):
         conf.save_to_db(self)

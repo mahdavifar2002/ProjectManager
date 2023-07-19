@@ -126,22 +126,22 @@ class MainWindow(QMainWindow):
         # ///////////////////////////////////////////////////////////////
         prepareHomePage()
         prepareAddTaskPage()
-        user_buttons = prepareMessengerPage()
+        prepareMessengerPage()
         prepareShowTasks()
         widgets.stackedWidget.setCurrentWidget(widgets.home)
         widgets.btn_home.setStyleSheet(UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
 
-        for user_button in user_buttons:
-            user_button.clicked.connect(self.contactClick)
-
-
     # CONTACT CLICK
     # ///////////////////////////////////////////////////////////////
+    def connectContactButtons(self, contact_buttons):
+        for contact_button in contact_buttons:
+            contact_button.clicked.connect(self.contactClick)
+
     def contactClick(self):
         # GET BUTTON CLICKED
         btn = self.sender()
-        app_functions.target_username = btn.toolTip()
-        reloadChat()
+        app_functions.target_username = btn.contact_username
+        reloadChat(btn.selected_message_id)
 
         btn = widgets.btn_messenger
         UIFunctions.resetStyle(self, btn.objectName())

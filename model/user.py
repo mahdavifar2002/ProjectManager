@@ -37,10 +37,24 @@ class User(conf.Base):
             conf.and_(message.Message.sender_username == self.username,
                       message.Message.receiver_username == target_username),
             conf.and_(message.Message.sender_username == target_username,
-                      message.Message.receiver_username == self.username))).all()
+                      message.Message.receiver_username == self.username))).order_by("time_created").all()
 
-        messages.sort(key=lambda x: x.time_created)
         return messages
+
+    def search_messages(self, search: str):
+        messages = conf.session.query(message.Message).filter(conf.and_(conf.or_(
+                message.Message.sender_username == self.username,
+                message.Message.receiver_username == self.username)),
+            message.Message.text.contains(search)).order_by(conf.desc("time_created")).all()
+
+        return messages
+
+    def last_message(self, target_username):
+        messages = self.messages(target_username)
+        if len(messages) > 0:
+            return messages[-1]
+        else:
+            return None
 
     def tasks(self):
         tasks = conf.session.query(task.Task).filter(task.Task.assignee_username == self.username).all()

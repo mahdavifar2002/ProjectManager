@@ -853,20 +853,20 @@ class Ui_MainWindow(object):
         self.searchBarHorizontalLayout = QHBoxLayout()
         self.searchBarHorizontalLayout.setObjectName(u"searchBarHorizontalLayout")
         self.searchBarHorizontalLayout.setContentsMargins(9, 9, 9, 9)
-        self.lineEdit_2 = QLineEdit(self.contactsWidget)
-        self.lineEdit_2.setObjectName(u"lineEdit_2")
+        self.searchLineEdit = QLineEdit(self.contactsWidget)
+        self.searchLineEdit.setObjectName(u"searchLineEdit")
 
-        self.searchBarHorizontalLayout.addWidget(self.lineEdit_2)
+        self.searchBarHorizontalLayout.addWidget(self.searchLineEdit)
 
-        self.pushButton_3 = QPushButton(self.contactsWidget)
-        self.pushButton_3.setObjectName(u"pushButton_3")
-        self.pushButton_3.setStyleSheet(u"border: none;\n"
+        self.searchPushButton = QPushButton(self.contactsWidget)
+        self.searchPushButton.setObjectName(u"searchPushButton")
+        self.searchPushButton.setStyleSheet(u"border: none;\n"
 "background-color: transparent;")
         icon1 = QIcon()
         icon1.addFile(u":/icons/images/icons/cil-magnifying-glass.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pushButton_3.setIcon(icon1)
+        self.searchPushButton.setIcon(icon1)
 
-        self.searchBarHorizontalLayout.addWidget(self.pushButton_3)
+        self.searchBarHorizontalLayout.addWidget(self.searchPushButton)
 
 
         self.verticalLayout_25.addLayout(self.searchBarHorizontalLayout)
@@ -2048,8 +2048,8 @@ class Ui_MainWindow(object):
         self.extraCloseColumnBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Close left box", None))
 #endif // QT_CONFIG(tooltip)
         self.extraCloseColumnBtn.setText("")
-        self.lineEdit_2.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search", None))
-        self.pushButton_3.setText("")
+        self.searchLineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search", None))
+        self.searchPushButton.setText("")
         self.btn_share.setText(QCoreApplication.translate("MainWindow", u"Share", None))
         self.titleRightInfo.setText(QCoreApplication.translate("MainWindow", u"Project Manager", None))
 #if QT_CONFIG(tooltip)
