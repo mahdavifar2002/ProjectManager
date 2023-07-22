@@ -1,32 +1,58 @@
-from PySide6.QtCore import *
-from PySide6.QtGui import *
+# importing libraries
 from PySide6.QtWidgets import *
+from PySide6 import QtCore, QtGui
+from PySide6.QtGui import *
+from PySide6.QtCore import *
 import sys
 
-#############Define MyWindow Class Here ############
-class MyWindow(QMainWindow):
-##-----------------------------------------
-  def __init__(self):
-    QMainWindow.__init__(self)
-    self.label = QLabel("No data")
-    self.label.setGeometry(100, 200, 100, 100)
-    self.setCentralWidget(self.label)
-    self.setWindowTitle("QMainWindow WheelEvent")
-    self.x = 0
-##-----------------------------------------
-  def wheelEvent(self,event):
-    self.x =self.x + event.delta()/120
-    print(self.x)
-    self.label.setText("Total Steps: "+QString.number(self.x))
-##-----------------------------------------
-##########End of Class Definition ##################
+
+class Window(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+
+        # setting title
+        self.setWindowTitle("Python ")
+
+        # setting geometry
+        self.setGeometry(100, 100, 600, 400)
+
+        # calling method
+        self.UiComponents()
+
+        # showing all the widgets
+        self.show()
+
+    # method for widgets
+    def UiComponents(self):
+        # creating label
+        label = QLabel("Label", self)
+
+        # setting font
+        label.setFont(QFont('Arial', 15))
+
+        # setting style sheet of the label
+        label.setStyleSheet("QLabel"
+                            "{"
+                            "border : 2px solid green;"
+                            "background : lightgreen;"
+                            "}")
+
+        # creating a blur effect
+        self.blur_effect = QGraphicsBlurEffect()
+
+        # setting blur radius
+        self.blur_effect.setBlurRadius(15)
+
+        # adding blur effect to the label
+        label.setGraphicsEffect(self.blur_effect)
 
 
-def main():
-  app = QApplication(sys.argv)
-  window = MyWindow()
-  window.show()
-  return app.exec_()
+# create pyqt5 app
+App = QApplication(sys.argv)
 
-if __name__ == '__main__':
- main()
+# create the instance of our Window
+window = Window()
+
+# start the app
+sys.exit(App.exec())

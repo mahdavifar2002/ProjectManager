@@ -1718,6 +1718,8 @@ class Ui_MainWindow(object):
 
         self.chatVerticalLayout.addItem(self.verticalSpacer_7)
 
+        self.chatGridLayout = QGridLayout()
+        self.chatGridLayout.setObjectName(u"chatGridLayout")
         self.loadMoreButton = QPushButton(self.chatScrollAreaWidgetContents)
         self.loadMoreButton.setObjectName(u"loadMoreButton")
         self.loadMoreButton.setMinimumSize(QSize(0, 40))
@@ -1727,11 +1729,8 @@ class Ui_MainWindow(object):
         icon8.addFile(u":/icons/images/icons/cil-cloud-download.png", QSize(), QIcon.Normal, QIcon.Off)
         self.loadMoreButton.setIcon(icon8)
 
-        self.chatVerticalLayout.addWidget(self.loadMoreButton)
+        self.chatGridLayout.addWidget(self.loadMoreButton, 0, 0, 1, 1)
 
-        self.chatGridLayout = QGridLayout()
-        self.chatGridLayout.setObjectName(u"chatGridLayout")
-        self.chatGridLayout.setContentsMargins(-1, 0, -1, -1)
 
         self.chatVerticalLayout.addLayout(self.chatGridLayout)
 

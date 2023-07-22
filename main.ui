@@ -3520,31 +3520,28 @@ background-repeat: no-repeat;</string>
                                   </spacer>
                                  </item>
                                  <item>
-                                  <widget class="QPushButton" name="loadMoreButton">
-                                   <property name="minimumSize">
-                                    <size>
-                                     <width>0</width>
-                                     <height>40</height>
-                                    </size>
-                                   </property>
-                                   <property name="styleSheet">
-                                    <string notr="true">background: transparent;
-border: none;</string>
-                                   </property>
-                                   <property name="text">
-                                    <string>   Press to load more messages</string>
-                                   </property>
-                                   <property name="icon">
-                                    <iconset resource="resources.qrc">
-                                     <normaloff>:/icons/images/icons/cil-cloud-download.png</normaloff>:/icons/images/icons/cil-cloud-download.png</iconset>
-                                   </property>
-                                  </widget>
-                                 </item>
-                                 <item>
                                   <layout class="QGridLayout" name="chatGridLayout">
-                                   <property name="topMargin">
-                                    <number>0</number>
-                                   </property>
+                                   <item row="0" column="0">
+                                    <widget class="QPushButton" name="loadMoreButton">
+                                     <property name="minimumSize">
+                                      <size>
+                                       <width>0</width>
+                                       <height>40</height>
+                                      </size>
+                                     </property>
+                                     <property name="styleSheet">
+                                      <string notr="true">background: transparent;
+border: none;</string>
+                                     </property>
+                                     <property name="text">
+                                      <string>   Press to load more messages</string>
+                                     </property>
+                                     <property name="icon">
+                                      <iconset resource="resources.qrc">
+                                       <normaloff>:/icons/images/icons/cil-cloud-download.png</normaloff>:/icons/images/icons/cil-cloud-download.png</iconset>
+                                     </property>
+                                    </widget>
+                                   </item>
                                   </layout>
                                  </item>
                                 </layout>

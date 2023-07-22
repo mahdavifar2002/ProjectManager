@@ -191,7 +191,7 @@ def prepareMessengerPage():
 
     # Prepare edit area
     widgets.editFrame.hide()
-    widgets.closeEditButton.clicked.connect(lambda: widgets.editFrame.hide())
+    widgets.closeEditButton.clicked.connect(close_edit_area)
 
     # Prepare handling seen messages
     widgets.chatScrollArea.verticalScrollBar().actionTriggered.connect(on_chat_scroll)
@@ -199,6 +199,10 @@ def prepareMessengerPage():
     # Prepare 'load more messages' button
     widgets.loadMoreButton.clicked.connect(fetch_ten_messages)
 
+
+def close_edit_area():
+    widgets.editFrame.hide()
+    widgets.messengerTextEdit.setPlainText("")
 
 def reload_contacts_list(search: str | None = None):
     clearLayout(widgets.contactsVerticalLayout)
@@ -376,12 +380,8 @@ class MessageWidget(QFrame):
         self.widgets = widgets
         self.message = message
 
-        self.text_edit = AutoResizingTextEdit()
+        self.text_edit = MessageTextWidget(self)
         self.updateMessage()
-        self.text_edit.setReadOnly(True)
-        self.text_edit.setStyleSheet("background-color: transparent;")
-        self.text_edit.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.text_edit.customContextMenuRequested.connect(self.contextMenuEvent)
 
         message_vbox = QVBoxLayout()
         self.setLayout(message_vbox)
@@ -435,6 +435,11 @@ class MessageWidget(QFrame):
     def replySlot(self, event):
         widgets.replyLabel.setText(self.message.short_text())
         widgets.replyLabel.setToolTip(str(self.message.id))
+        if self.text_edit.graphicsEffect() is not None:
+            self.reply_blur_effect = QGraphicsBlurEffect(blurRadius=15)
+            widgets.replyLabel.setGraphicsEffect(self.reply_blur_effect)
+        else:
+            widgets.replyLabel.setGraphicsEffect(None)
         widgets.replyFrame.show()
         widgets.messengerTextEdit.setFocus()
 
@@ -457,8 +462,28 @@ class MessageWidget(QFrame):
         self.message.save()
         send_broadcast(f"reload_message {self.message.id}")
 
+class MessageTextWidget(AutoResizingTextEdit):
+    def __init__(self, messageWidget: MessageWidget):
+        super().__init__()
+        self.messageWidget = messageWidget
+        self.setReadOnly(True)
+        self.setStyleSheet("background-color: transparent;")
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(messageWidget.contextMenuEvent)
 
+        # creating a blur effect
+        self.blur_effect = QGraphicsBlurEffect(blurRadius=15)
 
+        if messageWidget.message.receiver_username == user.username and messageWidget.message.has_been_seen == False:
+            self.setGraphicsEffect(self.blur_effect)
+
+    def mousePressEvent(self, e: QMouseEvent) -> None:
+        if e.button() == Qt.MouseButton.LeftButton:
+            self.setGraphicsEffect(None)
+            if not self.messageWidget.message.has_been_seen:
+                self.messageWidget.message.has_been_seen = True
+                self.messageWidget.message.save()
+                send_broadcast(f"reload_message {self.messageWidget.message.id}")
 
 class RepliedWidget(AutoResizingTextEdit):
     def __init__(self, message: Message, messageWidget: MessageWidget):
