@@ -19,11 +19,22 @@ message1 = Message(sender_username="alireza", receiver_username="mahdavifar", te
                                                                                    "Second line.\n"
                                                                                    "Third line.\n"
                                                                                    "Forth line.\n"
-                                                                                   "Very Very Very Very Very Very Very Very Very Very Very Very Very Very Very Very Very Very Very Very long line.")
+                                                                                   "Very Very Very Very Very Very "
+                                                                                   "Very Very Very Very Very Very "
+                                                                                   "Very Very Very Very Very Very "
+                                                                                   "Very Very long line.")
 message1.save()
 sleep(1)
 message2 = Message(sender_username="mahdavifar", receiver_username="alireza", text="I'm fine, thank you.", reply_to=message1.id)
 message2.save()
+
+for i in range(10):
+    message1 = Message(sender_username="alireza", receiver_username="mahdavifar", text=str(2*i + 1))
+    message1.save()
+    message2 = Message(sender_username="mahdavifar", receiver_username="alireza", text=str(2*i + 2),
+                       reply_to=message1.id)
+    message2.save()
+
 sleep(1)
 task = Task(assigner_username="alireza", assignee_username="mahdavifar", description="Creating project management program.")
 task.save()

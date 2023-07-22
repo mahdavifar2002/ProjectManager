@@ -400,12 +400,16 @@ class MessageWidget(QFrame):
     def updateMessage(self):
         conf.session.commit()
         self.message = Message.find_by_id(self.message.id)
-        is_sender = (self.message.sender_username == user.username)
-        main_text = self.message.text.replace("\n", "<br/>")
-        seen_text = "✅ " if is_sender and self.message.has_been_seen else ""
-        edit_text = " (edited)" if self.message.has_been_edited else ""
-        main_text += "\n" + "<p style='color: gray;'>" + seen_text + self.message.get_time_created() + edit_text + "</p>"
-        self.text_edit.setHtml(main_text)
+
+        if self.message.deleted:
+            self.hide()
+        else:
+            is_sender = (self.message.sender_username == user.username)
+            main_text = self.message.text.replace("\n", "<br/>")
+            seen_text = "✅ " if is_sender and self.message.has_been_seen else ""
+            edit_text = " (edited)" if self.message.has_been_edited else ""
+            main_text += "\n" + "<p style='color: gray;'>" + seen_text + self.message.get_time_created() + edit_text + "</p>"
+            self.text_edit.setHtml(main_text)
 
     def contextMenuEvent(self, event):
         self.menu = QMenu(self)
@@ -419,6 +423,10 @@ class MessageWidget(QFrame):
         if self.message.sender_username == user.username:
             editAction = QAction('Edit', self)
             editAction.triggered.connect(lambda: self.editSlot(event))
+            self.menu.addAction(editAction)
+
+            editAction = QAction('Delete', self)
+            editAction.triggered.connect(lambda: self.deleteSlot(event))
             self.menu.addAction(editAction)
 
         # add other required actions
@@ -443,6 +451,12 @@ class MessageWidget(QFrame):
 
         widgets.editFrame.show()
         widgets.messengerTextEdit.setFocus()
+
+    def deleteSlot(self, event):
+        self.message.deleted = True
+        self.message.save()
+        send_broadcast(f"reload_message {self.message.id}")
+
 
 
 
