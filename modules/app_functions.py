@@ -189,8 +189,15 @@ def prepareMessengerPage():
     widgets.replyFrame.hide()
     widgets.closeReplyButton.clicked.connect(lambda: widgets.replyFrame.hide())
 
+    # Prepare edit area
+    widgets.editFrame.hide()
+    widgets.closeEditButton.clicked.connect(lambda: widgets.editFrame.hide())
+
     # Prepare handling seen messages
-    widgets.chatScrollArea.verticalScrollBar().actionTriggered.connect(on_chat_scroll_check_seens)
+    widgets.chatScrollArea.verticalScrollBar().actionTriggered.connect(on_chat_scroll)
+
+    # Prepare 'load more messages' button
+    widgets.loadMoreButton.clicked.connect(fetch_ten_messages)
 
 
 def reload_contacts_list(search: str | None = None):
@@ -256,11 +263,24 @@ def sendMessage():
     text = widgets.messengerTextEdit.toPlainText().strip()
 
     if len(text) > 0:
-        reply_to = None if widgets.replyFrame.isHidden() else int(widgets.replyLabel.toolTip())
-        message = Message(sender_username=sender, receiver_username=receiver, text=text, reply_to=reply_to)
-        message.save()
-        reloadChat()
-        send_broadcast(f"reload_chat {receiver}")
+        # send new message
+        if widgets.editFrame.isHidden():
+            reply_to = None if widgets.replyFrame.isHidden() else int(widgets.replyLabel.toolTip())
+            message = Message(sender_username=sender, receiver_username=receiver, text=text, reply_to=reply_to)
+            message.save()
+            reloadChat()
+            send_broadcast(f"reload_chat {receiver}")
+        # edit old message
+        else:
+            message_widget = messages_dict[int(widgets.editLabel.toolTip())]
+            message = message_widget.message
+            message.text = text
+            message.has_been_edited = True
+            message.save()
+            send_broadcast(f"reload_message {message.id}")
+            widgets.editFrame.hide()
+
+
 
     widgets.messengerTextEdit.setPlainText("")
     widgets.replyFrame.hide()
@@ -269,13 +289,13 @@ def sendMessage():
 def reloadChat(message_id: int | None = None):
     global target_username
     global messages_dict
-    username = target_username
 
     # Clear chatbox
     clearLayout(widgets.chatGridLayout)
     clearLayout(widgets.contactInfoHorizontalLayout)
 
-    if username is None:
+
+    if target_username is None:
         widgets.chatStackedWidget.setCurrentWidget(widgets.selectChatPage)
         return
 
@@ -283,21 +303,14 @@ def reloadChat(message_id: int | None = None):
     widgets.stackedWidget.setCurrentWidget(widgets.messenger)
 
     # Contact info box
-    target_user = User.find_by_username(username)
+    target_user = User.find_by_username(target_username)
     user_button = ContactButton(target_user, None)
     widgets.contactInfoHorizontalLayout.addWidget(user_button)
 
     # Messages
-    messages = user.messages(username)
     messages_dict = {}
 
-    for i, message in enumerate(messages):
-        is_sender = (message.sender_username == user.username)
-        message_widget = MessageWidget(message, widgets)
-        widgets.chatGridLayout.addWidget(message_widget, 1 + i, is_sender, 1, 2)
-
-        # Fill the message dictionary
-        messages_dict[message.id] = message_widget
+    fetch_ten_messages(load_all=True)
 
     #  scroll to the end of chat
     if message_id is None:
@@ -312,18 +325,49 @@ def reloadChat(message_id: int | None = None):
             widgets.chatScrollArea.ensureWidgetVisible(message_widget)
         message_widget.setFocus()
 
-    # check seen messages
-    on_chat_scroll_check_seens()
+    # # check seen messages
+    # on_chat_scroll()
 
 
-def on_chat_scroll_check_seens():
-    for message_widget in messages_dict.values():
-        if message_widget.message.receiver_username == user.username:
-            if not message_widget.visibleRegion().isEmpty():
-                if not message_widget.message.has_been_seen:
-                    message_widget.message.has_been_seen = True
-                    message_widget.message.save()
-                    send_broadcast(f"reload_message {message_widget.message.id}")
+def fetch_ten_messages(load_all=False):
+    global target_username
+    global messages_dict
+    global user
+
+    if user is None:
+        return
+
+    # get the id of earliest of already fetched messages
+    before_id = min(messages_dict, default=2147483647)
+
+    if load_all:
+        messages = user.messages(target_username)
+    else:
+        messages = user.ten_messages(target_username, before_id)
+
+    for i, message in enumerate(messages):
+        is_sender = (message.sender_username == user.username)
+        message_widget = MessageWidget(message, widgets)
+        widgets.chatGridLayout.addWidget(message_widget, 1 + message.id, is_sender, 1, 2)
+
+        # Fill the message dictionary
+        messages_dict[message.id] = message_widget
+
+
+def on_chat_scroll():
+    # if widgets.chatScrollArea.verticalScrollBar().value() == widgets.chatScrollArea.verticalScrollBar().minimum():
+    #     widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().minimum() + 50)
+    #     fetch_ten_messages()
+
+    pass
+    # # check seens
+    # for message_widget in messages_dict.values():
+    #     if message_widget.message.receiver_username == user.username:
+    #         if not message_widget.visibleRegion().isEmpty():
+    #             if not message_widget.message.has_been_seen:
+    #                 message_widget.message.has_been_seen = True
+    #                 message_widget.message.save()
+    #                 send_broadcast(f"reload_message {message_widget.message.id}")
 
 
 class MessageWidget(QFrame):
@@ -359,14 +403,24 @@ class MessageWidget(QFrame):
         is_sender = (self.message.sender_username == user.username)
         main_text = self.message.text.replace("\n", "<br/>")
         seen_text = "✅ " if is_sender and self.message.has_been_seen else ""
-        main_text += "\n" + "<p style='color: gray;'>" + seen_text + self.message.get_time_created() + "</p>"
+        edit_text = " (edited)" if self.message.has_been_edited else ""
+        main_text += "\n" + "<p style='color: gray;'>" + seen_text + self.message.get_time_created() + edit_text + "</p>"
         self.text_edit.setHtml(main_text)
 
     def contextMenuEvent(self, event):
         self.menu = QMenu(self)
+
+        # reply
         replyAction = QAction('Reply', self)
         replyAction.triggered.connect(lambda: self.replySlot(event))
         self.menu.addAction(replyAction)
+
+        # edit
+        if self.message.sender_username == user.username:
+            editAction = QAction('Edit', self)
+            editAction.triggered.connect(lambda: self.editSlot(event))
+            self.menu.addAction(editAction)
+
         # add other required actions
         self.menu.popup(QCursor.pos())
 
@@ -375,6 +429,21 @@ class MessageWidget(QFrame):
         widgets.replyLabel.setToolTip(str(self.message.id))
         widgets.replyFrame.show()
         widgets.messengerTextEdit.setFocus()
+
+    def editSlot(self, event):
+        widgets.editLabel.setText(self.message.short_text())
+        widgets.editLabel.setToolTip(str(self.message.id))
+
+        editor = widgets.messengerTextEdit
+        editor.setPlainText(self.message.text)
+
+        textCursor = editor.textCursor()
+        textCursor.setPosition(len(editor.toPlainText()))
+        editor.setTextCursor(textCursor)
+
+        widgets.editFrame.show()
+        widgets.messengerTextEdit.setFocus()
+
 
 
 class RepliedWidget(AutoResizingTextEdit):
@@ -433,8 +502,8 @@ class Worker(QObject):
         self.finished.emit()
 
 
-def actionOnBroadcast(message: str):
-    command = message.split(" ")
+def actionOnBroadcast(msg: str):
+    command = msg.split(" ")
 
     if command[0] == "reload_chat":
         if command[1] == user.username:
@@ -442,9 +511,12 @@ def actionOnBroadcast(message: str):
             reloadChat()
     elif command[0] == "reload_message":
         message_id = int(command[1])
-        if message_id in messages_dict and messages_dict[message_id].message.sender_username == user.username:
-            print("reloading message...")
-            messages_dict[message_id].updateMessage()
+        if message_id in messages_dict:
+            message_widget = messages_dict[message_id]
+            message = message_widget.message
+            if message.sender_username == user.username or message.receiver_username == user.username:
+                print("reloading message...")
+                message_widget.updateMessage()
 
 
 def prepareClientThread():

@@ -3500,7 +3500,7 @@ background-repeat: no-repeat;</string>
                                 <x>0</x>
                                 <y>0</y>
                                 <width>820</width>
-                                <height>175</height>
+                                <height>133</height>
                                </rect>
                               </property>
                               <layout class="QVBoxLayout" name="chatScrollVerticalLayout">
@@ -3520,7 +3520,32 @@ background-repeat: no-repeat;</string>
                                   </spacer>
                                  </item>
                                  <item>
-                                  <layout class="QGridLayout" name="chatGridLayout"/>
+                                  <widget class="QPushButton" name="loadMoreButton">
+                                   <property name="minimumSize">
+                                    <size>
+                                     <width>0</width>
+                                     <height>40</height>
+                                    </size>
+                                   </property>
+                                   <property name="styleSheet">
+                                    <string notr="true">background: transparent;
+border: none;</string>
+                                   </property>
+                                   <property name="text">
+                                    <string>   Press to load more messages</string>
+                                   </property>
+                                   <property name="icon">
+                                    <iconset resource="resources.qrc">
+                                     <normaloff>:/icons/images/icons/cil-cloud-download.png</normaloff>:/icons/images/icons/cil-cloud-download.png</iconset>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item>
+                                  <layout class="QGridLayout" name="chatGridLayout">
+                                   <property name="topMargin">
+                                    <number>0</number>
+                                   </property>
+                                  </layout>
                                  </item>
                                 </layout>
                                </item>
@@ -3532,6 +3557,77 @@ background-repeat: no-repeat;</string>
                             <widget class="QFrame" name="chatTextBox">
                              <layout class="QVBoxLayout" name="verticalLayout_10">
                               <item>
+                               <widget class="QFrame" name="editFrame">
+                                <property name="styleSheet">
+                                 <string notr="true">#replyFrame {
+	border-bottom: 1px solid;
+	border-color: gray;
+}</string>
+                                </property>
+                                <layout class="QHBoxLayout" name="horizontalLayout_16">
+                                 <item>
+                                  <widget class="QPushButton" name="editIconButton">
+                                   <property name="sizePolicy">
+                                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                     <horstretch>0</horstretch>
+                                     <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                   </property>
+                                   <property name="styleSheet">
+                                    <string notr="true">border: 0;</string>
+                                   </property>
+                                   <property name="text">
+                                    <string/>
+                                   </property>
+                                   <property name="icon">
+                                    <iconset resource="resources.qrc">
+                                     <normaloff>:/icons/images/icons/cil-pencil.png</normaloff>:/icons/images/icons/cil-pencil.png</iconset>
+                                   </property>
+                                   <property name="iconSize">
+                                    <size>
+                                     <width>32</width>
+                                     <height>16</height>
+                                    </size>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item>
+                                  <widget class="QLabel" name="editLabel">
+                                   <property name="text">
+                                    <string>Edit message</string>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item>
+                                  <widget class="QPushButton" name="closeEditButton">
+                                   <property name="sizePolicy">
+                                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                     <horstretch>0</horstretch>
+                                     <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                   </property>
+                                   <property name="styleSheet">
+                                    <string notr="true">border: 0;</string>
+                                   </property>
+                                   <property name="text">
+                                    <string/>
+                                   </property>
+                                   <property name="icon">
+                                    <iconset resource="resources.qrc">
+                                     <normaloff>:/icons/images/icons/icon_close.png</normaloff>:/icons/images/icons/icon_close.png</iconset>
+                                   </property>
+                                   <property name="iconSize">
+                                    <size>
+                                     <width>32</width>
+                                     <height>16</height>
+                                    </size>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                </layout>
+                               </widget>
+                              </item>
+                              <item>
                                <widget class="QFrame" name="replyFrame">
                                 <property name="styleSheet">
                                  <string notr="true">#replyFrame {
@@ -3541,7 +3637,7 @@ background-repeat: no-repeat;</string>
                                 </property>
                                 <layout class="QHBoxLayout" name="horizontalLayout_15">
                                  <item>
-                                  <widget class="QPushButton" name="pushButton_4">
+                                  <widget class="QPushButton" name="replyIconButton">
                                    <property name="sizePolicy">
                                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                                      <horstretch>0</horstretch>

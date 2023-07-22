@@ -33,20 +33,38 @@ class User(conf.Base):
         return conf.session.query(User).all()
 
     def messages(self, target_username):
-        messages = conf.session.query(message.Message).filter(conf.or_(
+        query = conf.session.query(message.Message).filter(conf.or_(
             conf.and_(message.Message.sender_username == self.username,
                       message.Message.receiver_username == target_username),
             conf.and_(message.Message.sender_username == target_username,
-                      message.Message.receiver_username == self.username))).order_by("time_created").all()
+                      message.Message.receiver_username == self.username))).order_by("time_created")
+
+        messages = query.all()
+        return messages
+
+    def ten_messages(self, target_username, before_id: int | None = None):
+        if before_id is None:
+            before_id = 2147483647 # max int in mysql
+
+        query = conf.session.query(message.Message).filter(conf.or_(
+            conf.and_(message.Message.sender_username == self.username,
+                      message.Message.receiver_username == target_username),
+            conf.and_(message.Message.sender_username == target_username,
+                      message.Message.receiver_username == self.username)))
+        query = query.filter(message.Message.id < before_id).order_by(message.Message.time_created.desc()).limit(10)
+
+        messages = query.all()
+        messages.reverse()
 
         return messages
 
     def search_messages(self, search: str):
-        messages = conf.session.query(message.Message).filter(conf.and_(conf.or_(
+        query = conf.session.query(message.Message).filter(conf.and_(conf.or_(
                 message.Message.sender_username == self.username,
                 message.Message.receiver_username == self.username)),
-            message.Message.text.contains(search)).order_by(conf.desc("time_created")).all()
+            message.Message.text.contains(search)).order_by(conf.desc("time_created"))
 
+        messages = query.all()
         return messages
 
     def last_message(self, target_username):
