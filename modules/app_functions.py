@@ -193,16 +193,20 @@ def prepareMessengerPage():
     widgets.editFrame.hide()
     widgets.closeEditButton.clicked.connect(close_edit_area)
 
-    # Prepare handling seen messages
-    widgets.chatScrollArea.verticalScrollBar().actionTriggered.connect(on_chat_scroll)
+    # # Prepare handling seen messages
+    # widgets.chatScrollArea.verticalScrollBar().actionTriggered.connect(on_chat_scroll)
 
     # Prepare 'load more messages' button
     widgets.loadMoreButton.clicked.connect(fetch_ten_messages)
+
+    # # Prepare chat scroll bar
+    # widgets.chatScrollArea.verticalScrollBar().setMinimum(200)
 
 
 def close_edit_area():
     widgets.editFrame.hide()
     widgets.messengerTextEdit.setPlainText("")
+
 
 def reload_contacts_list(search: str | None = None):
     clearLayout(widgets.contactsVerticalLayout)
@@ -284,8 +288,6 @@ def sendMessage():
             send_broadcast(f"reload_message {message.id}")
             widgets.editFrame.hide()
 
-
-
     widgets.messengerTextEdit.setPlainText("")
     widgets.replyFrame.hide()
 
@@ -298,11 +300,11 @@ def reloadChat(message_id: int | None = None):
     clearLayout(widgets.chatGridLayout)
     clearLayout(widgets.contactInfoHorizontalLayout)
 
-
+    # if no target, go to "select a chat" page
     if target_username is None:
         widgets.chatStackedWidget.setCurrentWidget(widgets.selectChatPage)
         return
-
+    # else, go to "chat" page
     widgets.chatStackedWidget.setCurrentWidget(widgets.chatPage)
     widgets.stackedWidget.setCurrentWidget(widgets.messenger)
 
@@ -338,9 +340,6 @@ def fetch_ten_messages(load_all=False):
     global messages_dict
     global user
 
-    if user is None:
-        return
-
     # get the id of earliest of already fetched messages
     before_id = min(messages_dict, default=2147483647)
 
@@ -348,6 +347,9 @@ def fetch_ten_messages(load_all=False):
         messages = user.messages(target_username)
     else:
         messages = user.ten_messages(target_username, before_id)
+
+    # Add an empty widget at top of chatbox to force reload
+    widgets.chatGridLayout.addWidget(QLabel(""), 0, 0)
 
     for i, message in enumerate(messages):
         is_sender = (message.sender_username == user.username)
@@ -462,6 +464,7 @@ class MessageWidget(QFrame):
         self.message.save()
         send_broadcast(f"reload_message {self.message.id}")
 
+
 class MessageTextWidget(AutoResizingTextEdit):
     def __init__(self, messageWidget: MessageWidget):
         super().__init__()
@@ -484,6 +487,7 @@ class MessageTextWidget(AutoResizingTextEdit):
                 self.messageWidget.message.has_been_seen = True
                 self.messageWidget.message.save()
                 send_broadcast(f"reload_message {self.messageWidget.message.id}")
+
 
 class RepliedWidget(AutoResizingTextEdit):
     def __init__(self, message: Message, messageWidget: MessageWidget):
