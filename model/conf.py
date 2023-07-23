@@ -12,7 +12,7 @@ from sqlalchemy import func
 db_name = "project_manager"
 db_user_name = "alireza"
 db_user_pass = "96321"
-db_url = "localhost"
+db_url = "alireza"
 db_port = "3306"
 
 # Communicates directly to SQL
