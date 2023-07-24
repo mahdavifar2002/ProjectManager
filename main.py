@@ -93,10 +93,7 @@ class MainWindow(QMainWindow):
         widgets.extraCloseColumnBtn.clicked.connect(self.openCloseLeftBox)
 
         # EXTRA RIGHT BOX
-        def openCloseRightBox():
-            UIFunctions.toggleRightBox(self, True)
-
-        widgets.settingsTopBtn.clicked.connect(openCloseRightBox)
+        widgets.settingsTopBtn.clicked.connect(self.openCloseRightBox)
 
         # SHOW APP
         # ///////////////////////////////////////////////////////////////
@@ -131,6 +128,25 @@ class MainWindow(QMainWindow):
         widgets.stackedWidget.setCurrentWidget(widgets.home)
         widgets.btn_home.setStyleSheet(UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
 
+    # EMOJI CLICK
+    # ///////////////////////////////////////////////////////////////
+    def connectEmojiButtons(self, emojiButtons):
+        for emojiButton in emojiButtons:
+            emojiButton.clicked.connect(self.emojiClicked)
+
+    def emojiClicked(self):
+        btn = self.sender()
+        editor = widgets.messengerTextEdit
+
+        # add emoji to text editor
+        editor.setPlainText(editor.toPlainText() + btn.text())
+        editor.setFocus()
+
+        # move cursor to the end of text editor
+        textCursor = editor.textCursor()
+        textCursor.setPosition(len(editor.toPlainText()))
+        editor.setTextCursor(textCursor)
+
     # CONTACT CLICK
     # ///////////////////////////////////////////////////////////////
     def connectContactButtons(self, contact_buttons):
@@ -162,6 +178,23 @@ class MainWindow(QMainWindow):
     def openLeftBox(self):
         if not self.leftBoxIsOpen():
             self.openCloseLeftBox()
+
+    # EXTRA RIGHT BOX
+    # ///////////////////////////////////////////////////////////////
+    def openCloseRightBox(self):
+        UIFunctions.toggleRightBox(self, True)
+        widgets.messengerTextEdit.setFocus()
+
+    def rightBoxIsOpen(self):
+        return self.ui.extraRightBox.width() != 0
+
+    def closeRightBox(self):
+        if self.rightBoxIsOpen():
+            self.openCloseRightBox()
+
+    def openRightBox(self):
+        if not self.rightBoxIsOpen():
+            self.openCloseRightBox()
 
     # BUTTONS CLICK
     # Post here your functions for clicked buttons

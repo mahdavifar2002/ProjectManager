@@ -194,6 +194,7 @@ Content App */
 
 /* Theme Settings */
 #extraRightBox { background-color: #495474; }
+#extraRightBox .QWidget { background-color: #495474; }
 #themeSettingsTopDetail { background-color: #6272a4; }
 
 /* Bottom Bar */
@@ -202,23 +203,47 @@ Content App */
 
 /* CONTENT SETTINGS */
 /* MENUS */
-#contentSettings .QPushButton {
+#extraRightBox .QPushButton {
     background-position: left center;
     background-repeat: no-repeat;
 	border: none;
 	border-left: 22px solid transparent;
 	background-color:transparent;
-	text-align: left;
-	padding-left: 44px;
+	padding-bottom: 10px;
     color: #f8f8f2;
 }
-#contentSettings .QPushButton:hover {
+#contentSettings .QPushButton {
+	text-align: left;
+	padding-left: 44px;
+}
+#extraRightBox .QPushButton:hover {
 	background-color: #5d6c99;
 }
-#contentSettings .QPushButton:pressed {	
+#extraRightBox .QPushButton:pressed {
 	background-color: rgb(189, 147, 249);
 	color: rgb(255, 255, 255);
 }
+
+/* /////////////////////////////////////////////////////////////////////////////////////////////////
+QTabWidget */
+QTabWidget::pane {
+  border-top: 1px solid gray;
+  background: transparent;
+}
+
+QTabBar::tab {
+  color: white;
+  width: 80px;
+  background-color: #495474;
+  border: none;
+  padding: 15px;
+}
+
+QTabBar::tab:selected {
+  background-color: #5d6c99;
+  margin-bottom: -1px;
+}
+
 /* /////////////////////////////////////////////////////////////////////////////////////////////////
 QTableWidget */
 QTableWidget {	

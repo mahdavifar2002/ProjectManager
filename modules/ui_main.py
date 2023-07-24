@@ -20,8 +20,9 @@ from PySide6.QtWidgets import (QAbstractItemView, QAbstractScrollArea, QApplicat
     QGridLayout, QHBoxLayout, QHeaderView, QLabel,
     QLineEdit, QMainWindow, QPlainTextEdit, QPushButton,
     QRadioButton, QScrollArea, QScrollBar, QSizePolicy,
-    QSlider, QSpacerItem, QStackedWidget, QTableWidget,
-    QTableWidgetItem, QTextEdit, QVBoxLayout, QWidget)
+    QSlider, QSpacerItem, QStackedWidget, QTabWidget,
+    QTableWidget, QTableWidgetItem, QTextEdit, QVBoxLayout,
+    QWidget)
 from . resources_rc import *
 
 class Ui_MainWindow(object):
@@ -1747,7 +1748,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.editFrame = QFrame(self.chatTextBox)
         self.editFrame.setObjectName(u"editFrame")
-        self.editFrame.setStyleSheet(u"#replyFrame {\n"
+        self.editFrame.setStyleSheet(u"#editFrame {\n"
 "	border-bottom: 1px solid;\n"
 "	border-color: gray;\n"
 "}")
@@ -1852,7 +1853,13 @@ class Ui_MainWindow(object):
 
         self.chatTextBoxHorizontalLayout.addWidget(self.messengerTextEdit)
 
-        self.chatSendButton = QPushButton(self.chatWriteTextBox)
+        self.chatButtonsWidget = QWidget(self.chatWriteTextBox)
+        self.chatButtonsWidget.setObjectName(u"chatButtonsWidget")
+        sizePolicy5.setHeightForWidth(self.chatButtonsWidget.sizePolicy().hasHeightForWidth())
+        self.chatButtonsWidget.setSizePolicy(sizePolicy5)
+        self.verticalLayout_22 = QVBoxLayout(self.chatButtonsWidget)
+        self.verticalLayout_22.setObjectName(u"verticalLayout_22")
+        self.chatSendButton = QPushButton(self.chatButtonsWidget)
         self.chatSendButton.setObjectName(u"chatSendButton")
         self.chatSendButton.setStyleSheet(u"border: 0;")
         icon11 = QIcon()
@@ -1860,7 +1867,20 @@ class Ui_MainWindow(object):
         self.chatSendButton.setIcon(icon11)
         self.chatSendButton.setIconSize(QSize(32, 32))
 
-        self.chatTextBoxHorizontalLayout.addWidget(self.chatSendButton)
+        self.verticalLayout_22.addWidget(self.chatSendButton)
+
+        self.emojiButton = QPushButton(self.chatButtonsWidget)
+        self.emojiButton.setObjectName(u"emojiButton")
+        self.emojiButton.setStyleSheet(u"border: 0;")
+        icon12 = QIcon()
+        icon12.addFile(u":/icons/images/icons/cil-smile.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.emojiButton.setIcon(icon12)
+        self.emojiButton.setIconSize(QSize(32, 32))
+
+        self.verticalLayout_22.addWidget(self.emojiButton)
+
+
+        self.chatTextBoxHorizontalLayout.addWidget(self.chatButtonsWidget)
 
 
         self.verticalLayout_10.addWidget(self.chatWriteTextBox)
@@ -1937,17 +1957,67 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_4.addWidget(self.pagesContainer)
 
-        self.extraRightBox = QFrame(self.content)
+        self.extraRightBox = QStackedWidget(self.content)
         self.extraRightBox.setObjectName(u"extraRightBox")
-        self.extraRightBox.setMinimumSize(QSize(0, 0))
         self.extraRightBox.setMaximumSize(QSize(0, 16777215))
         self.extraRightBox.setFrameShape(QFrame.NoFrame)
         self.extraRightBox.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_7 = QVBoxLayout(self.extraRightBox)
+        self.emojiPage = QWidget()
+        self.emojiPage.setObjectName(u"emojiPage")
+        self.verticalLayout_33 = QVBoxLayout(self.emojiPage)
+        self.verticalLayout_33.setObjectName(u"verticalLayout_33")
+        self.EmojisGridWidget = QWidget(self.emojiPage)
+        self.EmojisGridWidget.setObjectName(u"EmojisGridWidget")
+        sizePolicy2.setHeightForWidth(self.EmojisGridWidget.sizePolicy().hasHeightForWidth())
+        self.EmojisGridWidget.setSizePolicy(sizePolicy2)
+        self.verticalLayout_32 = QVBoxLayout(self.EmojisGridWidget)
+        self.verticalLayout_32.setObjectName(u"verticalLayout_32")
+        self.verticalLayout_32.setContentsMargins(0, 0, 0, 0)
+        self.tabWidget = QTabWidget(self.EmojisGridWidget)
+        self.tabWidget.setObjectName(u"tabWidget")
+        self.tab_emojis = QWidget()
+        self.tab_emojis.setObjectName(u"tab_emojis")
+        self.verticalLayout_39 = QVBoxLayout(self.tab_emojis)
+        self.verticalLayout_39.setObjectName(u"verticalLayout_39")
+        self.verticalLayout_39.setContentsMargins(0, 0, 0, 0)
+        self.scrollArea_2 = QScrollArea(self.tab_emojis)
+        self.scrollArea_2.setObjectName(u"scrollArea_2")
+        self.scrollArea_2.setWidgetResizable(True)
+        self.scrollAreaWidgetContents_2 = QWidget()
+        self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 29, 405))
+        self.emojisGridLayout = QGridLayout(self.scrollAreaWidgetContents_2)
+        self.emojisGridLayout.setSpacing(0)
+        self.emojisGridLayout.setObjectName(u"emojisGridLayout")
+        self.emojisGridLayout.setContentsMargins(0, -1, -1, -1)
+        self.verticalSpacer_8 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.emojisGridLayout.addItem(self.verticalSpacer_8, 0, 0, 1, 1)
+
+        self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_2)
+
+        self.verticalLayout_39.addWidget(self.scrollArea_2)
+
+        self.tabWidget.addTab(self.tab_emojis, "")
+        self.tab_stickers = QWidget()
+        self.tab_stickers.setObjectName(u"tab_stickers")
+        self.gridLayout_5 = QGridLayout(self.tab_stickers)
+        self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.tabWidget.addTab(self.tab_stickers, "")
+
+        self.verticalLayout_32.addWidget(self.tabWidget)
+
+
+        self.verticalLayout_33.addWidget(self.EmojisGridWidget)
+
+        self.extraRightBox.addWidget(self.emojiPage)
+        self.extraRightBoxPage1 = QWidget()
+        self.extraRightBoxPage1.setObjectName(u"extraRightBoxPage1")
+        self.verticalLayout_7 = QVBoxLayout(self.extraRightBoxPage1)
         self.verticalLayout_7.setSpacing(0)
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
         self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
-        self.themeSettingsTopDetail = QFrame(self.extraRightBox)
+        self.themeSettingsTopDetail = QFrame(self.extraRightBoxPage1)
         self.themeSettingsTopDetail.setObjectName(u"themeSettingsTopDetail")
         self.themeSettingsTopDetail.setMaximumSize(QSize(16777215, 3))
         self.themeSettingsTopDetail.setFrameShape(QFrame.NoFrame)
@@ -1955,7 +2025,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_7.addWidget(self.themeSettingsTopDetail)
 
-        self.contentSettings = QFrame(self.extraRightBox)
+        self.contentSettings = QFrame(self.extraRightBoxPage1)
         self.contentSettings.setObjectName(u"contentSettings")
         self.contentSettings.setFrameShape(QFrame.NoFrame)
         self.contentSettings.setFrameShadow(QFrame.Raised)
@@ -2013,6 +2083,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_7.addWidget(self.contentSettings)
 
+        self.extraRightBox.addWidget(self.extraRightBoxPage1)
 
         self.horizontalLayout_4.addWidget(self.extraRightBox)
 
@@ -2074,6 +2145,8 @@ class Ui_MainWindow(object):
 
         self.stackedWidget.setCurrentIndex(3)
         self.chatStackedWidget.setCurrentIndex(1)
+        self.extraRightBox.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -2244,10 +2317,13 @@ class Ui_MainWindow(object):
         self.replyLabel.setText(QCoreApplication.translate("MainWindow", u"Reply message", None))
         self.closeReplyButton.setText("")
         self.chatSendButton.setText("")
+        self.emojiButton.setText("")
         self.label.setText(QCoreApplication.translate("MainWindow", u"ADD TASK", None))
         self.assignUserLabel.setText(QCoreApplication.translate("MainWindow", u"Assign to user", None))
         self.taskDescriptionLabel.setText(QCoreApplication.translate("MainWindow", u"Task Description", None))
         self.addTaskPushButton.setText(QCoreApplication.translate("MainWindow", u"Add Task", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_emojis), QCoreApplication.translate("MainWindow", u"Emojies", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_stickers), QCoreApplication.translate("MainWindow", u"Stickers", None))
         self.btn_message.setText(QCoreApplication.translate("MainWindow", u"Message", None))
         self.btn_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
         self.btn_logout.setText(QCoreApplication.translate("MainWindow", u"Logout", None))

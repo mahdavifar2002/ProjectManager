@@ -171,6 +171,25 @@ def prepareMessengerPage():
               widgets.messengerTextEdit,
               sendMessage)
 
+    # Prepare emoji button
+    widgets.emojiButton.clicked.connect(mainWindow.openCloseRightBox)
+
+    # Prepare emojies buttons
+    emojis_list = "😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩" \
+                  "🥳😏😒😞😔😟😕🙁😣😖😫😩🥺😢😭😤😠😡🤬🤯😳🥵🥶😶😱😨😰😥😓🤗" \
+                  "🤔🤭🤫🤥😶😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😮😵😵💫🤐🥴🤢🤮🤧😷🤒🤕" \
+                  "🤑🤠😈👿👹👺🤡👻💀👽👾🤖🎃😺😸😹😻😼😽🙀😿😾🤲👐🙌👏🤝👍👎👊" \
+                  "✊🤛🤜🤞🤟🤘👌🤏👈👉👆👇✋🤚🖐🖖👋🤙💪🙏"
+    emojiButtons = []
+
+    for i, item in enumerate(emojis_list):
+        emojiButton = QPushButton(emojis_list[i])
+        emojiButton.setStyleSheet("font: 14pt; text-align: center;")
+        widgets.emojisGridLayout.addWidget(emojiButton, i/4 + 1, i%4)
+        emojiButtons.append(emojiButton)
+
+    mainWindow.connectEmojiButtons(emojiButtons)
+
     # Prepare search button
     widgets.searchPushButton.clicked.connect(lambda: reload_contacts_list(widgets.searchLineEdit.text()))
 
