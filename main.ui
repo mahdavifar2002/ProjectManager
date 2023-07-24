@@ -3451,19 +3451,7 @@ background-repeat: no-repeat;</string>
                           <layout class="QVBoxLayout" name="verticalLayout_26">
                            <item>
                             <widget class="QFrame" name="contactInfoBox">
-                             <property name="minimumSize">
-                              <size>
-                               <width>0</width>
-                               <height>60</height>
-                              </size>
-                             </property>
-                             <property name="maximumSize">
-                              <size>
-                               <width>16777215</width>
-                               <height>60</height>
-                              </size>
-                             </property>
-                             <layout class="QHBoxLayout" name="horizontalLayout_13">
+                             <layout class="QVBoxLayout" name="verticalLayout_29">
                               <property name="leftMargin">
                                <number>0</number>
                               </property>
@@ -3477,11 +3465,96 @@ background-repeat: no-repeat;</string>
                                <number>0</number>
                               </property>
                               <item>
-                               <layout class="QHBoxLayout" name="contactInfoHorizontalLayout">
-                                <property name="leftMargin">
-                                 <number>9</number>
+                               <widget class="QFrame" name="contactInfoFrame">
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>0</width>
+                                  <height>60</height>
+                                 </size>
                                 </property>
-                               </layout>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>16777215</width>
+                                  <height>60</height>
+                                 </size>
+                                </property>
+                                <layout class="QHBoxLayout" name="contactInfoHorizontalLayout">
+                                 <property name="leftMargin">
+                                  <number>9</number>
+                                 </property>
+                                </layout>
+                               </widget>
+                              </item>
+                              <item>
+                               <widget class="QFrame" name="pinFrame">
+                                <property name="styleSheet">
+                                 <string notr="true">#pinFrame {
+	border-top: 1px solid;
+	border-color: gray;
+}</string>
+                                </property>
+                                <layout class="QHBoxLayout" name="horizontalLayout_18">
+                                 <item>
+                                  <widget class="QPushButton" name="pinIconButton">
+                                   <property name="sizePolicy">
+                                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                     <horstretch>0</horstretch>
+                                     <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                   </property>
+                                   <property name="styleSheet">
+                                    <string notr="true">border: 0;</string>
+                                   </property>
+                                   <property name="text">
+                                    <string/>
+                                   </property>
+                                   <property name="icon">
+                                    <iconset resource="resources.qrc">
+                                     <normaloff>:/icons/images/icons/cil-pin.png</normaloff>:/icons/images/icons/cil-pin.png</iconset>
+                                   </property>
+                                   <property name="iconSize">
+                                    <size>
+                                     <width>32</width>
+                                     <height>16</height>
+                                    </size>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item>
+                                  <widget class="QLabel" name="pinLabel">
+                                   <property name="text">
+                                    <string>Pin message</string>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                 <item>
+                                  <widget class="QPushButton" name="closePinButton">
+                                   <property name="sizePolicy">
+                                    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                                     <horstretch>0</horstretch>
+                                     <verstretch>0</verstretch>
+                                    </sizepolicy>
+                                   </property>
+                                   <property name="styleSheet">
+                                    <string notr="true">border: 0;</string>
+                                   </property>
+                                   <property name="text">
+                                    <string/>
+                                   </property>
+                                   <property name="icon">
+                                    <iconset resource="resources.qrc">
+                                     <normaloff>:/icons/images/icons/icon_close.png</normaloff>:/icons/images/icons/icon_close.png</iconset>
+                                   </property>
+                                   <property name="iconSize">
+                                    <size>
+                                     <width>32</width>
+                                     <height>16</height>
+                                    </size>
+                                   </property>
+                                  </widget>
+                                 </item>
+                                </layout>
+                               </widget>
                               </item>
                              </layout>
                             </widget>
@@ -3500,7 +3573,7 @@ background-repeat: no-repeat;</string>
                                 <x>0</x>
                                 <y>0</y>
                                 <width>820</width>
-                                <height>133</height>
+                                <height>90</height>
                                </rect>
                               </property>
                               <layout class="QVBoxLayout" name="chatScrollVerticalLayout">
@@ -4020,7 +4093,7 @@ QTextEdit:focus {
                     </item>
                    </layout>
                   </widget>
-                  <widget class="QWidget" name="extraRightBoxPage1" native="true">
+                  <widget class="QWidget" name="extraRightBoxPage1">
                    <layout class="QVBoxLayout" name="verticalLayout_7">
                     <property name="spacing">
                      <number>0</number>

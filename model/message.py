@@ -24,6 +24,7 @@ class Message(conf.Base):
     has_been_seen = conf.Column(conf.Boolean, default=False)
     has_been_edited = conf.Column(conf.Boolean, default=False)
     deleted = conf.Column(conf.Boolean, default=False)
+    pinned = conf.Column(conf.Boolean, default=False)
 
     def get_time_created(self):
         return str(jdatetime.datetime.fromgregorian(datetime=self.time_created))

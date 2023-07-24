@@ -212,6 +212,12 @@ def prepareMessengerPage():
     widgets.editFrame.hide()
     widgets.closeEditButton.clicked.connect(close_edit_area)
 
+    # Prepare pin area
+    widgets.pinFrame.hide()
+    widgets.pinLabel.setToolTip(str(-1))
+    widgets.pinLabel.mousePressEvent = jump_to_pin_message
+    widgets.closePinButton.clicked.connect(unpin_message)
+
     # # Prepare handling seen messages
     # widgets.chatScrollArea.verticalScrollBar().actionTriggered.connect(on_chat_scroll)
 
@@ -378,6 +384,10 @@ def fetch_ten_messages(load_all=False):
         # Fill the message dictionary
         messages_dict[message.id] = message_widget
 
+        # check for pin
+        if message.pinned:
+            message_widget.pinMessage()
+
 
 def on_chat_scroll():
     # if widgets.chatScrollArea.verticalScrollBar().value() == widgets.chatScrollArea.verticalScrollBar().minimum():
@@ -394,6 +404,29 @@ def on_chat_scroll():
     #                 message_widget.message.save()
     #                 send_broadcast(f"reload_message {message_widget.message.id}")
 
+
+def jump_to_pin_message(event):
+    message_id = int(widgets.pinLabel.toolTip())
+    if message_id in messages_dict:
+        messages_dict[message_id].jumpTo()
+
+def unpin_message():
+    message_id = int(widgets.pinLabel.toolTip())
+    if message_id in messages_dict:
+        message_widget = messages_dict[message_id]
+        message = message_widget.message
+
+        widgets.pinFrame.hide()
+        widgets.pinLabel.setToolTip(str(-1))
+
+        for widget in messages_dict.values():
+            if widget.message.pinned:
+                widget.pinMessage()
+
+        if message.pinned:
+            message.pinned = False
+            message_widget.message.save()
+            send_broadcast(f"reload_message {message.id}")
 
 class MessageWidget(QFrame):
     def __init__(self, message: Message, widgets: Ui_MainWindow):
@@ -418,9 +451,36 @@ class MessageWidget(QFrame):
         is_sender = (message.sender_username == user.username)
         self.setObjectName("from-me" if is_sender else "from-them")
 
+    def jumpTo(self):
+        widgets.chatScrollArea.ensureWidgetVisible(self)
+        self.setFocus()
+
+    def pinMessage(self):
+        # check if no later message is already pinned
+        if self.message.id > int(widgets.pinLabel.toolTip()):
+            # put message in pin frame
+            widgets.pinLabel.setText(self.message.short_text())
+            widgets.pinLabel.setToolTip(str(self.message.id))
+
+            # show pin frame
+            widgets.pinFrame.show()
+
+            # blur the pin message if the message is itself blured
+            if self.text_edit.graphicsEffect() is not None:
+                self.pin_blur_effect = QGraphicsBlurEffect(blurRadius=15)
+                widgets.pinLabel.setGraphicsEffect(self.pin_blur_effect)
+            else:
+                widgets.pinLabel.setGraphicsEffect(None)
+
+
     def updateMessage(self):
         conf.session.commit()
         self.message = Message.find_by_id(self.message.id)
+
+        if self.message.pinned:
+            self.pinMessage()
+        elif widgets.pinLabel.toolTip() == str(self.message.id):
+            unpin_message()
 
         if self.message.deleted:
             self.hide()
@@ -428,8 +488,9 @@ class MessageWidget(QFrame):
             is_sender = (self.message.sender_username == user.username)
             main_text = self.message.text.replace("\n", "<br/>")
             seen_text = "✅ " if is_sender and self.message.has_been_seen else ""
+            pin_text = "📌 " if self.message.pinned else ""
             edit_text = " (edited)" if self.message.has_been_edited else ""
-            main_text += "\n" + "<p style='color: gray;'>" + seen_text + self.message.get_time_created() + edit_text + "</p>"
+            main_text += "\n" + "<p style='color: gray;'>" + seen_text + pin_text + self.message.get_time_created() + edit_text + "</p>"
             self.text_edit.setHtml(main_text)
 
     def contextMenuEvent(self, event):
@@ -439,6 +500,11 @@ class MessageWidget(QFrame):
         replyAction = QAction('Reply', self)
         replyAction.triggered.connect(lambda: self.replySlot(event))
         self.menu.addAction(replyAction)
+
+        # pin
+        pinAction = QAction('Pin / Unpin', self)
+        pinAction.triggered.connect(lambda: self.pinSlot(event))
+        self.menu.addAction(pinAction)
 
         # edit
         if self.message.sender_username == user.username:
@@ -464,6 +530,11 @@ class MessageWidget(QFrame):
         widgets.replyFrame.show()
         widgets.messengerTextEdit.setFocus()
 
+    def pinSlot(self, event):
+        self.message.pinned = not self.message.pinned
+        self.message.save()
+        send_broadcast(f"reload_message {self.message.id}")
+
     def editSlot(self, event):
         widgets.editLabel.setText(self.message.short_text())
         widgets.editLabel.setToolTip(str(self.message.id))
@@ -480,6 +551,7 @@ class MessageWidget(QFrame):
 
     def deleteSlot(self, event):
         self.message.deleted = True
+        self.message.pinned = False
         self.message.save()
         send_broadcast(f"reload_message {self.message.id}")
 
@@ -530,8 +602,7 @@ class RepliedWidget(AutoResizingTextEdit):
     def mousePressEvent(self, e: QMouseEvent) -> None:
         if e.button() == Qt.MouseButton.LeftButton:
             message_widget = messages_dict[self.message.reply_to]
-            widgets.chatScrollArea.ensureWidgetVisible(message_widget)
-            message_widget.setFocus()
+            message_widget.jumpTo()
 
 
 def prepareShowTasks():
