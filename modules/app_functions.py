@@ -324,6 +324,9 @@ def reloadChat(message_id: int | None = None):
     # Clear chatbox
     clearLayout(widgets.chatGridLayout)
     clearLayout(widgets.contactInfoHorizontalLayout)
+    # remove pin frame
+    widgets.pinFrame.hide()
+    widgets.pinLabel.setToolTip(str(-1))
 
     # if no target, go to "select a chat" page
     if target_username is None:
