@@ -8,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Boolean
 from sqlalchemy import and_, or_, desc
 from sqlalchemy import func
+from sqlalchemy import select
 
 db_name = "project_manager"
 db_user_name = "alireza"
@@ -78,6 +79,18 @@ def save_to_db(record):
         session.commit()
     except Exception as e:
         print(e)
+
+
+def db_time():
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT NOW();"))
+
+    for row in result:
+        return row[0]
+
+
+def time_diff_in_second(t1: datetime, t2: datetime):
+    return t1.timestamp() - t2.timestamp()
 
 
 def delta_human_readable(delta: relativedelta):

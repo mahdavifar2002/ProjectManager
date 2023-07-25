@@ -13,6 +13,7 @@
 # https://doc.qt.io/qtforpython/licenses.html
 #
 # ///////////////////////////////////////////////////////////////
+import datetime
 from typing import Optional, Dict
 
 import jdatetime
@@ -32,6 +33,7 @@ mainWindow: Optional[MainWindow] = None
 user: Optional[User] = None
 messages_dict: Dict[int, QWidget] = {}
 target_username: Optional[str] = None
+last_user_update: datetime.datetime = datetime.datetime.now()
 
 
 # WITH ACCESS TO MAIN WINDOW WIDGETS
@@ -158,6 +160,7 @@ def setUsersForAddTask():
 def prepareMessengerPage():
     new_text_edit = AutoResizingTextEdit(widgets.chatTextBox)
     new_text_edit.setStyleSheet(widgets.messengerTextEdit.styleSheet())
+    new_text_edit.textChanged.connect(messenger_text_changed)
     widgets.chatTextBoxHorizontalLayout.replaceWidget(widgets.messengerTextEdit, new_text_edit)
     widgets.messengerTextEdit.deleteLater()
     widgets.messengerTextEdit = new_text_edit
@@ -227,6 +230,21 @@ def prepareMessengerPage():
     # # Prepare chat scroll bar
     # widgets.chatScrollArea.verticalScrollBar().setMinimum(200)
 
+def messenger_text_changed():
+    global user
+    global target_username
+    global last_user_update
+
+    if conf.time_diff_in_second(datetime.datetime.now(), last_user_update) < 1:
+        return
+
+    last_user_update = datetime.datetime.now()
+
+    if target_username is not None:
+        user.set_typing(target_username)
+        user.save()
+        send_broadcast(f"reload_user {user.username}")
+
 
 def close_edit_area():
     widgets.editFrame.hide()
@@ -266,25 +284,40 @@ class ContactButton(QPushButton):
     def __init__(self, other_user, selected_message: Message | None):
         image_url = f"{os.getcwd()}\\resources\\images\\{other_user.username}.jpg"
         super().__init__()
-        self.contact_username = other_user.username
+        self.user = other_user
         self.selected_message_id = selected_message.id if selected_message is not None else None
 
-        self.setToolTip(other_user.username)
+        self.setToolTip(self.user.username)
         self.setIcon(QIcon(image_url))
         self.setIconSize(QSize(45, 45))
         self.setMinimumHeight(60)
         self.setStyleSheet("text-align: left; border: none;")
 
         # Prepare user_button text (username + last message, if any)
-        text = "   " + other_user.fullname + "   "
+        self.updateUser()
+
+    def updateUser(self):
+        conf.session.commit()
+        self.user = User.find_by_username(self.user.username)
+
+        text = "   " + self.user.fullname + "   " + "\n"
+
+        if (user is not None) and self.user.is_typing_for(user.username):
+            text += "   ...is typing   "
+
+            # Create timer object
+            timer = QTimer(self)
+            timer.timeout.connect(self.updateUser)
+            timer.setSingleShot(True)
+            timer.start(3000)
 
         # if user is not None and message is None:
         #     message = user.last_message(other_user.username)
-
-        if selected_message is not None:
-            text += "\n   " + selected_message.short_text() + "   "
+        # elif selected_message is not None:
+        #     text += "\n   " + selected_message.short_text() + "   "
 
         self.setText(text)
+
 
 
 def sendMessage():
@@ -339,6 +372,7 @@ def reloadChat(message_id: int | None = None):
     # Contact info box
     target_user = User.find_by_username(target_username)
     user_button = ContactButton(target_user, None)
+    widgets.contactUserButton = user_button
     widgets.contactInfoHorizontalLayout.addWidget(user_button)
 
     # Messages
@@ -645,6 +679,7 @@ def actionOnBroadcast(msg: str):
         if command[1] == user.username:
             print("reloading...")
             reloadChat()
+
     elif command[0] == "reload_message":
         message_id = int(command[1])
         if message_id in messages_dict:
@@ -653,6 +688,11 @@ def actionOnBroadcast(msg: str):
             if message.sender_username == user.username or message.receiver_username == user.username:
                 print("reloading message...")
                 message_widget.updateMessage()
+
+    elif command[0] == "reload_user":
+        user_username = command[1]
+        if target_username == user_username:
+            widgets.contactUserButton.updateUser()
 
 
 def prepareClientThread():

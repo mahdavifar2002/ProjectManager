@@ -1703,6 +1703,12 @@ class Ui_MainWindow(object):
         self.contactInfoHorizontalLayout = QHBoxLayout(self.contactInfoFrame)
         self.contactInfoHorizontalLayout.setObjectName(u"contactInfoHorizontalLayout")
         self.contactInfoHorizontalLayout.setContentsMargins(9, 0, 0, 0)
+        self.contactUserButton = QPushButton(self.contactInfoFrame)
+        self.contactUserButton.setObjectName(u"contactUserButton")
+        self.contactUserButton.setStyleSheet(u"border: none;")
+
+        self.contactInfoHorizontalLayout.addWidget(self.contactUserButton)
+
 
         self.verticalLayout_29.addWidget(self.contactInfoFrame)
 
@@ -1756,7 +1762,7 @@ class Ui_MainWindow(object):
         self.chatScrollArea.setWidgetResizable(True)
         self.chatScrollAreaWidgetContents = QWidget()
         self.chatScrollAreaWidgetContents.setObjectName(u"chatScrollAreaWidgetContents")
-        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 858, 161))
+        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 858, 143))
         self.chatScrollVerticalLayout = QVBoxLayout(self.chatScrollAreaWidgetContents)
         self.chatScrollVerticalLayout.setObjectName(u"chatScrollVerticalLayout")
         self.chatVerticalLayout = QVBoxLayout()
@@ -1878,7 +1884,6 @@ class Ui_MainWindow(object):
         self.chatTextBoxHorizontalLayout = QHBoxLayout(self.chatWriteTextBox)
         self.chatTextBoxHorizontalLayout.setSpacing(9)
         self.chatTextBoxHorizontalLayout.setObjectName(u"chatTextBoxHorizontalLayout")
-        self.chatTextBoxHorizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.messengerTextEdit = QTextEdit(self.chatWriteTextBox)
         self.messengerTextEdit.setObjectName(u"messengerTextEdit")
         self.messengerTextEdit.setMaximumSize(QSize(16777215, 100))
@@ -2352,6 +2357,7 @@ class Ui_MainWindow(object):
         self.tableWidget.setSortingEnabled(__sortingEnabled1)
 
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Select a chat to start messaging", None))
+        self.contactUserButton.setText(QCoreApplication.translate("MainWindow", u"Contact user button here", None))
         self.pinIconButton.setText("")
         self.pinLabel.setText(QCoreApplication.translate("MainWindow", u"Pin message", None))
         self.closePinButton.setText("")

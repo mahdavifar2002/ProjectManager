@@ -3509,6 +3509,16 @@ background-repeat: no-repeat;</string>
                                  <property name="bottomMargin">
                                   <number>0</number>
                                  </property>
+                                 <item>
+                                  <widget class="QPushButton" name="contactUserButton">
+                                   <property name="styleSheet">
+                                    <string notr="true">border: none;</string>
+                                   </property>
+                                   <property name="text">
+                                    <string>Contact user button here</string>
+                                   </property>
+                                  </widget>
+                                 </item>
                                 </layout>
                                </widget>
                               </item>

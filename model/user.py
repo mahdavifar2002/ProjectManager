@@ -1,3 +1,5 @@
+import datetime
+
 from model import conf, message, task
 
 
@@ -13,7 +15,8 @@ class User(conf.Base):
     last_seen = conf.Column(conf.DateTime(timezone=True), server_default=conf.func.now())
 
     is_online = conf.Column(conf.Boolean)
-    typing_for = conf.Column(
+    typing_date = conf.Column(conf.DateTime(timezone=True), server_default=conf.func.now())
+    typing_target = conf.Column(
         conf.String(50),
         conf.ForeignKey('users.username'))
 
@@ -81,3 +84,19 @@ class User(conf.Base):
 
     def get_last_seen(self):
         return "last seen " + conf.date_human_readable(self.last_seen) + " ago"
+
+    def set_typing(self, target_username):
+        self.last_seen = conf.func.now()
+        self.typing_date = conf.func.now()
+        self.typing_target = target_username
+
+    def is_typing_for(self, username) -> bool:
+        correct_target_condition = (username == self.typing_target)
+
+        # now = conf.session.query(conf.func.current_date().select()).one()
+        now = conf.db_time()
+        freshness_condition = conf.time_diff_in_second(now, self.typing_date) < 3
+
+        # print(f"({correct_target_condition}, {freshness_condition}, {correct_target_condition + freshness_condition})")
+        # print(f"({self.typing_date.timestamp()}, {datetime.datetime.now() - datetime.timedelta(seconds=3)})")
+        return correct_target_condition + freshness_condition == 2

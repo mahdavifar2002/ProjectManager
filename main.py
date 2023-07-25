@@ -156,7 +156,7 @@ class MainWindow(QMainWindow):
     def contactClick(self):
         # GET BUTTON CLICKED
         btn = self.sender()
-        app_functions.target_username = btn.contact_username
+        app_functions.target_username = btn.user.username
         reloadChat(btn.selected_message_id)
 
         btn = widgets.btn_messenger
