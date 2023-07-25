@@ -285,6 +285,7 @@ class ContactButton(QPushButton):
         image_url = f"{os.getcwd()}\\resources\\images\\{other_user.username}.jpg"
         super().__init__()
         self.user = other_user
+        self.selected_message = selected_message
         self.selected_message_id = selected_message.id if selected_message is not None else None
 
         self.setToolTip(self.user.username)
@@ -313,8 +314,9 @@ class ContactButton(QPushButton):
 
         # if user is not None and message is None:
         #     message = user.last_message(other_user.username)
-        # elif selected_message is not None:
-        #     text += "\n   " + selected_message.short_text() + "   "
+
+        elif self.selected_message is not None:
+            text += "   " + self.selected_message.short_text() + "   "
 
         self.setText(text)
 
