@@ -564,6 +564,8 @@ class MessageWidget(QFrame):
             widgets.replyLabel.setGraphicsEffect(self.reply_blur_effect)
         else:
             widgets.replyLabel.setGraphicsEffect(None)
+
+        widgets.editFrame.hide()
         widgets.replyFrame.show()
         widgets.messengerTextEdit.setFocus()
 
@@ -583,6 +585,7 @@ class MessageWidget(QFrame):
         textCursor.setPosition(len(editor.toPlainText()))
         editor.setTextCursor(textCursor)
 
+        widgets.replyFrame.hide()
         widgets.editFrame.show()
         widgets.messengerTextEdit.setFocus()
 
