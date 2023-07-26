@@ -188,7 +188,7 @@ def prepareMessengerPage():
     for i, item in enumerate(emojis_list):
         emojiButton = QPushButton(emojis_list[i])
         emojiButton.setStyleSheet("font: 14pt; text-align: center;")
-        widgets.emojisGridLayout.addWidget(emojiButton, i/4 + 1, i%4)
+        widgets.emojisGridLayout.addWidget(emojiButton, i / 4 + 1, i % 4)
         emojiButtons.append(emojiButton)
 
     mainWindow.connectEmojiButtons(emojiButtons)
@@ -229,6 +229,7 @@ def prepareMessengerPage():
 
     # # Prepare chat scroll bar
     # widgets.chatScrollArea.verticalScrollBar().setMinimum(200)
+
 
 def messenger_text_changed():
     global user
@@ -319,7 +320,6 @@ class ContactButton(QPushButton):
             text += "   " + self.selected_message.short_text() + "   "
 
         self.setText(text)
-
 
 
 def sendMessage():
@@ -449,6 +449,7 @@ def jump_to_pin_message(event):
     if message_id in messages_dict:
         messages_dict[message_id].jumpTo()
 
+
 def unpin_message():
     message_id = int(widgets.pinLabel.toolTip())
     if message_id in messages_dict:
@@ -467,6 +468,7 @@ def unpin_message():
             message_widget.message.save()
             send_broadcast(f"reload_message {message.id}")
 
+
 class MessageWidget(QFrame):
     def __init__(self, message: Message, widgets: Ui_MainWindow):
         super().__init__()
@@ -481,9 +483,11 @@ class MessageWidget(QFrame):
 
         if message.reply_to is not None:
             replied_widget = RepliedWidget(message, self)
-
-            # add reply widget to the parent message
             message_vbox.addWidget(replied_widget)
+
+        if True:
+            voice_widget = VoiceWidget(self)
+            message_vbox.addWidget(voice_widget)
 
         message_vbox.addWidget(self.text_edit)
 
@@ -510,7 +514,6 @@ class MessageWidget(QFrame):
                 widgets.pinLabel.setGraphicsEffect(self.pin_blur_effect)
             else:
                 widgets.pinLabel.setGraphicsEffect(None)
-
 
     def updateMessage(self):
         conf.session.commit()
@@ -616,7 +619,7 @@ class MessageTextWidget(AutoResizingTextEdit):
     def mousePressEvent(self, e: QMouseEvent) -> None:
         if e.button() == Qt.MouseButton.LeftButton:
             self.setGraphicsEffect(None)
-            if not self.messageWidget.message.has_been_seen:
+            if not self.messageWidget.message.has_been_seen and self.messageWidget.message.receiver_username == user.username:
                 self.messageWidget.message.has_been_seen = True
                 self.messageWidget.message.save()
                 send_broadcast(f"reload_message {self.messageWidget.message.id}")
@@ -645,6 +648,33 @@ class RepliedWidget(AutoResizingTextEdit):
         if e.button() == Qt.MouseButton.LeftButton:
             message_widget = messages_dict[self.message.reply_to]
             message_widget.jumpTo()
+
+
+class VoiceWidget(QFrame):
+    def __init__(self, message_widget):
+        super().__init__()
+        self.message_widget = message_widget
+
+        self.slider = ClickSlider()
+        self.slider.setOrientation(Qt.Orientation.Horizontal)
+        self.slider.setMinimumHeight(40)
+
+        self.vbox = QVBoxLayout()
+        self.setLayout(self.vbox)
+        self.vbox.addWidget(self.slider)
+
+
+class ClickSlider(QSlider):
+    """A slider with a signal that emits its position when it is pressed.
+    Created to get around the slider only updating when the handle is dragged, but not when a new position is clicked"""
+
+    def __init__(self):
+        super().__init__()
+
+    def mousePressEvent(self, event):
+        # Jump to click position
+        value = QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width())
+        self.setValue(value)
 
 
 def prepareShowTasks():
