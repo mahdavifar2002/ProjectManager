@@ -475,7 +475,7 @@ class MessageWidget(QFrame):
         self.widgets = widgets
         self.message = message
 
-        self.text_edit = MessageTextWidget(self)
+        self.message_core = MessageCoreWidget(self)
         self.updateMessage()
 
         message_vbox = QVBoxLayout()
@@ -485,11 +485,7 @@ class MessageWidget(QFrame):
             replied_widget = RepliedWidget(message, self)
             message_vbox.addWidget(replied_widget)
 
-        if True:
-            voice_widget = VoiceWidget(self)
-            message_vbox.addWidget(voice_widget)
-
-        message_vbox.addWidget(self.text_edit)
+        message_vbox.addWidget(self.message_core)
 
         is_sender = (message.sender_username == user.username)
         self.setObjectName("from-me" if is_sender else "from-them")
@@ -509,7 +505,7 @@ class MessageWidget(QFrame):
             widgets.pinFrame.show()
 
             # blur the pin message if the message is itself blured
-            if self.text_edit.graphicsEffect() is not None:
+            if self.message_core.graphicsEffect() is not None:
                 self.pin_blur_effect = QGraphicsBlurEffect(blurRadius=15)
                 widgets.pinLabel.setGraphicsEffect(self.pin_blur_effect)
             else:
@@ -533,7 +529,7 @@ class MessageWidget(QFrame):
             pin_text = "📌 " if self.message.pinned else ""
             edit_text = " (edited)" if self.message.has_been_edited else ""
             main_text += "\n" + "<p style='color: gray;'>" + seen_text + pin_text + self.message.get_time_created() + edit_text + "</p>"
-            self.text_edit.setHtml(main_text)
+            self.message_core.text_edit.setHtml(main_text)
 
     def contextMenuEvent(self, event):
         self.menu = QMenu(self)
@@ -564,7 +560,7 @@ class MessageWidget(QFrame):
     def replySlot(self, event):
         widgets.replyLabel.setText(self.message.short_text())
         widgets.replyLabel.setToolTip(str(self.message.id))
-        if self.text_edit.graphicsEffect() is not None:
+        if self.message_core.graphicsEffect() is not None:
             self.reply_blur_effect = QGraphicsBlurEffect(blurRadius=15)
             widgets.replyLabel.setGraphicsEffect(self.reply_blur_effect)
         else:
@@ -601,14 +597,21 @@ class MessageWidget(QFrame):
         send_broadcast(f"reload_message {self.message.id}")
 
 
-class MessageTextWidget(AutoResizingTextEdit):
+class MessageCoreWidget(QFrame):
     def __init__(self, messageWidget: MessageWidget):
         super().__init__()
         self.messageWidget = messageWidget
-        self.setReadOnly(True)
-        self.setStyleSheet("background-color: transparent;")
-        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.customContextMenuRequested.connect(messageWidget.contextMenuEvent)
+        self.text_edit = MessageTextWidget(messageWidget)
+
+        self.setLayout(QVBoxLayout())
+        self.layout().setSpacing(0)
+        self.layout().setContentsMargins(0, 0, 0, 0)
+
+        if messageWidget.message.voice_path is not None:
+            voice_widget = VoiceWidget(messageWidget)
+            self.layout().addWidget(voice_widget)
+
+        self.layout().addWidget(self.text_edit)
 
         # creating a blur effect
         self.blur_effect = QGraphicsBlurEffect(blurRadius=15)
@@ -623,6 +626,16 @@ class MessageTextWidget(AutoResizingTextEdit):
                 self.messageWidget.message.has_been_seen = True
                 self.messageWidget.message.save()
                 send_broadcast(f"reload_message {self.messageWidget.message.id}")
+
+
+class MessageTextWidget(AutoResizingTextEdit):
+    def __init__(self, messageWidget: MessageWidget):
+        super().__init__()
+        self.messageWidget = messageWidget
+        self.setReadOnly(True)
+        self.setStyleSheet("background-color: transparent;")
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(messageWidget.contextMenuEvent)
 
 
 class RepliedWidget(AutoResizingTextEdit):
@@ -655,13 +668,82 @@ class VoiceWidget(QFrame):
         super().__init__()
         self.message_widget = message_widget
 
+        self.is_playing = False
+        self.player = QMediaPlayer()
+        self.audio = QAudioOutput()
+        self.player.setAudioOutput(self.audio)
+
+        self.fileName = self.message_widget.message.voice_path
+        self.player.setSource(QUrl(self.fileName))
+        self.player.positionChanged.connect(self.position_changed)
+        self.player.durationChanged.connect(self.duration_changed)
+
+        self.playPauseButton = QPushButton(self)
+        self.playPauseButton.setIconSize(QSize(16, 16))
+        self.playPauseButton.setStyleSheet("background-color: transparent;")
+        self.playPauseButton.clicked.connect(self.play_music)
+
         self.slider = ClickSlider()
         self.slider.setOrientation(Qt.Orientation.Horizontal)
-        self.slider.setMinimumHeight(40)
+        self.slider.sliderMoved.connect(self.slider_changed)
 
+        self.hbox = QHBoxLayout()
+        self.hbox.setContentsMargins(0, 0, 0, 0)
+        self.hbox.setSpacing(10)
+        self.setLayout(self.hbox)
+        self.hbox.addWidget(self.playPauseButton)
+
+        self.timeLabel = QLabel("00:00:00")
+        self.timeLabel.setStyleSheet("color: gray;")
+
+        self.voiceFrame = QFrame()
         self.vbox = QVBoxLayout()
-        self.setLayout(self.vbox)
+        self.vbox.setContentsMargins(0, 0, 0, 0)
+        self.vbox.setSpacing(0)
+        self.voiceFrame.setLayout(self.vbox)
         self.vbox.addWidget(self.slider)
+        self.vbox.addWidget(self.timeLabel)
+
+        self.hbox.addWidget(self.voiceFrame)
+
+        self.pause()
+
+    def pause(self):
+        self.is_playing = False
+        self.playPauseButton.setIcon(QIcon("./images/icons/cil-media-play.png"))
+        self.player.pause()
+
+    def play(self):
+        self.is_playing = True
+        self.playPauseButton.setIcon(QIcon("./images/icons/cil-media-pause.png"))
+        self.player.play()
+
+    def play_music(self):
+        # if self.player.mediaStatus == QMediaPlayer.PlaybackState.PlayingState:
+        if self.is_playing:
+            self.pause()
+        else:
+            self.play()
+
+    def slider_changed(self, position_):
+        self.player.setPosition(position_)
+
+    def position_changed(self, position_):
+        if self.slider.maximum() != self.player.duration():
+            self.slider.setMaximum(self.player.duration())
+
+        self.slider.setValue(position_)
+
+        seconds = (position_ / 1_000) % 60
+        minutes = (position_ / 60_000) % 60
+        hours = (position_ / 3_600_000)
+
+        time = QTime(hours, minutes, seconds)
+        self.timeLabel.setText(time.toString())
+
+    def duration_changed(self, duration):
+        self.slider.setRange(0, duration)
+
 
 
 class ClickSlider(QSlider):
@@ -671,10 +753,12 @@ class ClickSlider(QSlider):
     def __init__(self):
         super().__init__()
 
-    def mousePressEvent(self, event):
-        # Jump to click position
-        value = QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), event.x(), self.width())
-        self.setValue(value)
+    def mousePressEvent(self, e: QMouseEvent) -> None:
+        if e.button() == Qt.MouseButton.LeftButton:
+            # Jump to click position
+            value = QStyle.sliderValueFromPosition(self.minimum(), self.maximum(), e.x(), self.width())
+            self.setValue(value)
+            self.sliderMoved.emit(value)
 
 
 def prepareShowTasks():
