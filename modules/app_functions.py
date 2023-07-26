@@ -370,25 +370,22 @@ def recordMessage():
     global captureSession
 
     if widgets.recordButton.toolTip() == "record":
-        try:
-            captureSession = QMediaCaptureSession()
-            audioInput = QAudioInput()
-            captureSession.setAudioInput(audioInput)
-            recorder = QMediaRecorder()
-            captureSession.setRecorder(recorder)
-            recorder.setMediaFormat(QMediaFormat.FileFormat.MP3)
-            recorder.setQuality(QMediaRecorder.Quality.HighQuality)
-            filename = conf.generate_filename(user.username, "mp3")
-            filepath = pathlib.Path(QDir.toNativeSeparators("//alireza/E/ProjectManager/Files/Voices")) / filename
-            widgets.recordButton.setProperty("voice_path", str(filepath))
-            url = QUrl.fromLocalFile(os.fspath(filepath))
-            recorder.setOutputLocation(url)
-            recorder.record()
+        captureSession = QMediaCaptureSession()
+        audioInput = QAudioInput()
+        captureSession.setAudioInput(audioInput)
+        recorder = QMediaRecorder()
+        captureSession.setRecorder(recorder)
+        recorder.setMediaFormat(QMediaFormat.FileFormat.MP3)
+        recorder.setQuality(QMediaRecorder.Quality.HighQuality)
+        filename = conf.generate_filename(user.username, "mp3")
+        filepath = pathlib.Path(QDir.toNativeSeparators("//alireza/E/ProjectManager/Files/Voices")) / filename
+        widgets.recordButton.setProperty("voice_path", str(filepath))
+        url = QUrl.fromLocalFile(os.fspath(filepath))
+        recorder.setOutputLocation(url)
+        recorder.record()
 
-            widgets.recordButton.setIcon(QIcon("./images/icons/cil-media-stop.png"))
-            widgets.recordButton.setToolTip("stop")
-        except Exception:
-            print("No microphone found")
+        widgets.recordButton.setIcon(QIcon("./images/icons/cil-media-stop.png"))
+        widgets.recordButton.setToolTip("stop")
 
     else:
         recorder.stop()
