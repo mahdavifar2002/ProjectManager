@@ -1456,7 +1456,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 274, 218))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 218, 218))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"
@@ -1762,7 +1762,7 @@ class Ui_MainWindow(object):
         self.chatScrollArea.setWidgetResizable(True)
         self.chatScrollAreaWidgetContents = QWidget()
         self.chatScrollAreaWidgetContents.setObjectName(u"chatScrollAreaWidgetContents")
-        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 858, 143))
+        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 858, 117))
         self.chatScrollVerticalLayout = QVBoxLayout(self.chatScrollAreaWidgetContents)
         self.chatScrollVerticalLayout.setObjectName(u"chatScrollVerticalLayout")
         self.chatVerticalLayout = QVBoxLayout()
@@ -1917,12 +1917,22 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_22.addWidget(self.chatSendButton)
 
+        self.recordButton = QPushButton(self.chatButtonsWidget)
+        self.recordButton.setObjectName(u"recordButton")
+        self.recordButton.setStyleSheet(u"border: 0;")
+        icon13 = QIcon()
+        icon13.addFile(u":/icons/images/icons/cil-microphone.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.recordButton.setIcon(icon13)
+        self.recordButton.setIconSize(QSize(32, 32))
+
+        self.verticalLayout_22.addWidget(self.recordButton)
+
         self.emojiButton = QPushButton(self.chatButtonsWidget)
         self.emojiButton.setObjectName(u"emojiButton")
         self.emojiButton.setStyleSheet(u"border: 0;")
-        icon13 = QIcon()
-        icon13.addFile(u":/icons/images/icons/cil-smile.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.emojiButton.setIcon(icon13)
+        icon14 = QIcon()
+        icon14.addFile(u":/icons/images/icons/cil-smile.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.emojiButton.setIcon(icon14)
         self.emojiButton.setIconSize(QSize(32, 32))
 
         self.verticalLayout_22.addWidget(self.emojiButton)
@@ -2369,6 +2379,10 @@ class Ui_MainWindow(object):
         self.replyLabel.setText(QCoreApplication.translate("MainWindow", u"Reply message", None))
         self.closeReplyButton.setText("")
         self.chatSendButton.setText("")
+#if QT_CONFIG(tooltip)
+        self.recordButton.setToolTip(QCoreApplication.translate("MainWindow", u"record", None))
+#endif // QT_CONFIG(tooltip)
+        self.recordButton.setText("")
         self.emojiButton.setText("")
         self.label.setText(QCoreApplication.translate("MainWindow", u"ADD TASK", None))
         self.assignUserLabel.setText(QCoreApplication.translate("MainWindow", u"Assign to user", None))

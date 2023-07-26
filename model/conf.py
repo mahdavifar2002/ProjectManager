@@ -1,5 +1,7 @@
 import os
+import uuid
 from datetime import datetime
+import jdatetime
 
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import create_engine, text
@@ -102,3 +104,10 @@ def delta_human_readable(delta: relativedelta):
 def date_human_readable(date: datetime):
     now = datetime.now()
     return delta_human_readable(relativedelta(now, date))
+
+def generate_filename(username: str, exention: str):
+    now = jdatetime.datetime.fromgregorian(datetime=datetime.now()).strftime("%Y-%m-%d_%H-%M-%S")
+    uuid4 = str(uuid.uuid4())[:4]
+
+    filename = now + "_" + username + "_" + uuid4 + "." + exention
+    return filename

@@ -14,6 +14,7 @@
 #
 # ///////////////////////////////////////////////////////////////
 import datetime
+import pathlib
 from typing import Optional, Dict
 
 import jdatetime
@@ -35,6 +36,9 @@ messages_dict: Dict[int, QWidget] = {}
 target_username: Optional[str] = None
 last_user_update: datetime.datetime = datetime.datetime.now()
 
+audioInput: Optional[QAudioInput] = None
+recorder: Optional[QMediaRecorder] = None
+captureSession: Optional[QMediaCaptureSession] = None
 
 # WITH ACCESS TO MAIN WINDOW WIDGETS
 # ///////////////////////////////////////////////////////////////
@@ -170,6 +174,10 @@ def prepareMessengerPage():
     # Prepare send button
     widgets.chatSendButton.clicked.connect(sendMessage)
 
+    # Prepare record button
+    widgets.recordButton.setProperty("voice_path", "")
+    widgets.recordButton.clicked.connect(recordMessage)
+
     QShortcut(QKeySequence("Ctrl+Return"),
               widgets.messengerTextEdit,
               sendMessage)
@@ -227,8 +235,6 @@ def prepareMessengerPage():
     # Prepare 'load more messages' button
     widgets.loadMoreButton.clicked.connect(fetch_ten_messages)
 
-    # # Prepare chat scroll bar
-    # widgets.chatScrollArea.verticalScrollBar().setMinimum(200)
 
 
 def messenger_text_changed():
@@ -323,18 +329,23 @@ class ContactButton(QPushButton):
 
 
 def sendMessage():
-    if not widgets.messengerTextEdit.hasFocus() and not widgets.chatSendButton.hasFocus():
+    if not widgets.messengerTextEdit.hasFocus()\
+            and not widgets.chatSendButton.hasFocus()\
+            and not widgets.recordButton.hasFocus():
         return
 
     sender = user.username
     receiver = target_username
     text = widgets.messengerTextEdit.toPlainText().strip()
+    voice_path = widgets.recordButton.property("voice_path")
+    widgets.recordButton.setProperty("voice_path", "")
 
-    if len(text) > 0:
+    if len(text) > 0 or QFile.exists(voice_path):
         # send new message
         if widgets.editFrame.isHidden():
             reply_to = None if widgets.replyFrame.isHidden() else int(widgets.replyLabel.toolTip())
-            message = Message(sender_username=sender, receiver_username=receiver, text=text, reply_to=reply_to)
+            message = Message(sender_username=sender, receiver_username=receiver,
+                              text=text, reply_to=reply_to, voice_path=voice_path)
             message.save()
             reloadChat()
             send_broadcast(f"reload_chat {receiver}")
@@ -351,6 +362,37 @@ def sendMessage():
     widgets.messengerTextEdit.setPlainText("")
     widgets.replyFrame.hide()
 
+
+def recordMessage():
+    global user
+    global recorder
+    global audioInput
+    global captureSession
+
+    if widgets.recordButton.toolTip() == "record":
+        captureSession = QMediaCaptureSession()
+        audioInput = QAudioInput()
+        captureSession.setAudioInput(audioInput)
+        recorder = QMediaRecorder()
+        captureSession.setRecorder(recorder)
+        recorder.setMediaFormat(QMediaFormat.FileFormat.MP3)
+        recorder.setQuality(QMediaRecorder.Quality.HighQuality)
+        filename = conf.generate_filename(user.username, "mp3")
+        filepath = pathlib.Path(QDir.toNativeSeparators("//alireza/E/ProjectManager/Files/Voices")) / filename
+        widgets.recordButton.setProperty("voice_path", str(filepath))
+        url = QUrl.fromLocalFile(os.fspath(filepath))
+        recorder.setOutputLocation(url)
+        recorder.record()
+
+        widgets.recordButton.setIcon(QIcon("./images/icons/cil-media-stop.png"))
+        widgets.recordButton.setToolTip("stop")
+
+    else:
+        recorder.stop()
+        sendMessage()
+
+        widgets.recordButton.setIcon(QIcon("./images/icons/cil-microphone.png"))
+        widgets.recordButton.setToolTip("record")
 
 def reloadChat(message_id: int | None = None):
     global target_username
@@ -607,7 +649,7 @@ class MessageCoreWidget(QFrame):
         self.layout().setSpacing(0)
         self.layout().setContentsMargins(0, 0, 0, 0)
 
-        if messageWidget.message.voice_path is not None:
+        if messageWidget.message.voice_path is not None and QFile.exists(messageWidget.message.voice_path):
             voice_widget = VoiceWidget(messageWidget)
             self.layout().addWidget(voice_widget)
 

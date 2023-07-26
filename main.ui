@@ -2822,7 +2822,7 @@ background-repeat: no-repeat;</string>
                                 <rect>
                                  <x>0</x>
                                  <y>0</y>
-                                 <width>274</width>
+                                 <width>218</width>
                                  <height>218</height>
                                 </rect>
                                </property>
@@ -3610,7 +3610,7 @@ background-repeat: no-repeat;</string>
                                 <x>0</x>
                                 <y>0</y>
                                 <width>858</width>
-                                <height>143</height>
+                                <height>117</height>
                                </rect>
                               </property>
                               <layout class="QVBoxLayout" name="chatScrollVerticalLayout">
@@ -3862,6 +3862,29 @@ QTextEdit:focus {
                                       <property name="icon">
                                        <iconset resource="resources.qrc">
                                         <normaloff>:/icons/images/icons/cil-paper-plane.png</normaloff>:/icons/images/icons/cil-paper-plane.png</iconset>
+                                      </property>
+                                      <property name="iconSize">
+                                       <size>
+                                        <width>32</width>
+                                        <height>32</height>
+                                       </size>
+                                      </property>
+                                     </widget>
+                                    </item>
+                                    <item>
+                                     <widget class="QPushButton" name="recordButton">
+                                      <property name="toolTip">
+                                       <string>record</string>
+                                      </property>
+                                      <property name="styleSheet">
+                                       <string notr="true">border: 0;</string>
+                                      </property>
+                                      <property name="text">
+                                       <string/>
+                                      </property>
+                                      <property name="icon">
+                                       <iconset resource="resources.qrc">
+                                        <normaloff>:/icons/images/icons/cil-microphone.png</normaloff>:/icons/images/icons/cil-microphone.png</iconset>
                                       </property>
                                       <property name="iconSize">
                                        <size>
