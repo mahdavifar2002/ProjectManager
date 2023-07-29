@@ -264,7 +264,7 @@ def close_edit_area():
     widgets.messengerTextEdit.setPlainText("")
 
 
-def reload_contacts_list(search: str | None = None):
+def reload_contacts_list(search=None):
     clearLayout(widgets.contactsVerticalLayout)
 
     if search is None or search == "":
@@ -294,7 +294,7 @@ def reload_contacts_list(search: str | None = None):
 
 
 class ContactButton(QPushButton):
-    def __init__(self, other_user, selected_message: Message | None):
+    def __init__(self, other_user, selected_message):
         super().__init__()
         self.user = other_user
         self.selected_message = selected_message
@@ -400,7 +400,7 @@ def recordMessage():
         widgets.recordButton.setToolTip("record")
 
 
-def reloadChat(message_id: int | None = None):
+def reloadChat(message_id=None):
     global target_username
     global messages_dict
 

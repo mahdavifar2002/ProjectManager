@@ -46,7 +46,7 @@ class User(conf.Base):
         messages = query.all()
         return messages
 
-    def ten_messages(self, target_username, before_id: int | None = None):
+    def ten_messages(self, target_username, before_id=None):
         if before_id is None:
             before_id = 2147483647 # max int in mysql
 
