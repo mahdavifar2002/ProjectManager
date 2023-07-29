@@ -128,6 +128,17 @@ class MainWindow(QMainWindow):
         widgets.stackedWidget.setCurrentWidget(widgets.home)
         widgets.btn_home.setStyleSheet(UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
 
+        # LOGIN IF COMMANDLINE PASSED LOGIN INFO
+        # ///////////////////////////////////////////////////////////////
+        if len(sys.argv) >= 3:
+            widgets.usernameLineEdit.setText(sys.argv[1])
+            widgets.passwordLineEdit.setText(sys.argv[2])
+            if app_functions.loginUser():
+                widgets.btn_messenger.click()
+                if len(sys.argv) >= 4:
+                    app_functions.target_username = sys.argv[3]
+                    app_functions.reloadChat()
+
     # EMOJI CLICK
     # ///////////////////////////////////////////////////////////////
     def connectEmojiButtons(self, emojiButtons):
@@ -157,7 +168,7 @@ class MainWindow(QMainWindow):
         # GET BUTTON CLICKED
         btn = self.sender()
         app_functions.target_username = btn.user.username
-        reloadChat(btn.selected_message_id)
+        app_functions.reloadChat(btn.selected_message_id)
 
         btn = widgets.btn_messenger
         UIFunctions.resetStyle(self, btn.objectName())

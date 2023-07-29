@@ -40,6 +40,7 @@ audioInput: Optional[QAudioInput] = None
 recorder: Optional[QMediaRecorder] = None
 captureSession: Optional[QMediaCaptureSession] = None
 
+
 # WITH ACCESS TO MAIN WINDOW WIDGETS
 # ///////////////////////////////////////////////////////////////
 class AppFunctions(MainWindow):
@@ -106,7 +107,7 @@ def logoutUser():
     widgets.loginResult.setText("You logged out successfully")
 
 
-def loginUser():
+def loginUser() -> bool:
     global user
 
     username = widgets.usernameLineEdit.text()
@@ -126,13 +127,16 @@ def loginUser():
             widgets.userImage.setPixmap(QPixmap(image_url))
             widgets.loggedInUsernameLineEdit.setText(user.username)
             widgets.fullNameLineEdit.setText(user.fullname)
+            return True
         else:
             widgets.loginResult.setStyleSheet("color: red;")
             widgets.loginResult.setText("Wrong password")
+            return False
     except Exception as e:
         print(traceback.format_exc())
         widgets.loginResult.setStyleSheet("color: red;")
         widgets.loginResult.setText("Wrong username")
+        return False
 
     prepareHomePage()
 
@@ -236,7 +240,6 @@ def prepareMessengerPage():
     widgets.loadMoreButton.clicked.connect(fetch_ten_messages)
 
 
-
 def messenger_text_changed():
     global user
     global target_username
@@ -329,8 +332,8 @@ class ContactButton(QPushButton):
 
 
 def sendMessage():
-    if not widgets.messengerTextEdit.hasFocus()\
-            and not widgets.chatSendButton.hasFocus()\
+    if not widgets.messengerTextEdit.hasFocus() \
+            and not widgets.chatSendButton.hasFocus() \
             and not widgets.recordButton.hasFocus():
         return
 
@@ -378,7 +381,7 @@ def recordMessage():
         recorder.setMediaFormat(QMediaFormat.FileFormat.MP3)
         recorder.setQuality(QMediaRecorder.Quality.HighQuality)
         filename = conf.generate_filename(user.username, "mp3")
-        filepath = pathlib.Path(QDir.toNativeSeparators("//alireza/E/ProjectManager/Files/Voices")) / filename
+        filepath = pathlib.Path(QDir.toNativeSeparators("//khakbaz/E/ProjectManager/Files/Voices")) / filename
         widgets.recordButton.setProperty("voice_path", str(filepath))
         url = QUrl.fromLocalFile(os.fspath(filepath))
         recorder.setOutputLocation(url)
@@ -393,6 +396,7 @@ def recordMessage():
 
         widgets.recordButton.setIcon(QIcon("./images/icons/cil-microphone.png"))
         widgets.recordButton.setToolTip("record")
+
 
 def reloadChat(message_id: int | None = None):
     global target_username
@@ -658,11 +662,15 @@ class MessageCoreWidget(QFrame):
         # creating a blur effect
         self.blur_effect = QGraphicsBlurEffect(blurRadius=15)
 
+        self.isBlur = False
+
         if messageWidget.message.receiver_username == user.username and messageWidget.message.has_been_seen == False:
+            self.isBlur = True
             self.setGraphicsEffect(self.blur_effect)
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
         if e.button() == Qt.MouseButton.LeftButton:
+            self.isBlur = False
             self.setGraphicsEffect(None)
             if not self.messageWidget.message.has_been_seen and self.messageWidget.message.receiver_username == user.username:
                 self.messageWidget.message.has_been_seen = True
@@ -678,6 +686,13 @@ class MessageTextWidget(AutoResizingTextEdit):
         self.setStyleSheet("background-color: transparent;")
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(messageWidget.contextMenuEvent)
+
+
+    def mousePressEvent(self, e: QMouseEvent) -> None:
+        if e.button() == Qt.MouseButton.LeftButton and self.parent().isBlur:
+            self.parent().mousePressEvent(e)
+        else:
+            super().mousePressEvent(e)
 
 
 class RepliedWidget(AutoResizingTextEdit):
@@ -719,6 +734,7 @@ class VoiceWidget(QFrame):
         self.player.setSource(QUrl(self.fileName))
         self.player.positionChanged.connect(self.position_changed)
         self.player.durationChanged.connect(self.duration_changed)
+        self.player.mediaStatusChanged.connect(self.media_status_changed)
 
         self.playPauseButton = QPushButton(self)
         self.playPauseButton.setIconSize(QSize(16, 16))
@@ -783,10 +799,12 @@ class VoiceWidget(QFrame):
         time = QTime(hours, minutes, seconds)
         self.timeLabel.setText(time.toString())
 
+    def media_status_changed(self, status):
+        if status == QMediaPlayer.MediaStatus.EndOfMedia:
+            self.playPauseButton.click()
+
     def duration_changed(self, duration):
         self.slider.setRange(0, duration)
-
-
 
 class ClickSlider(QSlider):
     """A slider with a signal that emits its position when it is pressed.
