@@ -127,6 +127,7 @@ def loginUser() -> bool:
             widgets.userImage.setPixmap(QPixmap(image_url))
             widgets.loggedInUsernameLineEdit.setText(user.username)
             widgets.fullNameLineEdit.setText(user.fullname)
+            prepareHomePage()
             return True
         else:
             widgets.loginResult.setStyleSheet("color: red;")
@@ -137,8 +138,6 @@ def loginUser() -> bool:
         widgets.loginResult.setStyleSheet("color: red;")
         widgets.loginResult.setText("Wrong username")
         return False
-
-    prepareHomePage()
 
 
 def prepareAddTaskPage():
