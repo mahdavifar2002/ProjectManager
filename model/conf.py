@@ -12,7 +12,7 @@ from sqlalchemy import and_, or_, desc
 from sqlalchemy import func
 from sqlalchemy import select
 
-db_name = "project_manager4"
+db_name = "project_manager"
 db_user_name = "alireza"
 db_user_pass = "96321"
 db_url = "alireza"
