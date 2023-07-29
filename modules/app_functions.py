@@ -78,7 +78,7 @@ class AppFunctions(MainWindow):
             widgets.contactInfoBox.setStyleSheet("background-color: rgb(33, 37, 43); color: #ffffff;")
 
 
-def prepareHomePage():
+def updateHomepageVisibilities():
     if user is None:
         widgets.logOutArea.hide()
         widgets.logInArea.show()
@@ -88,8 +88,11 @@ def prepareHomePage():
         widgets.logOutArea.show()
         widgets.leftMenuBg.show()
 
+def prepareHomePage():
     widgets.loginPushButton.clicked.connect(loginUser)
     widgets.logoutPushButton.clicked.connect(logoutUser)
+
+    updateHomepageVisibilities()
 
 
 def logoutUser():
@@ -98,7 +101,8 @@ def logoutUser():
 
     user = None
     MainWindow.setUser(user)
-    prepareHomePage()
+    updateHomepageVisibilities()
+
 
     target_username = None
     reloadChat()
@@ -123,11 +127,11 @@ def loginUser() -> bool:
             widgets.loginResult.setStyleSheet("color: green;")
             widgets.loginResult.setText("You logged in successfully")
 
-            image_url = f"{os.getcwd()}\\resources\\images\\{user.username}.jpg"
-            widgets.userImage.setPixmap(QPixmap(image_url))
+            print(user.image_path)
+            widgets.userImage.setPixmap(QPixmap(user.image_path))
             widgets.loggedInUsernameLineEdit.setText(user.username)
             widgets.fullNameLineEdit.setText(user.fullname)
-            prepareHomePage()
+            updateHomepageVisibilities()
             return True
         else:
             widgets.loginResult.setStyleSheet("color: red;")
@@ -291,14 +295,13 @@ def reload_contacts_list(search: str | None = None):
 
 class ContactButton(QPushButton):
     def __init__(self, other_user, selected_message: Message | None):
-        image_url = f"{os.getcwd()}\\resources\\images\\{other_user.username}.jpg"
         super().__init__()
         self.user = other_user
         self.selected_message = selected_message
         self.selected_message_id = selected_message.id if selected_message is not None else None
 
         self.setToolTip(self.user.username)
-        self.setIcon(QIcon(image_url))
+        self.setIcon(QIcon(other_user.image_path))
         self.setIconSize(QSize(45, 45))
         self.setMinimumHeight(60)
         self.setStyleSheet("text-align: left; border: none;")
