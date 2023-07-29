@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 import jdatetime
 
-from dateutil.relativedelta import relativedelta
+# from dateutil.relativedelta import relativedelta
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -95,15 +95,15 @@ def time_diff_in_second(t1: datetime, t2: datetime):
     return t1.timestamp() - t2.timestamp()
 
 
-def delta_human_readable(delta: relativedelta):
-    attrs = ['years', 'months', 'days', 'hours', 'minutes', 'seconds']
-    return ['%d %s' % (getattr(delta, attr), attr if getattr(delta, attr) > 1 else attr[:-1])
-            for attr in attrs if getattr(delta, attr)][0]
-
-
-def date_human_readable(date: datetime):
-    now = datetime.now()
-    return delta_human_readable(relativedelta(now, date))
+# def delta_human_readable(delta: relativedelta):
+#     attrs = ['years', 'months', 'days', 'hours', 'minutes', 'seconds']
+#     return ['%d %s' % (getattr(delta, attr), attr if getattr(delta, attr) > 1 else attr[:-1])
+#             for attr in attrs if getattr(delta, attr)][0]
+#
+#
+# def date_human_readable(date: datetime):
+#     now = datetime.now()
+#     return delta_human_readable(relativedelta(now, date))
 
 def generate_filename(username: str, exention: str):
     now = jdatetime.datetime.fromgregorian(datetime=datetime.now()).strftime("%Y-%m-%d_%H-%M-%S")
