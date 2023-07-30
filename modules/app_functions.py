@@ -15,6 +15,7 @@
 # ///////////////////////////////////////////////////////////////
 import datetime
 import pathlib
+import traceback
 from typing import Optional, Dict
 
 import jdatetime
@@ -127,7 +128,6 @@ def loginUser() -> bool:
             widgets.loginResult.setStyleSheet("color: green;")
             widgets.loginResult.setText("You logged in successfully")
 
-            print(user.image_path)
             widgets.userImage.setPixmap(QPixmap(user.image_path))
             widgets.loggedInUsernameLineEdit.setText(user.username)
             widgets.fullNameLineEdit.setText(user.fullname)

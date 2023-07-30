@@ -143,6 +143,8 @@ class MainWindow(QMainWindow):
                 if len(sys.argv) >= 4:
                     app_functions.target_username = sys.argv[3]
                     app_functions.reloadChat()
+                    self.setWindowTitle("Message " + app_functions.target_username)
+                    widgets.messengerTextEdit.setFocus()
 
                 else:
                     self.openLeftBox()
