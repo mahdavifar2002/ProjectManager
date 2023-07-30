@@ -353,7 +353,7 @@ def sendMessage():
                               text=text, reply_to=reply_to, voice_path=voice_path)
             message.save()
             reloadChat()
-            send_broadcast(f"reload_chat {receiver}")
+            send_broadcast(f"reload_chat {receiver} {user.username}")
         # edit old message
         else:
             message_widget = messages_dict[int(widgets.editLabel.toolTip())]
