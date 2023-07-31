@@ -90,6 +90,14 @@ def updateHomepageVisibilities():
         widgets.leftMenuBg.show()
 
 def prepareHomePage():
+    try:
+        with open("userpass.txt", "r") as file:
+            username, password = file.read().split('\n')
+            widgets.usernameLineEdit.setText(username)
+            widgets.passwordLineEdit.setText(password)
+    except:
+        pass
+
     widgets.loginPushButton.clicked.connect(loginUser)
     widgets.logoutPushButton.clicked.connect(logoutUser)
 
@@ -316,7 +324,7 @@ class ContactButton(QPushButton):
         text = "   " + self.user.fullname + "   " + "\n"
 
         if (user is not None) and self.user.is_typing_for(user.username):
-            text += "   ...is typing   "
+            text += "...is typing"
 
             # Create timer object
             timer = QTimer(self)
@@ -328,7 +336,10 @@ class ContactButton(QPushButton):
         #     message = user.last_message(other_user.username)
 
         elif self.selected_message is not None:
-            text += "   " + self.selected_message.short_text() + "   "
+            text += self.selected_message.short_text()
+
+        # else:
+        #     text += self.user.get_last_seen()
 
         self.setText(text)
 

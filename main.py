@@ -131,8 +131,18 @@ class MainWindow(QMainWindow):
         # LOGIN IF COMMANDLINE PASSED LOGIN INFO
         # ///////////////////////////////////////////////////////////////
         if len(sys.argv) >= 3:
-            widgets.usernameLineEdit.setText(sys.argv[1])
-            widgets.passwordLineEdit.setText(sys.argv[2])
+
+            try:
+                with open("userpass.txt", "r") as file:
+                    username, password = file.read().split('\n')
+            except Exception as e:
+                print(e)
+                username = sys.argv[1]
+                password = sys.argv[2]
+
+            widgets.usernameLineEdit.setText(username)
+            widgets.passwordLineEdit.setText(password)
+
             if app_functions.loginUser():
                 self.resize(460, 600)
                 widgets.stackedWidget.setCurrentWidget(widgets.messenger)

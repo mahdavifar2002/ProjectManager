@@ -1959,7 +1959,7 @@ background-color: transparent;</string>
                       <string notr="true">background-color: rgb(40, 44, 52);</string>
                      </property>
                      <property name="currentIndex">
-                      <number>3</number>
+                      <number>0</number>
                      </property>
                      <widget class="QWidget" name="home">
                       <property name="styleSheet">
@@ -2038,7 +2038,7 @@ background-repeat: no-repeat;</string>
                                <string notr="true"/>
                               </property>
                               <property name="text">
-                               <string>mahdavifar</string>
+                               <string/>
                               </property>
                              </widget>
                             </item>
@@ -2055,7 +2055,7 @@ background-repeat: no-repeat;</string>
                                <string notr="true"/>
                               </property>
                               <property name="text">
-                               <string>96321</string>
+                               <string/>
                               </property>
                               <property name="echoMode">
                                <enum>QLineEdit::Password</enum>
@@ -2822,7 +2822,7 @@ background-repeat: no-repeat;</string>
                                 <rect>
                                  <x>0</x>
                                  <y>0</y>
-                                 <width>218</width>
+                                 <width>274</width>
                                  <height>218</height>
                                 </rect>
                                </property>

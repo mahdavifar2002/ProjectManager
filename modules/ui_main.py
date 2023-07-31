@@ -1456,7 +1456,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 218, 218))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 274, 218))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"
@@ -2201,7 +2201,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(3)
+        self.stackedWidget.setCurrentIndex(0)
         self.chatStackedWidget.setCurrentIndex(1)
         self.extraRightBox.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(0)
@@ -2254,9 +2254,9 @@ class Ui_MainWindow(object):
         self.closeAppBtn.setText("")
         self.label_4.setText("")
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Username", None))
-        self.usernameLineEdit.setText(QCoreApplication.translate("MainWindow", u"mahdavifar", None))
+        self.usernameLineEdit.setText("")
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Password", None))
-        self.passwordLineEdit.setText(QCoreApplication.translate("MainWindow", u"96321", None))
+        self.passwordLineEdit.setText("")
         self.loginPushButton.setText(QCoreApplication.translate("MainWindow", u"Log in", None))
         self.loginResult.setText("")
         self.userImage.setText("")
