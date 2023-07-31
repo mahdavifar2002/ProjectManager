@@ -9,6 +9,7 @@ class User(conf.Base):
     username = conf.Column(conf.String(50), primary_key=True)
     password = conf.Column(conf.String(50), nullable=False)
     fullname = conf.Column(conf.String(50))
+    share = conf.Column(conf.String(50))
     image_path = conf.Column(conf.String(200))
 
     time_created = conf.Column(conf.DateTime(timezone=True), server_default=conf.func.now())
