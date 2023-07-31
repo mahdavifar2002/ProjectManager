@@ -677,7 +677,9 @@ class MessageCoreWidget(QFrame):
 
         self.isBlur = False
 
-        if messageWidget.message.receiver_username == user.username and messageWidget.message.has_been_seen == False:
+        if messageWidget.message.receiver_username == user.username \
+                and messageWidget.message.sender_username != user.username \
+                and messageWidget.message.has_been_seen == False:
             self.isBlur = True
             self.setGraphicsEffect(self.blur_effect)
 
