@@ -292,6 +292,7 @@ def customDropEvent(event: QDropEvent):
 
         # send url
         widgets.chatPage.setProperty("file_path", url)
+        widgets.messengerTextEdit.setFocus()
         sendMessage()
 
         event.accept()
