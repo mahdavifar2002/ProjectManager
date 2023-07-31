@@ -136,7 +136,6 @@ class MainWindow(QMainWindow):
                 with open("userpass.txt", "r") as file:
                     username, password = file.read().split('\n')
             except Exception as e:
-                print(e)
                 username = sys.argv[1]
                 password = sys.argv[2]
 

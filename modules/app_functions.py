@@ -15,6 +15,7 @@
 # ///////////////////////////////////////////////////////////////
 import datetime
 import pathlib
+import subprocess
 import traceback
 from typing import Optional, Dict
 
@@ -89,6 +90,7 @@ def updateHomepageVisibilities():
         widgets.logOutArea.show()
         widgets.leftMenuBg.show()
 
+
 def prepareHomePage():
     try:
         with open("userpass.txt", "r") as file:
@@ -111,7 +113,6 @@ def logoutUser():
     user = None
     MainWindow.setUser(user)
     updateHomepageVisibilities()
-
 
     target_username = None
     reloadChat()
@@ -250,6 +251,54 @@ def prepareMessengerPage():
     # Prepare 'load more messages' button
     widgets.loadMoreButton.clicked.connect(fetch_ten_messages)
 
+    # Prepare drag and drop of image
+    prepareDragAndDrop()
+
+
+def prepareDragAndDrop():
+    widgets.chatPage.setProperty("file_path", "")
+
+    widgets.chatPage.setAcceptDrops(True)
+    widgets.chatPage.dragEnterEvent = customDragEnterEvent
+    widgets.chatPage.dragLeaveEvent = customDragLeaveEvent
+    widgets.chatPage.dropEvent = customDropEvent
+
+chatPage_blur_effect = None
+def customDragEnterEvent(event):
+    global chatPage_blur_effect
+    chatPage_blur_effect = QGraphicsBlurEffect(blurRadius=15)
+    widgets.chatPage.setGraphicsEffect(chatPage_blur_effect)
+    event.accept()
+
+def customDragLeaveEvent(event):
+    global chatPage_blur_effect
+    chatPage_blur_effect = None
+    widgets.chatPage.setGraphicsEffect(None)
+    widgets.chatPage.setStyleSheet("")
+    event.accept()
+
+def customDropEvent(event: QDropEvent):
+    chatPage_blur_effect = None
+    widgets.chatPage.setGraphicsEffect(None)
+    widgets.chatPage.setStyleSheet("")
+
+    if event.mimeData().hasUrls():
+        url = event.mimeData().urls()[0].toLocalFile()
+
+        # convert local link to share link
+        if url[0:2] != "//":
+            url = "//" + user.share + "/" + url
+        url = url.replace(":", "").replace("/", "\\")
+
+        # send url
+        widgets.chatPage.setProperty("file_path", url)
+        sendMessage()
+
+        event.accept()
+    else:
+        print("there")
+        event.ignore()
+
 
 def messenger_text_changed():
     global user
@@ -355,13 +404,15 @@ def sendMessage():
     text = widgets.messengerTextEdit.toPlainText().strip()
     voice_path = widgets.recordButton.property("voice_path")
     widgets.recordButton.setProperty("voice_path", "")
+    file_path = widgets.chatPage.property("file_path")
+    widgets.chatPage.setProperty("file_path", "")
 
-    if len(text) > 0 or QFile.exists(voice_path):
+    if len(text) > 0 or QFile.exists(voice_path) or QFile.exists(file_path):
         # send new message
         if widgets.editFrame.isHidden():
             reply_to = None if widgets.replyFrame.isHidden() else int(widgets.replyLabel.toolTip())
-            message = Message(sender_username=sender, receiver_username=receiver,
-                              text=text, reply_to=reply_to, voice_path=voice_path)
+            message = Message(sender_username=sender, receiver_username=receiver, text=text,
+                              reply_to=reply_to, voice_path=voice_path, file_path=file_path)
             message.save()
             reloadChat()
             send_broadcast(f"reload_chat {receiver} {user.username}")
@@ -394,7 +445,7 @@ def recordMessage():
         recorder.setMediaFormat(QMediaFormat.FileFormat.MP3)
         recorder.setQuality(QMediaRecorder.Quality.HighQuality)
         filename = conf.generate_filename(user.username, "mp3")
-        filepath = pathlib.Path(QDir.toNativeSeparators("//khakbaz/E/ProjectManager/Files/Voices")) / filename
+        filepath = pathlib.Path(QDir.toNativeSeparators("//alireza/E/ProjectManager/Files/Voices")) / filename
         widgets.recordButton.setProperty("voice_path", str(filepath))
         url = QUrl.fromLocalFile(os.fspath(filepath))
         recorder.setOutputLocation(url)
@@ -593,6 +644,12 @@ class MessageWidget(QFrame):
     def contextMenuEvent(self, event):
         self.menu = QMenu(self)
 
+        if self.message.file_path is not None and QFile.exists(self.message.file_path):
+            # show in folder
+            replyAction = QAction('Show in Folder', self)
+            replyAction.triggered.connect(lambda: self.openFolder(event))
+            self.menu.addAction(replyAction)
+
         # reply
         replyAction = QAction('Reply', self)
         replyAction.triggered.connect(lambda: self.replySlot(event))
@@ -615,6 +672,9 @@ class MessageWidget(QFrame):
 
         # add other required actions
         self.menu.popup(QCursor.pos())
+
+    def openFolder(self, event):
+        subprocess.Popen(f'explorer /select, "{self.message.file_path}"')
 
     def replySlot(self, event):
         widgets.replyLabel.setText(self.message.short_text())
@@ -667,8 +727,12 @@ class MessageCoreWidget(QFrame):
         self.layout().setContentsMargins(0, 0, 0, 0)
 
         if messageWidget.message.voice_path is not None and QFile.exists(messageWidget.message.voice_path):
-            voice_widget = VoiceWidget(messageWidget)
-            self.layout().addWidget(voice_widget)
+            self.voice_widget = VoiceWidget(messageWidget)
+            self.layout().addWidget(self.voice_widget)
+
+        if messageWidget.message.file_path is not None and QFile.exists(messageWidget.message.file_path):
+            self.file_widget = FileWidget(messageWidget)
+            self.layout().addWidget(self.file_widget)
 
         self.layout().addWidget(self.text_edit)
 
@@ -701,7 +765,6 @@ class MessageTextWidget(AutoResizingTextEdit):
         self.setStyleSheet("background-color: transparent;")
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(messageWidget.contextMenuEvent)
-
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
         if e.button() == Qt.MouseButton.LeftButton and self.parent().isBlur:
@@ -820,6 +883,61 @@ class VoiceWidget(QFrame):
 
     def duration_changed(self, duration):
         self.slider.setRange(0, duration)
+
+
+class FileWidget(QFrame):
+    def __init__(self, message_widget):
+        super().__init__()
+        self.message_widget = message_widget
+
+        self.hbox = QHBoxLayout()
+        self.hbox.setContentsMargins(0, 0, 0, 0)
+        self.hbox.setSpacing(10)
+        self.setLayout(self.hbox)
+
+        self.fileButton = QPushButton(self)
+        self.fileButton.setIcon(QIcon("./images/icons/cil-file.png"))
+        self.fileButton.setIconSize(QSize(16, 16))
+        self.fileButton.setStyleSheet("background-color: transparent;")
+        self.hbox.addWidget(self.fileButton)
+
+        self.info = QFileInfo(self.message_widget.message.file_path)
+        self.fileNameLabel = QLabel(self.info.fileName())
+        self.fileNameLabel.setStyleSheet("font-weight: bold;");
+        self.fileSizeLabel = QLabel(self.pretty_size(self.info.size()))
+        self.fileSizeLabel.setStyleSheet("color: gray;");
+
+        self.infoFrame = QFrame()
+        self.vbox = QVBoxLayout()
+        self.vbox.setContentsMargins(0, 0, 0, 0)
+        self.vbox.setSpacing(0)
+        self.infoFrame.setLayout(self.vbox)
+        self.vbox.addWidget(self.fileNameLabel)
+        self.vbox.addWidget(self.fileSizeLabel)
+
+        self.hbox.addWidget(self.infoFrame)
+        self.hbox.addStretch()
+
+        self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+
+    def pretty_size(self, size: int):
+        if size > 1_000_000_000:
+            return str(round(size / 1_000_000_000, 3)) + " GB"
+        if size > 1_000_000:
+            return str(round(size / 1_000_000, 3)) + " MB"
+        if size > 1_000:
+            return str(round(size / 1_000, 3)) + " KB"
+        else:
+            return str(round(size / 1, 3)) + " B"
+
+    def mousePressEvent(self, e: QMouseEvent) -> None:
+        if e.button() == Qt.MouseButton.LeftButton:
+            if self.parent().isBlur:
+                self.parent().mousePressEvent(e)
+            else:
+                os.startfile(self.message_widget.message.file_path)
+        else:
+            super().mousePressEvent(e)
 
 class ClickSlider(QSlider):
     """A slider with a signal that emits its position when it is pressed.
