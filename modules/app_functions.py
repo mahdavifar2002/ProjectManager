@@ -35,7 +35,9 @@ widgets: Optional[Ui_MainWindow] = None
 mainWindow: Optional[MainWindow] = None
 user: Optional[User] = None
 messages_dict: Dict[int, QWidget] = {}
+messages_dict_full: bool = False
 search_messages_dict: Dict[int, QWidget] = {}
+search_messages_dict_full: bool = False
 target_username: Optional[str] = None
 last_user_update: datetime.datetime = datetime.datetime.now()
 
@@ -330,8 +332,12 @@ def close_edit_area():
 
 
 def reload_contacts_list(search=None):
+    global search_messages_dict
+    global search_messages_dict_full
+
     clearLayout(widgets.contactsVerticalLayout)
     search_messages_dict.clear()
+    search_messages_dict_full = False
 
     if search is None or search == "":
         users = User.users()
@@ -501,12 +507,14 @@ def newMessage(message_id: int):
 def reloadChat(new_target, message_id=None):
     global target_username
     global messages_dict
+    global messages_dict_full
 
     if new_target == target_username:
-        while message_id not in messages_dict:
-            if not fetch_ten_messages(load_all=False):
-                break
         if message_id is not None:
+            # scroll to selected message
+            while message_id not in messages_dict:
+                if not fetch_ten_messages(load_all=False):
+                    break
             scroll_to_message_id(message_id)
         return
 
@@ -535,6 +543,7 @@ def reloadChat(new_target, message_id=None):
 
     # Messages
     messages_dict.clear()
+    messages_dict_full = False
 
     fetch_ten_messages(load_all=False)
 
@@ -545,6 +554,9 @@ def reloadChat(new_target, message_id=None):
             widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().maximum())
     else:
         # scroll to selected message
+        while message_id not in messages_dict:
+            if not fetch_ten_messages(load_all=False):
+                break
         scroll_to_message_id(message_id)
 
     # Set window name
@@ -604,19 +616,27 @@ def addMessageWidget(message: Message):
 
 def on_search_scroll():
     global search_messages_dict
+    global search_messages_dict_full
 
-    if widgets.contactsScrollArea.verticalScrollBar().value() == widgets.contactsScrollArea.verticalScrollBar().maximum():
-        fetch_ten_search_messages(widgets.searchLineEdit.text())
-        QApplication.processEvents()
+    if not search_messages_dict_full:
+        if widgets.contactsScrollArea.verticalScrollBar().value() == widgets.contactsScrollArea.verticalScrollBar().maximum():
+            if fetch_ten_search_messages(widgets.searchLineEdit.text()):
+                QApplication.processEvents()
+            else:
+                search_messages_dict_full = True
 
 
 def on_chat_scroll():
     global messages_dict
+    global messages_dict_full
 
-    if widgets.chatScrollArea.verticalScrollBar().value() == widgets.chatScrollArea.verticalScrollBar().minimum():
-        topmost_message_id = min(messages_dict)
-        if fetch_ten_messages():
-            scroll_to_message_id(topmost_message_id, focus=False)
+    if not messages_dict_full:
+        if widgets.chatScrollArea.verticalScrollBar().value() == widgets.chatScrollArea.verticalScrollBar().minimum():
+            topmost_message_id = min(messages_dict)
+            if fetch_ten_messages():
+                scroll_to_message_id(topmost_message_id, focus=False)
+            else:
+                messages_dict_full = True
 
     pass
     # # check seens
