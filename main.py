@@ -60,8 +60,13 @@ class MainWindow(QMainWindow):
         # ///////////////////////////////////////////////////////////////
         self.title = "Project Manager"
         self.description = ""
+
         # APPLY TEXTS
-        self.setWindowTitle(self.title)
+        if len(sys.argv) >= 4:
+            self.setWindowTitle("Message " + sys.argv[3])
+        else:
+            self.setWindowTitle(self.title)
+
         widgets.titleRightInfo.setText(self.description)
 
         # TOGGLE MENU
