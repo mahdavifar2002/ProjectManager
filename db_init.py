@@ -39,6 +39,8 @@ with open(str(accounts_path), mode="r", encoding="utf-8") as accounts_file:
 
         print(f"{fullname} , {username}")
 
+usernames = [user.username for user in User.users()]
+
 # Add dummy rows for messages and tasks table
 # message1 = Message(sender_username="alireza", receiver_username="pc25", text="Hello! How are you?")
 # message1.save()
@@ -58,7 +60,6 @@ task.save()
 
 # import old messages
 directory = 'E:\\ProjectManager\\Chat'
-usernames = [user.username for user in User.users()]
 
 files = pathlib.Path(directory).glob('*')
 for contact in files:
@@ -83,7 +84,7 @@ for contact in files:
                 pass
 
             _datetime = _datetime.split("      ", maxsplit=1)[1]
-            time_created = jdatetime.datetime.strptime(_datetime, "%Y-%m-%d      %H:%M:%S")
+            time_created = jdatetime.datetime.strptime(_datetime, "%Y-%m-%d      %H:%M:%S").togregorian()
             doc = QtGui.QTextDocument()
             doc.setHtml(text)
             text = doc.toPlainText()
