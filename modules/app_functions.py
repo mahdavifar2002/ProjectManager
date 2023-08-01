@@ -302,7 +302,7 @@ def customDropEvent(event: QDropEvent):
         # send url
         widgets.chatPage.setProperty("file_path", url)
         widgets.messengerTextEdit.setFocus()
-        sendMessage()
+        sendMessage(force_send=True)
 
         event.accept()
     else:
@@ -422,8 +422,9 @@ class ContactButton(QPushButton):
         self.setText(text)
 
 
-def sendMessage():
-    if not widgets.messengerTextEdit.hasFocus() \
+def sendMessage(force_send=False):
+    if not force_send and \
+            not widgets.messengerTextEdit.hasFocus() \
             and not widgets.chatSendButton.hasFocus() \
             and not widgets.recordButton.hasFocus():
         return
