@@ -150,8 +150,7 @@ class MainWindow(QMainWindow):
                 widgets.leftMenuBg.hide()
 
                 if len(sys.argv) >= 4:
-                    app_functions.target_username = sys.argv[3]
-                    app_functions.reloadChat()
+                    app_functions.reloadChat(sys.argv[3])
                     widgets.messengerTextEdit.setFocus()
 
                 else:
@@ -185,8 +184,7 @@ class MainWindow(QMainWindow):
     def contactClick(self):
         # GET BUTTON CLICKED
         btn = self.sender()
-        app_functions.target_username = btn.user.username
-        app_functions.reloadChat(btn.selected_message_id)
+        app_functions.reloadChat(btn.user.username, btn.selected_message_id)
 
         btn = widgets.btn_messenger
         UIFunctions.resetStyle(self, btn.objectName())

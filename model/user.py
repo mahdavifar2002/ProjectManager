@@ -65,9 +65,22 @@ class User(conf.Base):
 
     def search_messages(self, search: str):
         query = conf.session.query(message.Message).filter(conf.and_(conf.or_(
-                message.Message.sender_username == self.username,
-                message.Message.receiver_username == self.username)),
-            message.Message.text.contains(search)).order_by(conf.desc("time_created"))
+            message.Message.sender_username == self.username,
+            message.Message.receiver_username == self.username)),
+            message.Message.text.contains(search)).order_by(message.Message.time_created.desc())
+
+        messages = query.all()
+        return messages
+
+    def ten_search_messages(self, search: str, before_id=None):
+        if before_id is None:
+            before_id = 2147483647 # max int in mysql
+
+        query = conf.session.query(message.Message).filter(conf.and_(conf.or_(
+            message.Message.sender_username == self.username,
+            message.Message.receiver_username == self.username)),
+            message.Message.text.contains(search))
+        query = query.filter(message.Message.id < before_id).order_by(message.Message.time_created.desc()).limit(10)
 
         messages = query.all()
         return messages

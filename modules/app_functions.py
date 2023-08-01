@@ -35,6 +35,7 @@ widgets: Optional[Ui_MainWindow] = None
 mainWindow: Optional[MainWindow] = None
 user: Optional[User] = None
 messages_dict: Dict[int, QWidget] = {}
+search_messages_dict: Dict[int, QWidget] = {}
 target_username: Optional[str] = None
 last_user_update: datetime.datetime = datetime.datetime.now()
 
@@ -114,8 +115,7 @@ def logoutUser():
     MainWindow.setUser(user)
     updateHomepageVisibilities()
 
-    target_username = None
-    reloadChat()
+    reloadChat(None)
 
     widgets.loginResult.setStyleSheet("color: green;")
     widgets.loginResult.setText("You logged out successfully")
@@ -245,8 +245,10 @@ def prepareMessengerPage():
     widgets.pinLabel.mousePressEvent = jump_to_pin_message
     widgets.closePinButton.clicked.connect(unpin_message)
 
-    # # Prepare handling seen messages
-    # widgets.chatScrollArea.verticalScrollBar().actionTriggered.connect(on_chat_scroll)
+    # Prepare handling scroll to top to fetch new messages
+    widgets.chatScrollArea.verticalScrollBar().actionTriggered.connect(on_chat_scroll)
+    # Prepare handling scroll to top to fetch new search messages
+    widgets.contactsScrollArea.verticalScrollBar().actionTriggered.connect(on_search_scroll)
 
     # Prepare 'load more messages' button
     widgets.loadMoreButton.clicked.connect(fetch_ten_messages)
@@ -263,12 +265,16 @@ def prepareDragAndDrop():
     widgets.chatPage.dragLeaveEvent = customDragLeaveEvent
     widgets.chatPage.dropEvent = customDropEvent
 
+
 chatPage_blur_effect = None
+
+
 def customDragEnterEvent(event):
     global chatPage_blur_effect
     chatPage_blur_effect = QGraphicsBlurEffect(blurRadius=15)
     widgets.chatPage.setGraphicsEffect(chatPage_blur_effect)
     event.accept()
+
 
 def customDragLeaveEvent(event):
     global chatPage_blur_effect
@@ -276,6 +282,7 @@ def customDragLeaveEvent(event):
     widgets.chatPage.setGraphicsEffect(None)
     widgets.chatPage.setStyleSheet("")
     event.accept()
+
 
 def customDropEvent(event: QDropEvent):
     chatPage_blur_effect = None
@@ -324,6 +331,7 @@ def close_edit_area():
 
 def reload_contacts_list(search=None):
     clearLayout(widgets.contactsVerticalLayout)
+    search_messages_dict.clear()
 
     if search is None or search == "":
         users = User.users()
@@ -336,19 +344,33 @@ def reload_contacts_list(search=None):
             user_buttons[i] = ContactButton(other_user, None)
             widgets.contactsVerticalLayout.addWidget(user_buttons[i])
 
-    else:
-        messages = user.search_messages(search)
-        users = [user.find_by_username(
-            message.sender_username if message.sender_username != user.username else message.receiver_username)
-            for message in messages]
-        user_buttons = [None for _ in range(len(users))]
+        mainWindow.connectContactButtons(user_buttons)
 
-        for i, other_user in enumerate(users):
-            user_buttons[i] = ContactButton(other_user, messages[i])
-            widgets.contactsVerticalLayout.addWidget(user_buttons[i])
+    else:
+        fetch_ten_search_messages(search)
 
     widgets.contactsVerticalLayout.addStretch()
+
+
+def fetch_ten_search_messages(search):
+    if search is None or search == "":
+        return
+
+    before_id = min(search_messages_dict, default=2147483647)
+
+    messages = user.ten_search_messages(search, before_id)
+    users = [user.find_by_username(
+        message.sender_username if message.sender_username != user.username else message.receiver_username)
+        for message in messages]
+    user_buttons = [None for _ in range(len(users))]
+    for i, other_user in enumerate(users):
+        user_buttons[i] = ContactButton(other_user, messages[i])
+        widgets.contactsVerticalLayout.addWidget(user_buttons[i])
+        search_messages_dict[messages[i].id] = user_buttons[i]
+
     mainWindow.connectContactButtons(user_buttons)
+
+    return len(user_buttons)
 
 
 class ContactButton(QPushButton):
@@ -415,7 +437,7 @@ def sendMessage():
             message = Message(sender_username=sender, receiver_username=receiver, text=text,
                               reply_to=reply_to, voice_path=voice_path, file_path=file_path)
             message.save()
-            reloadChat()
+            newMessage(message.id)
             send_broadcast(f"new_message {receiver} {user.username} {message.id}")
         # edit old message
         else:
@@ -476,10 +498,19 @@ def newMessage(message_id: int):
         widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().maximum())
 
 
-
-def reloadChat(message_id=None):
+def reloadChat(new_target, message_id=None):
     global target_username
     global messages_dict
+
+    if new_target == target_username:
+        while message_id not in messages_dict:
+            if not fetch_ten_messages(load_all=False):
+                break
+        if message_id is not None:
+            scroll_to_message_id(message_id)
+        return
+
+    target_username = new_target
 
     # Clear chatbox
     clearLayout(widgets.chatGridLayout)
@@ -503,9 +534,9 @@ def reloadChat(message_id=None):
     widgets.contactInfoHorizontalLayout.addWidget(user_button)
 
     # Messages
-    messages_dict = {}
+    messages_dict.clear()
 
-    fetch_ten_messages(load_all=True)
+    fetch_ten_messages(load_all=False)
 
     #  scroll to the end of chat
     if message_id is None:
@@ -514,17 +545,25 @@ def reloadChat(message_id=None):
             widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().maximum())
     else:
         # scroll to selected message
-        message_widget = messages_dict[message_id]
-        for i in range(2):
-            QCoreApplication.processEvents()
-            widgets.chatScrollArea.ensureWidgetVisible(message_widget)
-        message_widget.setFocus()
+        scroll_to_message_id(message_id)
 
     # Set window name
     mainWindow.setWindowTitle("Message " + target_username)
 
     # # check seen messages
     # on_chat_scroll()
+
+
+def scroll_to_message_id(message_id, focus=True):
+    global messages_dict
+
+    message_widget = messages_dict[message_id]
+    for i in range(2):
+        QCoreApplication.processEvents()
+        widgets.chatScrollArea.ensureWidgetVisible(message_widget)
+
+    if focus:
+        message_widget.setFocus()
 
 
 def fetch_ten_messages(load_all=False):
@@ -546,6 +585,8 @@ def fetch_ten_messages(load_all=False):
     for _, message in enumerate(messages):
         addMessageWidget(message)
 
+    return len(messages)
+
 
 def addMessageWidget(message: Message):
     global user
@@ -561,10 +602,21 @@ def addMessageWidget(message: Message):
         message_widget.pinMessage()
 
 
+def on_search_scroll():
+    global search_messages_dict
+
+    if widgets.contactsScrollArea.verticalScrollBar().value() == widgets.contactsScrollArea.verticalScrollBar().maximum():
+        fetch_ten_search_messages(widgets.searchLineEdit.text())
+        QApplication.processEvents()
+
+
 def on_chat_scroll():
-    # if widgets.chatScrollArea.verticalScrollBar().value() == widgets.chatScrollArea.verticalScrollBar().minimum():
-    #     widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().minimum() + 50)
-    #     fetch_ten_messages()
+    global messages_dict
+
+    if widgets.chatScrollArea.verticalScrollBar().value() == widgets.chatScrollArea.verticalScrollBar().minimum():
+        topmost_message_id = min(messages_dict)
+        if fetch_ten_messages():
+            scroll_to_message_id(topmost_message_id, focus=False)
 
     pass
     # # check seens
@@ -961,6 +1013,7 @@ class FileWidget(QFrame):
                 os.startfile(self.message_widget.message.file_path)
         else:
             super().mousePressEvent(e)
+
 
 class ClickSlider(QSlider):
     """A slider with a signal that emits its position when it is pressed.
