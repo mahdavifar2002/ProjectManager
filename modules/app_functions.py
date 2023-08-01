@@ -416,7 +416,7 @@ def sendMessage():
                               reply_to=reply_to, voice_path=voice_path, file_path=file_path)
             message.save()
             reloadChat()
-            send_broadcast(f"reload_chat {receiver} {user.username}")
+            send_broadcast(f"new_message {receiver} {user.username} {message.id}")
         # edit old message
         else:
             message_widget = messages_dict[int(widgets.editLabel.toolTip())]
@@ -463,6 +463,20 @@ def recordMessage():
         widgets.recordButton.setToolTip("record")
 
 
+def newMessage(message_id: int):
+    global target_username
+    global messages_dict
+
+    message = Message.find_by_id(message_id)
+    addMessageWidget(message)
+
+    #  scroll to the end of chat
+    for i in range(2):
+        QCoreApplication.processEvents()
+        widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().maximum())
+
+
+
 def reloadChat(message_id=None):
     global target_username
     global messages_dict
@@ -506,6 +520,9 @@ def reloadChat(message_id=None):
             widgets.chatScrollArea.ensureWidgetVisible(message_widget)
         message_widget.setFocus()
 
+    # Set window name
+    mainWindow.setWindowTitle("Message " + target_username)
+
     # # check seen messages
     # on_chat_scroll()
 
@@ -526,17 +543,22 @@ def fetch_ten_messages(load_all=False):
     # Add an empty widget at top of chatbox to force reload
     widgets.chatGridLayout.addWidget(QLabel(""), 0, 0)
 
-    for i, message in enumerate(messages):
-        is_sender = (message.sender_username == user.username)
-        message_widget = MessageWidget(message, widgets)
-        widgets.chatGridLayout.addWidget(message_widget, 1 + message.id, is_sender, 1, 2)
+    for _, message in enumerate(messages):
+        addMessageWidget(message)
 
-        # Fill the message dictionary
-        messages_dict[message.id] = message_widget
 
-        # check for pin
-        if message.pinned:
-            message_widget.pinMessage()
+def addMessageWidget(message: Message):
+    global user
+    global messages_dict
+
+    is_sender = (message.sender_username == user.username)
+    message_widget = MessageWidget(message, widgets)
+    widgets.chatGridLayout.addWidget(message_widget, 1 + message.id, is_sender, 1, 2)
+    # Fill the message dictionary
+    messages_dict[message.id] = message_widget
+    # check for pin
+    if message.pinned:
+        message_widget.pinMessage()
 
 
 def on_chat_scroll():
@@ -986,12 +1008,15 @@ class Worker(QObject):
 
 
 def actionOnBroadcast(msg: str):
+    global target_username
+
     command = msg.split(" ")
 
-    if command[0] == "reload_chat":
+    if command[0] == "new_message":
         if command[1] == user.username:
-            print("reloading...")
-            reloadChat()
+            if command[2] == target_username:
+                print(f"new message... {command[3]}")
+                newMessage(int(command[3]))
 
     elif command[0] == "reload_message":
         message_id = int(command[1])

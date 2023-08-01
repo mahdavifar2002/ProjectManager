@@ -58,11 +58,11 @@ class MainWindow(QMainWindow):
 
         # APP NAME
         # ///////////////////////////////////////////////////////////////
-        title = "Project Manager"
-        description = "Project Manager"
+        self.title = "Project Manager"
+        self.description = ""
         # APPLY TEXTS
-        self.setWindowTitle(title)
-        widgets.titleRightInfo.setText(description)
+        self.setWindowTitle(self.title)
+        widgets.titleRightInfo.setText(self.description)
 
         # TOGGLE MENU
         # ///////////////////////////////////////////////////////////////
@@ -152,7 +152,6 @@ class MainWindow(QMainWindow):
                 if len(sys.argv) >= 4:
                     app_functions.target_username = sys.argv[3]
                     app_functions.reloadChat()
-                    self.setWindowTitle("Message " + app_functions.target_username)
                     widgets.messengerTextEdit.setFocus()
 
                 else:
@@ -251,6 +250,9 @@ class MainWindow(QMainWindow):
         btn = self.sender()
         btnName = btn.objectName()
 
+        # Reset name of window
+        self.setWindowTitle(self.title)
+
         # CLOSE EXTRA LEFT BOX (CONTACTS BOX)
         self.closeLeftBox()
 
@@ -279,6 +281,9 @@ class MainWindow(QMainWindow):
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
             self.openLeftBox()
+
+            if app_functions.target_username is not None:
+                self.setWindowTitle("Message " + app_functions.target_username)
 
         # SHOW NEW PAGE
         if btnName == "btn_new":
