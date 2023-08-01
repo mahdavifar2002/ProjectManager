@@ -107,8 +107,8 @@ class UIFunctions(MainWindow):
                 # SELECT BTN
                 self.ui.toggleLeftBox.setStyleSheet(style + color)
                 if widthRightBox != 0:
-                    style = self.ui.settingsTopBtn.styleSheet()
-                    self.ui.settingsTopBtn.setStyleSheet(style.replace(Settings.BTN_RIGHT_BOX_COLOR, ''))
+                    style = self.ui.emojiButton.styleSheet()
+                    self.ui.emojiButton.setStyleSheet(style.replace(Settings.BTN_RIGHT_BOX_COLOR, ''))
             else:
                 widthExtended = standard
                 # RESET BTN
@@ -128,22 +128,47 @@ class UIFunctions(MainWindow):
             standard = 0
 
             # GET BTN STYLE
-            style = self.ui.settingsTopBtn.styleSheet()
+            style = self.ui.emojiButton.styleSheet()
 
             # SET MAX WIDTH
             if width == 0:
                 widthExtended = maxExtend
                 # SELECT BTN
-                self.ui.settingsTopBtn.setStyleSheet(style + color)
+                self.ui.emojiButton.setStyleSheet(style + color)
                 if widthLeftBox != 0:
                     style = self.ui.toggleLeftBox.styleSheet()
                     self.ui.toggleLeftBox.setStyleSheet(style.replace(Settings.BTN_LEFT_BOX_COLOR, ''))
             else:
                 widthExtended = standard
                 # RESET BTN
-                self.ui.settingsTopBtn.setStyleSheet(style.replace(color, ''))
+                self.ui.emojiButton.setStyleSheet(style.replace(color, ''))
 
             UIFunctions.start_box_animation(self, widthLeftBox, width, "right")
+
+    def toggleLeftMenu(self, enable):
+        if enable:
+            # GET WIDTH
+            width = 0 if self.ui.leftMenuBg.isHidden() else self.ui.leftMenuBg.width()
+            color = Settings.BTN_RIGHT_BOX_COLOR
+
+            # GET BTN STYLE
+            style = self.ui.settingsTopBtn.styleSheet()
+
+            # GET BTN STYLE
+            style = self.ui.settingsTopBtn.styleSheet()
+
+            # SET MAX WIDTH
+            if width == 0:
+                # SELECT BTN
+                self.ui.settingsTopBtn.setStyleSheet(style + color)
+            else:
+                # RESET BTN
+                self.ui.settingsTopBtn.setStyleSheet(style.replace(color, ''))
+
+            if self.ui.leftMenuBg.isHidden():
+                self.ui.leftMenuBg.show()
+            else:
+                self.ui.leftMenuBg.hide()
 
     def start_box_animation(self, left_box_width, right_box_width, direction):
         right_width = 0

@@ -93,7 +93,7 @@ class MainWindow(QMainWindow):
         widgets.extraCloseColumnBtn.clicked.connect(self.openCloseLeftBox)
 
         # EXTRA RIGHT BOX
-        widgets.settingsTopBtn.clicked.connect(self.openCloseRightBox)
+        widgets.settingsTopBtn.clicked.connect(self.openCloseLeftMenu)
 
         # SHOW APP
         # ///////////////////////////////////////////////////////////////
@@ -225,6 +225,23 @@ class MainWindow(QMainWindow):
     def openRightBox(self):
         if not self.rightBoxIsOpen():
             self.openCloseRightBox()
+
+    # EXTRA RIGHT BOX
+    # ///////////////////////////////////////////////////////////////
+    def openCloseLeftMenu(self):
+        UIFunctions.toggleLeftMenu(self, True)
+        widgets.messengerTextEdit.setFocus()
+
+    def leftMenuIsOpen(self):
+        return self.ui.leftMenuBg.width() != 0
+
+    def closeLeftMenu(self):
+        if self.leftMenuIsOpen():
+            self.openCloseLeftMenu()
+
+    def openLeftMenu(self):
+        if not self.leftMenuIsOpen():
+            self.openCloseLeftMenu()
 
     # BUTTONS CLICK
     # Post here your functions for clicked buttons
