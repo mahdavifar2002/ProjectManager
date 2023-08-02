@@ -83,6 +83,14 @@ def save_to_db(record):
         print(e)
 
 
+def bulk_save_to_db(records):
+    try:
+        session.bulk_save_objects(records)
+        session.commit()
+    except Exception as e:
+        print(e)
+
+
 def db_time():
     with engine.connect() as conn:
         result = conn.execute(text("SELECT NOW();"))
@@ -104,6 +112,7 @@ def delta_human_readable(delta: relativedelta):
 def date_human_readable(date: datetime):
     now = db_time()
     return delta_human_readable(relativedelta(now, date))
+
 
 def generate_filename(username: str, exention: str):
     now = jdatetime.datetime.fromgregorian(datetime=datetime.now()).strftime("%Y-%m-%d_%H-%M-%S")

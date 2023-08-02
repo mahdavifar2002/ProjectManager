@@ -740,7 +740,7 @@ class MessageWidget(QFrame):
     def contextMenuEvent(self, event):
         self.menu = QMenu(self)
 
-        if self.message.file_path is not None and QFile.exists(self.message.file_path):
+        if self.message.file_path is not None and len(self.message.file_path) > 0:
             # show in folder
             replyAction = QAction('Show in Folder', self)
             replyAction.triggered.connect(lambda: self.openFolder(event))
@@ -826,7 +826,7 @@ class MessageCoreWidget(QFrame):
             self.voice_widget = VoiceWidget(messageWidget)
             self.layout().addWidget(self.voice_widget)
 
-        if messageWidget.message.file_path is not None and QFile.exists(messageWidget.message.file_path):
+        if messageWidget.message.file_path is not None and len(self.messageWidget.message.file_path) > 0:
             self.file_widget = FileWidget(messageWidget)
             self.layout().addWidget(self.file_widget)
 
@@ -981,6 +981,13 @@ class VoiceWidget(QFrame):
         self.slider.setRange(0, duration)
 
 
+def short_text(text):
+    the_text = text.replace("\n", " ")
+    if len(the_text) > 20:
+        the_text = the_text[:20] + "..."
+    return the_text
+
+
 class FileWidget(QFrame):
     def __init__(self, message_widget):
         super().__init__()
@@ -998,7 +1005,7 @@ class FileWidget(QFrame):
         self.hbox.addWidget(self.fileButton)
 
         self.info = QFileInfo(self.message_widget.message.file_path)
-        self.fileNameLabel = QLabel(self.info.fileName())
+        self.fileNameLabel = QLabel(short_text(self.info.fileName()))
         self.fileNameLabel.setStyleSheet("font-weight: bold;");
         self.fileSizeLabel = QLabel(self.pretty_size(self.info.size()))
         self.fileSizeLabel.setStyleSheet("color: gray;");
