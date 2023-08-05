@@ -22,7 +22,8 @@ def insert():
     users = User.users()
     usernames = [user.username for user in users]
 
-    users = [User.find_by_username("shabani"), User.find_by_username("pc25")]
+    users = [User.find_by_username("shabani"), User.find_by_username("pc25")
+             , User.find_by_username("hossein"), User.find_by_username("alireza")]
 
     for user in users:
         try:
@@ -71,7 +72,10 @@ def insert():
                             # doc.setHtml(text)
                             # text = doc.toPlainText() + file_type
                             text = h.handle(text) + file_type
-                            text = text.replace("\n", "")
+
+                            while '\n\n' in text:
+                                text = text.replace("\n\n", "\n")
+                            text = text.replace("\n", " ")
                             text = text.strip()
 
                             try:
