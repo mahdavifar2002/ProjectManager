@@ -29,7 +29,7 @@ class Message(conf.Base):
     pinned = conf.Column(conf.Boolean, default=False)
 
     def get_time_created(self):
-        return str(jdatetime.datetime.fromgregorian(datetime=self.time_created))
+        return str(jdatetime.datetime.fromgregorian(datetime=self.time_created)).replace(" ", "   ")
 
     def get_time_updated(self):
         return str(jdatetime.datetime.fromgregorian(datetime=self.time_updated))

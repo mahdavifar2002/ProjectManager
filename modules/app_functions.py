@@ -734,7 +734,7 @@ class MessageWidget(QFrame):
             seen_text = "✅ " if is_sender and self.message.has_been_seen else ""
             pin_text = "📌 " if self.message.pinned else ""
             edit_text = " (edited)" if self.message.has_been_edited else ""
-            main_text += "\n" + "<p style='color: gray;'>" + seen_text + pin_text + self.message.get_time_created() + edit_text + "</p>"
+            main_text += "\n" + "<p style='color: gray; white-space:pre;'>" + seen_text + pin_text + self.message.get_time_created() + edit_text + "</p>"
             self.message_core.text_edit.setHtml(main_text)
 
     def contextMenuEvent(self, event):
