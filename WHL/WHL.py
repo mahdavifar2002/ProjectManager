@@ -10,9 +10,13 @@ for item in WHL:
 
 # second, install dependency packages of the project
 
-WHL = ['greenlet-2.0.2-cp37-cp37m-win_amd64.whl',
+WHL = ['alembic-1.11.2-py3-none-any.whl',
+       'greenlet-2.0.2-cp37-cp37m-win_amd64.whl',
        'importlib_metadata-6.7.0-py3-none-any.whl',
+       'importlib_resources-5.12.0-py3-none-any.whl',
        'jdatetime-4.1.1-py3-none-any.whl',
+       'Mako-1.2.4-py3-none-any.whl',
+       'MarkupSafe-2.1.3-cp37-cp37m-win_amd64.whl',
        'mysqlclient-2.1.0-cp37-cp37m-win_amd64.whl',
        'PySide6-6.2.4-6.2.4-cp36.cp37.cp38.cp39.cp310-none-win_amd64.whl',
        'python_dateutil-2.8.2-py2.py3-none-any.whl',
