@@ -1,9 +1,9 @@
 from model import conf
-from model.init import users
-from model.init import messages
+from model.init import init_users
+from model.init import init_messages
 
 # conf.drop_db()
 # conf.init_db()
 
-users.insert()
-messages.insert()
+init_users.insert()
+init_messages.insert()

@@ -67,7 +67,8 @@ class User(conf.Base):
         query = conf.session.query(message.Message).filter(conf.and_(conf.or_(
             message.Message.sender_username == self.username,
             message.Message.receiver_username == self.username)),
-            message.Message.text.contains(search)).order_by(message.Message.time_created.desc())
+            conf.or_(message.Message.text.contains(search), message.Message.file_path.contains(search)))
+        query = query.order_by(message.Message.time_created.desc())
 
         messages = query.all()
         return messages
@@ -79,7 +80,7 @@ class User(conf.Base):
         query = conf.session.query(message.Message).filter(conf.and_(conf.or_(
             message.Message.sender_username == self.username,
             message.Message.receiver_username == self.username)),
-            message.Message.text.contains(search))
+            conf.or_(message.Message.text.contains(search), message.Message.file_path.contains(search)))
         query = query.filter(message.Message.id < before_id).order_by(message.Message.time_created.desc()).limit(10)
 
         messages = query.all()
