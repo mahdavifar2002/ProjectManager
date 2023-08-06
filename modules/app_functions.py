@@ -103,7 +103,7 @@ def prepareHomePage():
     except:
         pass
 
-    widgets.loginPushButton.clicked.connect(loginUser)
+    widgets.loginPushButton.clicked.connect(lambda: loginUser(by_GUI=True))
     widgets.logoutPushButton.clicked.connect(logoutUser)
 
     updateHomepageVisibilities()
@@ -119,11 +119,14 @@ def logoutUser():
 
     reloadChat(None)
 
+    with open("userpass.txt", "w") as file:
+        file.write(str(['', '']))
+
     widgets.loginResult.setStyleSheet("color: green;")
     widgets.loginResult.setText("You logged out successfully")
 
 
-def loginUser() -> bool:
+def loginUser(by_GUI=True) -> bool:
     global user
 
     username = widgets.usernameLineEdit.text()
@@ -143,6 +146,11 @@ def loginUser() -> bool:
             widgets.loggedInUsernameLineEdit.setText(user.username)
             widgets.fullNameLineEdit.setText(user.fullname)
             updateHomepageVisibilities()
+
+            if by_GUI:
+                with open("userpass.txt", "w") as file:
+                    file.write(str([username, password]))
+
             return True
         else:
             widgets.loginResult.setStyleSheet("color: red;")

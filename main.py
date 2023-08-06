@@ -147,7 +147,7 @@ class MainWindow(QMainWindow):
             widgets.usernameLineEdit.setText(username)
             widgets.passwordLineEdit.setText(password)
 
-            if app_functions.loginUser():
+            if app_functions.loginUser(by_GUI=False):
                 self.resize(460, 600)
                 widgets.stackedWidget.setCurrentWidget(widgets.messenger)
                 UIFunctions.resetStyle(self, widgets.btn_messenger.objectName())
