@@ -745,6 +745,10 @@ class MessageWidget(QFrame):
             main_text += "\n" + "<p style='color: gray; white-space:pre;'>" + seen_text + pin_text + self.message.get_time_created() + edit_text + "</p>"
             self.message_core.text_edit.setHtml(main_text)
 
+            # Set tooltip of seen time
+            if self.message.has_been_seen and self.message.time_seen is not None:
+                self.message_core.text_edit.setToolTip("Seen at   " + self.message.get_time_seen())
+
     def contextMenuEvent(self, event):
         self.menu = QMenu(self)
 
@@ -857,6 +861,7 @@ class MessageCoreWidget(QFrame):
             self.setGraphicsEffect(None)
             if not self.messageWidget.message.has_been_seen and self.messageWidget.message.receiver_username == user.username:
                 self.messageWidget.message.has_been_seen = True
+                self.messageWidget.message.time_seen = conf.func.now()
                 self.messageWidget.message.save()
                 send_broadcast(f"reload_message {self.messageWidget.message.id}")
 
@@ -1014,9 +1019,15 @@ class FileWidget(QFrame):
 
         self.info = QFileInfo(self.message_widget.message.file_path)
         self.fileNameLabel = QLabel(short_text(self.info.fileName()))
-        self.fileNameLabel.setStyleSheet("font-weight: bold;");
+        self.fileNameLabel.setStyleSheet("font-weight: bold;")
         self.fileSizeLabel = QLabel(self.pretty_size(self.info.size()))
-        self.fileSizeLabel.setStyleSheet("color: gray;");
+        self.fileSizeLabel.setStyleSheet("color: gray;")
+
+        # preview file if it's an image
+        result = QImageReader.imageFormat(self.message_widget.message.file_path)
+        if result != '':
+            self.setToolTip(f'<img height="200"'
+                            f'src="{self.message_widget.message.file_path}">')
 
         self.infoFrame = QFrame()
         self.vbox = QVBoxLayout()

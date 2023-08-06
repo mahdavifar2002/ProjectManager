@@ -23,6 +23,7 @@ class Message(conf.Base):
         conf.ForeignKey('messages.id'))
     time_created = conf.Column(conf.DateTime(timezone=True), server_default=conf.func.now())
     time_updated = conf.Column(conf.DateTime(timezone=True), onupdate=conf.func.now())
+    time_seen = conf.Column(conf.DateTime(timezone=True))
     has_been_seen = conf.Column(conf.Boolean, default=False)
     has_been_edited = conf.Column(conf.Boolean, default=False)
     deleted = conf.Column(conf.Boolean, default=False)
@@ -32,7 +33,10 @@ class Message(conf.Base):
         return str(jdatetime.datetime.fromgregorian(datetime=self.time_created)).replace(" ", "   ")
 
     def get_time_updated(self):
-        return str(jdatetime.datetime.fromgregorian(datetime=self.time_updated))
+        return str(jdatetime.datetime.fromgregorian(datetime=self.time_updated)).replace(" ", "   ")
+
+    def get_time_seen(self):
+        return str(jdatetime.datetime.fromgregorian(datetime=self.time_seen)).replace(" ", "   ")
 
     def short_text(self):
         the_text = self.text.replace("\n", " ")
