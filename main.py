@@ -180,6 +180,21 @@ class MainWindow(QMainWindow):
         textCursor.setPosition(len(editor.toPlainText()))
         editor.setTextCursor(textCursor)
 
+    # STICKER CLICK
+    # ///////////////////////////////////////////////////////////////
+    def connectStickerButtons(self, stickerButtons):
+        for stickerButton in stickerButtons:
+            stickerButton.clicked.connect(self.stickerClicked)
+
+    def stickerClicked(self):
+        btn = self.sender()
+        editor = widgets.messengerTextEdit
+
+        # send sticker
+        widgets.stickersGridLayout.setProperty("sticker_path", btn.property("sticker_path"))
+
+        app_functions.sendMessage(force_send=True)
+
     # CONTACT CLICK
     # ///////////////////////////////////////////////////////////////
     def connectContactButtons(self, contact_buttons):
@@ -199,8 +214,8 @@ class MainWindow(QMainWindow):
     # ///////////////////////////////////////////////////////////////
     def openCloseLeftBox(self):
         if not self.leftBoxIsOpen() and widgets.contactsVerticalLayout.count() == 0:
-            print("here")
             app_functions.reload_contacts_list()
+
         UIFunctions.toggleLeftBox(self, True)
 
     def leftBoxIsOpen(self):
@@ -216,6 +231,9 @@ class MainWindow(QMainWindow):
     # EXTRA RIGHT BOX
     # ///////////////////////////////////////////////////////////////
     def openCloseRightBox(self):
+        if not self.leftBoxIsOpen() and widgets.stickersGridLayout.count() == 1 and widgets.emojisGridLayout.count() == 1:
+            app_functions.reload_stickers()
+
         UIFunctions.toggleRightBox(self, True)
         widgets.messengerTextEdit.setFocus()
 

@@ -211,37 +211,6 @@ def prepareMessengerPage():
     # Prepare emoji button
     widgets.emojiButton.clicked.connect(mainWindow.openCloseRightBox)
 
-    # Prepare emojis buttons
-    emojis_list = "😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩" \
-                  "🥳😏😒😞😔😟😕🙁😣😖😫😩🥺😢😭😤😠😡🤬🤯😳🥵🥶😶😱😨😰😥😓🤗" \
-                  "🤔🤭🤫🤥😶😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😮😵😵💫🤐🥴🤢🤮🤧😷🤒🤕" \
-                  "🤑🤠😈👿👹👺🤡👻💀👽👾🤖🎃😺😸😹😻😼😽🙀😿😾🤲👐🙌👏🤝👍👎👊" \
-                  "✊🤛🤜🤞🤟🤘👌🤏👈👉👆👇✋🤚🖐🖖👋🤙💪🙏"
-    emojiButtons = []
-
-    for i, item in enumerate(emojis_list):
-        emojiButton = QPushButton(emojis_list[i])
-        emojiButton.setStyleSheet("font: 14pt; text-align: left;")
-        widgets.emojisGridLayout.addWidget(emojiButton, i / 4 + 1, i % 4)
-        emojiButtons.append(emojiButton)
-
-    mainWindow.connectEmojiButtons(emojiButtons)
-
-    # Prepare stickers buttons
-    stickers_directory = f"\\\\alireza\\E\\ProjectManager\\resources\\stickers"
-    files = pathlib.Path(stickers_directory).glob('*')
-
-    for i, sticker_file in enumerate(files):
-        sticker_path = str(sticker_file)
-        if sticker_path[-3:] in ['jpg', 'png']:
-            # stickerButton = QPushButton()
-            # stickerButton.setIcon(QIcon(sticker_path))
-            # stickerButton.setIconSize(QSize(40, 40))
-            # widgets.stickersGridLayout.addWidget(stickerButton, i / 3 + 1, i % 3)
-            #
-            # print(sticker_path)
-            pass
-
     # Prepare search button
     widgets.searchPushButton.clicked.connect(lambda: reload_contacts_list(widgets.searchLineEdit.text()))
 
@@ -280,6 +249,41 @@ def prepareMessengerPage():
 
     # Prepare drag and drop of image
     prepareDragAndDrop()
+
+
+def reload_stickers():
+    # Prepare emojis buttons
+    emojis_list = "😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩" \
+                  "🥳😏😒😞😔😟😕🙁😣😖😫😩🥺😢😭😤😠😡🤬🤯😳🥵🥶😶😱😨😰😥😓🤗" \
+                  "🤔🤭🤫🤥😶😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😮😵😵💫🤐🥴🤢🤮🤧😷🤒🤕" \
+                  "🤑🤠😈👿👹👺🤡👻💀👽👾🤖🎃😺😸😹😻😼😽🙀😿😾🤲👐🙌👏🤝👍👎👊" \
+                  "✊🤛🤜🤞🤟🤘👌🤏👈👉👆👇✋🤚🖐🖖👋🤙💪🙏"
+    emojiButtons = []
+
+    for i, item in enumerate(emojis_list):
+        emojiButton = QPushButton(emojis_list[i])
+        emojiButton.setStyleSheet("font: 14pt; text-align: left;")
+        widgets.emojisGridLayout.addWidget(emojiButton, i / 4 + 1, i % 4)
+        emojiButtons.append(emojiButton)
+
+    mainWindow.connectEmojiButtons(emojiButtons)
+
+    # Prepare stickers buttons
+    stickerButtons = []
+
+    stickers_directory = f"\\\\alireza\\E\\ProjectManager\\resources\\stickers"
+    files = pathlib.Path(stickers_directory).glob('*')
+    for i, sticker_file in enumerate(files):
+        sticker_path = str(sticker_file)
+        if sticker_path[-3:] in ['jpg', 'png']:
+            stickerButton = QPushButton()
+            stickerButton.setIcon(QIcon(sticker_path))
+            stickerButton.setIconSize(QSize(40, 40))
+            stickerButton.setProperty("sticker_path", sticker_path)
+            widgets.stickersGridLayout.addWidget(stickerButton, i / 3 + 1, i % 3)
+            stickerButtons.append(stickerButton)
+
+    mainWindow.connectStickerButtons(stickerButtons)
 
 
 def prepareDragAndDrop():
@@ -458,6 +462,11 @@ def sendMessage(force_send=False):
     widgets.recordButton.setProperty("voice_path", "")
     file_path = widgets.chatPage.property("file_path")
     widgets.chatPage.setProperty("file_path", "")
+    sticker_path = widgets.stickersGridLayout.property("sticker_path")
+    widgets.stickersGridLayout.setProperty("sticker_path", "")
+
+    if QFile.exists(sticker_path):
+        text = f'<center><img height="150" src="{sticker_path}"></center>'
 
     if len(text) > 0 or QFile.exists(voice_path) or QFile.exists(file_path):
         # send new message
