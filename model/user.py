@@ -38,7 +38,7 @@ class User(conf.Base):
         return conf.session.query(User).all()
 
     def messages(self, target_username):
-        query = conf.session.query(message.Message).filter(conf.or_(
+        query = conf.session.query(message.Message).filter(message.Message.deleted == False).filter(conf.or_(
             conf.and_(message.Message.sender_username == self.username,
                       message.Message.receiver_username == target_username),
             conf.and_(message.Message.sender_username == target_username,
@@ -51,7 +51,7 @@ class User(conf.Base):
         if before_id is None:
             before_id = 2147483647 # max int in mysql
 
-        query = conf.session.query(message.Message).filter(conf.or_(
+        query = conf.session.query(message.Message).filter(message.Message.deleted == False).filter(conf.or_(
             conf.and_(message.Message.sender_username == self.username,
                       message.Message.receiver_username == target_username),
             conf.and_(message.Message.sender_username == target_username,
