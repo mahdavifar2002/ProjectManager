@@ -137,7 +137,7 @@ def loginUser(by_GUI=True) -> bool:
         if logged_in_user.password == password:
             user = logged_in_user
             MainWindow.setUser(user)
-            reload_contacts_list()
+            # reload_contacts_list()
 
             widgets.loginResult.setStyleSheet("color: green;")
             widgets.loginResult.setText("You logged in successfully")
@@ -195,7 +195,7 @@ def prepareMessengerPage():
     widgets.messengerTextEdit.deleteLater()
     widgets.messengerTextEdit = new_text_edit
 
-    reload_contacts_list()
+    # reload_contacts_list()
 
     # Prepare send button
     widgets.chatSendButton.clicked.connect(sendMessage)
@@ -211,7 +211,7 @@ def prepareMessengerPage():
     # Prepare emoji button
     widgets.emojiButton.clicked.connect(mainWindow.openCloseRightBox)
 
-    # Prepare emojies buttons
+    # Prepare emojis buttons
     emojis_list = "😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩" \
                   "🥳😏😒😞😔😟😕🙁😣😖😫😩🥺😢😭😤😠😡🤬🤯😳🥵🥶😶😱😨😰😥😓🤗" \
                   "🤔🤭🤫🤥😶😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😮😵😵💫🤐🥴🤢🤮🤧😷🤒🤕" \
@@ -221,11 +221,26 @@ def prepareMessengerPage():
 
     for i, item in enumerate(emojis_list):
         emojiButton = QPushButton(emojis_list[i])
-        emojiButton.setStyleSheet("font: 14pt; text-align: center;")
+        emojiButton.setStyleSheet("font: 14pt; text-align: left;")
         widgets.emojisGridLayout.addWidget(emojiButton, i / 4 + 1, i % 4)
         emojiButtons.append(emojiButton)
 
     mainWindow.connectEmojiButtons(emojiButtons)
+
+    # Prepare stickers buttons
+    stickers_directory = f"\\\\alireza\\E\\ProjectManager\\resources\\stickers"
+    files = pathlib.Path(stickers_directory).glob('*')
+
+    for i, sticker_file in enumerate(files):
+        sticker_path = str(sticker_file)
+        if sticker_path[-3:] in ['jpg', 'png']:
+            # stickerButton = QPushButton()
+            # stickerButton.setIcon(QIcon(sticker_path))
+            # stickerButton.setIconSize(QSize(40, 40))
+            # widgets.stickersGridLayout.addWidget(stickerButton, i / 3 + 1, i % 3)
+            #
+            # print(sticker_path)
+            pass
 
     # Prepare search button
     widgets.searchPushButton.clicked.connect(lambda: reload_contacts_list(widgets.searchLineEdit.text()))
@@ -314,7 +329,6 @@ def customDropEvent(event: QDropEvent):
 
         event.accept()
     else:
-        print("there")
         event.ignore()
 
 
@@ -398,7 +412,7 @@ class ContactButton(QPushButton):
         self.setIcon(QIcon(other_user.image_path))
         self.setIconSize(QSize(45, 45))
         self.setMinimumHeight(60)
-        self.setStyleSheet("text-align: left; border: none;")
+        self.setStyleSheet("text-align: left; border: none; padding: 7px;")
 
         # Prepare user_button text (username + last message, if any)
         self.updateUser()
@@ -746,7 +760,7 @@ class MessageWidget(QFrame):
             self.message_core.text_edit.setHtml(main_text)
 
             # Set tooltip of seen time
-            if self.message.has_been_seen and self.message.time_seen is not None:
+            if is_sender and self.message.has_been_seen and self.message.time_seen is not None:
                 self.message_core.text_edit.setToolTip("Seen at   " + self.message.get_time_seen())
 
     def contextMenuEvent(self, event):

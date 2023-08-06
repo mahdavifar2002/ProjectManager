@@ -198,6 +198,9 @@ class MainWindow(QMainWindow):
     # EXTRA LEFT BOX
     # ///////////////////////////////////////////////////////////////
     def openCloseLeftBox(self):
+        if not self.leftBoxIsOpen() and widgets.contactsVerticalLayout.count() == 0:
+            print("here")
+            app_functions.reload_contacts_list()
         UIFunctions.toggleLeftBox(self, True)
 
     def leftBoxIsOpen(self):
@@ -208,7 +211,6 @@ class MainWindow(QMainWindow):
             self.openCloseLeftBox()
 
     def openLeftBox(self):
-        if not self.leftBoxIsOpen():
             self.openCloseLeftBox()
 
     # EXTRA RIGHT BOX

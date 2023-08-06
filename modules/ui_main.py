@@ -2059,8 +2059,27 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab_emojis, "")
         self.tab_stickers = QWidget()
         self.tab_stickers.setObjectName(u"tab_stickers")
-        self.gridLayout_5 = QGridLayout(self.tab_stickers)
-        self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.verticalLayout_31 = QVBoxLayout(self.tab_stickers)
+        self.verticalLayout_31.setObjectName(u"verticalLayout_31")
+        self.verticalLayout_31.setContentsMargins(0, 0, 0, 0)
+        self.scrollArea_3 = QScrollArea(self.tab_stickers)
+        self.scrollArea_3.setObjectName(u"scrollArea_3")
+        self.scrollArea_3.setWidgetResizable(True)
+        self.scrollAreaWidgetContents_4 = QWidget()
+        self.scrollAreaWidgetContents_4.setObjectName(u"scrollAreaWidgetContents_4")
+        self.scrollAreaWidgetContents_4.setGeometry(QRect(0, 0, 29, 405))
+        self.stickersGridLayout = QGridLayout(self.scrollAreaWidgetContents_4)
+        self.stickersGridLayout.setSpacing(0)
+        self.stickersGridLayout.setObjectName(u"stickersGridLayout")
+        self.stickersGridLayout.setContentsMargins(0, -1, -1, -1)
+        self.verticalSpacer_10 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.stickersGridLayout.addItem(self.verticalSpacer_10, 0, 0, 1, 1)
+
+        self.scrollArea_3.setWidget(self.scrollAreaWidgetContents_4)
+
+        self.verticalLayout_31.addWidget(self.scrollArea_3)
+
         self.tabWidget.addTab(self.tab_stickers, "")
 
         self.verticalLayout_32.addWidget(self.tabWidget)
@@ -2201,10 +2220,10 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(3)
         self.chatStackedWidget.setCurrentIndex(1)
         self.extraRightBox.setCurrentIndex(0)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
