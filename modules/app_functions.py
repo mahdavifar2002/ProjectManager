@@ -1052,6 +1052,7 @@ class FileWidget(QFrame):
     def __init__(self, message_widget):
         super().__init__()
         self.message_widget = message_widget
+        self.file_path = self.message_widget.message.file_path
 
         self.hbox = QHBoxLayout()
         self.hbox.setContentsMargins(0, 0, 0, 0)
@@ -1064,17 +1065,33 @@ class FileWidget(QFrame):
         self.fileButton.setStyleSheet("background-color: transparent;")
         self.hbox.addWidget(self.fileButton)
 
-        self.info = QFileInfo(self.message_widget.message.file_path)
+        self.info = QFileInfo(self.file_path)
         self.fileNameLabel = QLabel(short_text(self.info.fileName()))
         self.fileNameLabel.setStyleSheet("font-weight: bold;")
         self.fileSizeLabel = QLabel(self.pretty_size(self.info.size()))
         self.fileSizeLabel.setStyleSheet("color: gray;")
 
         # preview file if it's an image
-        result = QImageReader.imageFormat(self.message_widget.message.file_path)
+        result = QImageReader.imageFormat(self.file_path)
         if result != '':
             self.setToolTip(f'<img height="200"'
-                            f'src="{self.message_widget.message.file_path}">')
+                            f'src="{self.file_path}">')
+
+        # # preview middle frame if file is a video
+        # elif self.file_path[-3:] in ["mov", "mp4", "avi", "mpg"]: # player.hasVideo():
+        #
+        #     # create thumbnail of video, if not created already
+        #     thumbnail_path = f"{self.file_path}.png"
+        #     try:
+        #         if not QFile.exists(thumbnail_path):
+        #             image = self.thumbnail(self.file_path)
+        #             image.save(thumbnail_path, "png", 10)
+        #
+        #         # show thumbnail as tooltip
+        #         self.setToolTip(f'<img height="200"'
+        #                         f'src="{self.file_path}.png">')
+        #     except Exception as e:
+        #         print(e)
 
         self.infoFrame = QFrame()
         self.vbox = QVBoxLayout()
@@ -1098,6 +1115,44 @@ class FileWidget(QFrame):
             return str(round(size / 1_000, 3)) + " KB"
         else:
             return str(round(size / 1, 3)) + " B"
+
+    def thumbnail(self, url) -> QPixmap:
+        position = 0
+        image = None
+        loop = QEventLoop()
+        QTimer.singleShot(15000, lambda: loop.exit(1))
+        player = QMediaPlayer()
+        sink = QVideoSink()
+        player.setVideoSink(sink)
+        player.setSource(url)
+
+        def handle_status(status):
+            nonlocal position
+            print('status changed:', status.name)
+            # if status == QMediaPlayer.MediaStatus.LoadedMedia:
+            if status == QMediaPlayer.MediaStatus.BufferedMedia:
+                position = player.duration() // 2
+                player.setPosition(position)
+                print('set position:', player.position())
+
+        def handle_frame(frame):
+            nonlocal image
+            print('frame changed:', frame.startTime() // 1000)
+            start = frame.startTime() // 1000
+            if (start) and start >= position:
+                sink.videoFrameChanged.disconnect()
+                image = frame.toImage()
+                print('save: exit')
+                loop.exit()
+
+        player.mediaStatusChanged.connect(handle_status)
+        sink.videoFrameChanged.connect(handle_frame)
+        player.durationChanged.connect(
+            lambda value: print('duration changed:', value))
+        player.play()
+        if loop.exec() == 1:
+            print('ERROR: process timed out')
+        return image
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
         if e.button() == Qt.MouseButton.LeftButton:
