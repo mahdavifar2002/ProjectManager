@@ -299,6 +299,10 @@ def prepareDragAndDrop():
     widgets.chatPage.dragLeaveEvent = customDragLeaveEvent
     widgets.chatPage.dropEvent = customDropEvent
 
+    widgets.messengerTextEdit.dragEnterEvent = customDragEnterEvent
+    widgets.messengerTextEdit.dragLeaveEvent = customDragLeaveEvent
+    widgets.messengerTextEdit.dropEvent = customDropEvent
+
 
 chatPage_blur_effect = None
 
@@ -331,10 +335,25 @@ def customDropEvent(event: QDropEvent):
             url = "//" + user.share + "/" + url
         url = url.replace(":", "").replace("/", "\\")
 
-        # send url
-        widgets.chatPage.setProperty("file_path", url)
-        widgets.messengerTextEdit.setFocus()
-        sendMessage(force_send=True)
+        # ask for link or copy
+        menu = QMenu(widgets.chatPage)
+        menu.move(QCursor.pos())
+        menu.addAction("Link")
+        menu.addAction("Copy")
+
+        user_action = menu.exec()
+
+        if user_action is not None:
+            if user_action.text() == "Link":
+                print("Link")
+                # send url
+                widgets.chatPage.setProperty("file_path", url)
+                widgets.messengerTextEdit.setFocus()
+                sendMessage(force_send=True)
+
+            elif user_action.text() == "Copy":
+                print("Copy")
+
 
         event.accept()
     else:

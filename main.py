@@ -93,6 +93,13 @@ class MainWindow(QMainWindow):
         widgets.btn_save.clicked.connect(self.buttonClick)
         widgets.btn_exit.clicked.connect(self.buttonClick)
 
+        # HIDE FEATURES THAT AREN'T YET IMPLEMENTED
+        widgets.btn_widgets.hide()
+        widgets.btn_add.hide()
+        widgets.btn_new.hide()
+        widgets.btn_save.hide()
+        widgets.btn_exit.hide()
+
         # EXTRA LEFT BOX
         widgets.toggleLeftBox.clicked.connect(self.openCloseLeftBox)
         widgets.extraCloseColumnBtn.clicked.connect(self.openCloseLeftBox)
@@ -205,6 +212,7 @@ class MainWindow(QMainWindow):
         # GET BUTTON CLICKED
         btn = self.sender()
         app_functions.reloadChat(btn.user.username, btn.selected_message_id)
+        self.closeLeftBox()
 
         btn = widgets.btn_messenger
         UIFunctions.resetStyle(self, btn.objectName())
