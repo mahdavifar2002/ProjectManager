@@ -250,6 +250,11 @@ def prepareMessengerPage():
     # Prepare drag and drop of image
     prepareDragAndDrop()
 
+    # # Overlapping contact
+    # child = widgets.chatPageGridLayout.removeWidget(widgets.chatScrollArea)
+    # widgets.chatPageGridLayout.addWidget(widgets.chatScrollArea, 0, 0)
+    # widgets.chatScrollArea.stackUnder(widgets.contactInfoBox)
+
 
 def reload_stickers():
     # Prepare emojis buttons
