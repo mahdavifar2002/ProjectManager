@@ -71,7 +71,7 @@ def insert():
                             # doc = QtGui.QTextDocument()
                             # doc.setHtml(text)
                             # text = doc.toPlainText() + file_type
-                            text = h.handle(text) + file_type
+                            text = h.handle(text)
 
                             while '\n\n' in text:
                                 text = text.replace("\n\n", "\n")
@@ -83,7 +83,7 @@ def insert():
                                 if user.username in [sender, receiver] and contact_username in [sender, receiver]:
                                     message = Message(sender_username=sender, receiver_username=receiver, text=text,
                                                       time_created=time_created, file_path=file_path,
-                                                      has_been_seen=has_been_seen)
+                                                      file_copy=(file_type == "Copy"), has_been_seen=has_been_seen)
                                     messages.append(message)
 
                             except Exception as e:

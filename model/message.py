@@ -10,6 +10,7 @@ class Message(conf.Base):
     text = conf.Column(conf.Text, nullable=False)
     voice_path = conf.Column(conf.Text)
     file_path = conf.Column(conf.Text)
+    file_copy = conf.Column(conf.Boolean, default=False)
     sender_username = conf.Column(
         conf.String(50),
         conf.ForeignKey('users.username'),

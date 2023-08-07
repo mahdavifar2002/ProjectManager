@@ -21,7 +21,7 @@ def insert():
             share = account[2].lower()
             username = account[3][1:].lower()
             image_path = str(
-                pathlib.Path(QDir.toNativeSeparators(f"//khakbaz/E/ProjectManager/WorksManager/Pic/{account[3]}.png")))
+                pathlib.Path(QDir.toNativeSeparators(f"//alireza/E/Works Manager/Pic/{account[3]}.png")))
 
             user = User(username=username, password="96321", fullname=fullname, share=share, image_path=image_path)
             user.save()

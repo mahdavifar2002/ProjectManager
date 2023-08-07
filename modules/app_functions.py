@@ -212,7 +212,8 @@ def prepareMessengerPage():
     widgets.emojiButton.clicked.connect(mainWindow.openCloseRightBox)
 
     # Prepare search button
-    widgets.searchPushButton.clicked.connect(lambda: reload_contacts_list(widgets.searchLineEdit.text()))
+    widgets.searchPushButton.clicked.connect(lambda: (widgets.searchLineEdit.setText(""),
+                                                      reload_contacts_list(widgets.searchLineEdit.text())))
 
     QShortcut(QKeySequence("Ctrl+F"),
               widgets.messengerTextEdit,
@@ -1053,16 +1054,15 @@ class FileWidget(QFrame):
         super().__init__()
         self.message_widget = message_widget
         self.file_path = self.message_widget.message.file_path
+        self.file_copy = self.message_widget.message.file_copy
 
         self.hbox = QHBoxLayout()
         self.hbox.setContentsMargins(0, 0, 0, 0)
         self.hbox.setSpacing(10)
         self.setLayout(self.hbox)
 
-        self.fileButton = QPushButton(self)
-        self.fileButton.setIcon(QIcon("./images/icons/cil-file.png"))
-        self.fileButton.setIconSize(QSize(16, 16))
-        self.fileButton.setStyleSheet("background-color: transparent;")
+        self.fileButton = QPushButton("📋" if self.file_copy else "🔗", self)
+        self.fileButton.setStyleSheet("font: 20px; background-color: transparent;")
         self.hbox.addWidget(self.fileButton)
 
         self.info = QFileInfo(self.file_path)
@@ -1105,6 +1105,7 @@ class FileWidget(QFrame):
         self.hbox.addStretch()
 
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.setToolTip(self.file_path)
 
     def pretty_size(self, size: int):
         if size > 1_000_000_000:
