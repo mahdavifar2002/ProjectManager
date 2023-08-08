@@ -282,7 +282,7 @@ def reload_stickers():
     # Prepare stickers buttons
     stickerButtons = []
 
-    stickers_directory = f"\\\\alireza\\E\\ProjectManager\\resources\\stickers"
+    stickers_directory = f"\\\\alireza\\E\\Works Manager\\Messenger\\resources\\stickers"
     files = pathlib.Path(stickers_directory).glob('*')
     for i, sticker_file in enumerate(files):
         sticker_path = str(sticker_file)
@@ -590,7 +590,7 @@ def recordMessage():
         recorder.setMediaFormat(QMediaFormat.FileFormat.MP3)
         recorder.setQuality(QMediaRecorder.Quality.HighQuality)
         filename = conf.generate_filename(user.username, "mp3")
-        filepath = pathlib.Path(QDir.toNativeSeparators("//alireza/E/ProjectManager/Files/Voices")) / filename
+        filepath = pathlib.Path(QDir.toNativeSeparators("//alireza/E/Works Manager/Messenger/Files/Voices")) / filename
         widgets.recordButton.setProperty("voice_path", str(filepath))
         url = QUrl.fromLocalFile(os.fspath(filepath))
         recorder.setOutputLocation(url)
