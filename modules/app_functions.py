@@ -17,12 +17,14 @@ import datetime
 import multiprocessing
 import pathlib
 import shutil
+import signal
 import subprocess
 import threading
 import traceback
 from typing import Optional, Dict
 
 import jdatetime
+import psutil
 
 # MAIN FILE
 # ///////////////////////////////////////////////////////////////
@@ -484,6 +486,8 @@ def watch_copy_file(message: Message):
         sleep(0.3)
         file_size = FileWidget.fileSize(message.file_path)
         send_broadcast(f"reload_message {message.id}")
+        if not psutil.pid_exists(message.copy_pid):
+            break
 
     send_broadcast(f"reload_message {message.id}")
 
@@ -522,8 +526,10 @@ def sendMessage(force_send=False):
             source_file_path = file_path
             file_name = file_path.split("\\")[-1]
             folder_name = datetime.datetime.now().strftime('%A') + '      '
-            folder_name += str(jdatetime.datetime.now().isoformat(' ', 'seconds')).replace(':', '.').replace(' ', '      ')
-            file_dir = "\\\\" + User.find_by_username(target_username).share + "\\e\\Works Manager\\Attach\\" + folder_name
+            folder_name += str(jdatetime.datetime.now().isoformat(' ', 'seconds')).replace(':', '.').replace(' ',
+                                                                                                             '      ')
+            file_dir = "\\\\" + User.find_by_username(
+                target_username).share + "\\e\\Works Manager\\Attach\\" + folder_name
             file_path = f"{file_dir}\\{file_name}"
 
             if not os.path.exists(file_path):
@@ -536,8 +542,8 @@ def sendMessage(force_send=False):
                 copy_process = multiprocessing.Process(target=shutil.copytree, args=(source_file_path, file_path))
             else:
                 copy_process = multiprocessing.Process(target=shutil.copy, args=(source_file_path, file_path))
-            copy_pid = copy_process.pid
             copy_process.start()
+            copy_pid = copy_process.pid
         else:
             copy_pid = 0
 
@@ -1115,17 +1121,20 @@ class FileWidget(QFrame):
         self.file_path = self.message_widget.message.file_path
         self.file_size = self.message_widget.message.file_size
         self.file_copy = self.message_widget.message.file_copy
+        self.copy_pid = self.message_widget.message.copy_pid
         self.file_is_dir = self.message_widget.message.file_is_dir
+        self.is_sender = (self.message_widget.message.sender_username == user.username)
 
         self.hbox = QHBoxLayout()
         self.hbox.setContentsMargins(0, 0, 0, 0)
         self.hbox.setSpacing(10)
         self.setLayout(self.hbox)
 
-        self.fileButton = QPushButton("📋" if self.file_copy else "🔗", self)
-        if self.file_is_dir:
-            self.fileButton.setText("📂")
+        self.fileButton = QPushButton(self)
+        self.set_icon()
         self.fileButton.setStyleSheet("font: 20px; background-color: transparent;")
+        if self.file_copy and psutil.pid_exists(self.copy_pid):
+            self.fileButton.clicked.connect(lambda: os.kill(self.copy_pid, signal.SIGTERM))
         self.hbox.addWidget(self.fileButton)
 
         self.info = QFileInfo(self.file_path)
@@ -1170,19 +1179,37 @@ class FileWidget(QFrame):
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.setToolTip(self.file_path)
 
-    def updateFileSize(self):
-        # check for directory
+    def set_icon(self):
         if self.file_is_dir:
             self.fileButton.setText("📂")
-            self.fileSizeLabel.setText(f"{FileWidget.countItems(self.file_path)} items")
+        elif self.file_copy:
+            self.fileButton.setText("📋")
+        else:
+            self.fileButton.setText("🔗")
 
-        # otherwise, monitor file size
+    def updateFileSize(self):
+        # monitor the file size and compare it with what is should be
         new_size = FileWidget.fileSize(self.file_path)
+
         if new_size == self.file_size:
+            self.clear_stop_button()
             self.fileSizeLabel.setText(self.pretty_size(new_size))
+
         elif self.file_size != 0:
+            if self.is_sender and psutil.pid_exists(self.copy_pid):
+                self.fileButton.setText("❌")
+            else:
+                self.clear_stop_button()
+
             self.fileSizeLabel.setText(f"{self.pretty_size(new_size)} / {self.pretty_size(self.file_size)} "
-                                       f"({new_size*100 // self.file_size}%)")
+                                       f"({new_size * 100 // self.file_size}%)")
+
+    def clear_stop_button(self):
+        try:
+            self.fileButton.clicked.disconnect()
+        except:
+            pass
+        self.set_icon()
 
     @classmethod
     def countItems(cls, folder_path):
@@ -1199,8 +1226,6 @@ class FileWidget(QFrame):
             return FileWidget.countItems(file_path)
         else:
             return QFileInfo(file_path).size()
-
-
 
     def pretty_size(self, size: int):
         if self.file_is_dir:
