@@ -1072,6 +1072,13 @@ class FileWidget(QFrame):
         self.fileSizeLabel = QLabel(self.pretty_size(self.info.size()))
         self.fileSizeLabel.setStyleSheet("color: gray;")
 
+        # check for directory
+        if os.path.isdir(self.file_path):
+            self.fileButton.setText("📂")
+            _, _, files = next(os.walk(self.file_path))
+            file_count = len(files)
+            self.fileSizeLabel.setText(f"{file_count} items")
+
         # preview file if it's an image
         result = QImageReader.imageFormat(self.file_path)
         if result != '':
