@@ -18,6 +18,7 @@ import multiprocessing
 import pathlib
 import shutil
 import subprocess
+import threading
 import traceback
 from typing import Optional, Dict
 
@@ -476,6 +477,17 @@ class ContactButton(QPushButton):
         self.setText(text)
 
 
+def watch_copy_file(message: Message):
+    file_size = QFileInfo(message.file_path).size()
+
+    while file_size != message.file_size:
+        sleep(0.3)
+        file_size = QFileInfo(message.file_path).size()
+        send_broadcast(f"reload_message {message.id}")
+
+    send_broadcast(f"reload_message {message.id}")
+
+
 def sendMessage(force_send=False):
     if not force_send and \
             not widgets.messengerTextEdit.hasFocus() \
@@ -493,7 +505,10 @@ def sendMessage(force_send=False):
     file_path = widgets.chatPage.property("file_path")
     widgets.chatPage.setProperty("file_path", "")
     file_copy = widgets.chatPage.property("file_copy")
-    widgets.chatPage.setProperty("file_copy", "")
+    widgets.chatPage.setProperty("file_copy", False)
+    file_size = 0
+    if QFile.exists(file_path):
+        file_size = QFileInfo(file_path).size()
 
     if QFile.exists(sticker_path):
         text = f'<center><img height="150" src="{sticker_path}"></center>'
@@ -509,19 +524,34 @@ def sendMessage(force_send=False):
             file_path = f"{file_dir}\\{file_name}"
 
             if not os.path.exists(file_path):
-                os.makedirs(file_dir)
+                try:
+                    os.makedirs(file_dir)
+                except:
+                    pass
 
-            copy_process = multiprocessing.Process(target=shutil.copy, args=(source_file_path, file_path))
+            if os.path.isdir(source_file_path):
+                copy_process = multiprocessing.Process(target=shutil.copytree, args=(source_file_path, file_path))
+            else:
+                copy_process = multiprocessing.Process(target=shutil.copy, args=(source_file_path, file_path))
+            copy_pid = copy_process.pid
             copy_process.start()
+        else:
+            copy_pid = 0
 
         # send new message
         if widgets.editFrame.isHidden():
             reply_to = None if widgets.replyFrame.isHidden() else int(widgets.replyLabel.toolTip())
             message = Message(sender_username=sender, receiver_username=receiver, text=text, reply_to=reply_to,
-                              voice_path=voice_path, file_path=file_path, file_copy=file_copy)
+                              voice_path=voice_path, file_path=file_path, file_size=file_size, file_copy=file_copy,
+                              copy_pid=copy_pid)
             message.save()
             newMessage(message.id)
             send_broadcast(f"new_message {receiver} {user.username} {message.id}")
+
+            if file_copy:
+                thread = threading.Thread(target=watch_copy_file, args=(message,))
+                thread.start()
+
         # edit old message
         else:
             message_widget = messages_dict[int(widgets.editLabel.toolTip())]
@@ -817,6 +847,10 @@ class MessageWidget(QFrame):
             if is_sender and self.message.has_been_seen and self.message.time_seen is not None:
                 self.message_core.text_edit.setToolTip("Seen at   " + self.message.get_time_seen())
 
+            # Update file size
+            if self.message_core.file_widget is not None:
+                self.message_core.file_widget.updateFileSize()
+
     def contextMenuEvent(self, event):
         self.menu = QMenu(self)
 
@@ -905,6 +939,8 @@ class MessageCoreWidget(QFrame):
         if messageWidget.message.voice_path is not None and QFile.exists(messageWidget.message.voice_path):
             self.voice_widget = VoiceWidget(messageWidget)
             self.layout().addWidget(self.voice_widget)
+
+        self.file_widget = None
 
         if messageWidget.message.file_path is not None and len(self.messageWidget.message.file_path) > 0:
             self.file_widget = FileWidget(messageWidget)
@@ -1074,6 +1110,7 @@ class FileWidget(QFrame):
         super().__init__()
         self.message_widget = message_widget
         self.file_path = self.message_widget.message.file_path
+        self.file_size = self.message_widget.message.file_size
         self.file_copy = self.message_widget.message.file_copy
 
         self.hbox = QHBoxLayout()
@@ -1133,6 +1170,15 @@ class FileWidget(QFrame):
 
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.setToolTip(self.file_path)
+
+    def updateFileSize(self):
+        new_size = QFileInfo(self.file_path).size()
+        if new_size == self.file_size:
+            self.fileSizeLabel.setText(self.pretty_size(new_size))
+        elif self.file_size != 0:
+            self.fileSizeLabel.setText(f"{self.pretty_size(new_size)} / {self.pretty_size(self.file_size)} "
+                                       f"({new_size*100 // self.file_size}%)")
+
 
     def pretty_size(self, size: int):
         if size > 1_000_000_000:

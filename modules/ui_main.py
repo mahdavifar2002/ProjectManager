@@ -2069,7 +2069,7 @@ class Ui_MainWindow(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollAreaWidgetContents_4 = QWidget()
         self.scrollAreaWidgetContents_4.setObjectName(u"scrollAreaWidgetContents_4")
-        self.scrollAreaWidgetContents_4.setGeometry(QRect(0, 0, 214, 413))
+        self.scrollAreaWidgetContents_4.setGeometry(QRect(0, 0, 29, 405))
         self.stickersGridLayout = QGridLayout(self.scrollAreaWidgetContents_4)
         self.stickersGridLayout.setSpacing(0)
         self.stickersGridLayout.setObjectName(u"stickersGridLayout")
