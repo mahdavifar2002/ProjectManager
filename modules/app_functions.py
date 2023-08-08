@@ -590,7 +590,7 @@ def recordMessage():
         recorder.setMediaFormat(QMediaFormat.FileFormat.MP3)
         recorder.setQuality(QMediaRecorder.Quality.HighQuality)
         filename = conf.generate_filename(user.username, "mp3")
-        filepath = pathlib.Path(QDir.toNativeSeparators("//alireza/E/Works Manager/Messenger/Files/Voices")) / filename
+        filepath = pathlib.Path(QDir.toNativeSeparators("//alireza/E/Works Manager/Voices")) / filename
         widgets.recordButton.setProperty("voice_path", str(filepath))
         url = QUrl.fromLocalFile(os.fspath(filepath))
         recorder.setOutputLocation(url)
