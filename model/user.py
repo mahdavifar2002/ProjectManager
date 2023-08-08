@@ -35,7 +35,7 @@ class User(conf.Base):
 
     @staticmethod
     def users():
-        return conf.session.query(User).all()
+        return conf.session.query(User).order_by(User.fullname).all()
 
     def messages(self, target_username):
         query = conf.session.query(message.Message).filter(message.Message.deleted == False).filter(conf.or_(
