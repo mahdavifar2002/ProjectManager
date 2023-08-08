@@ -233,7 +233,7 @@ QTabWidget::pane {
 
 QTabBar::tab {
   color: white;
-  width: 80px;
+  width: 70px;
   background-color: #495474;
   border: none;
   padding: 15px;

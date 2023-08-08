@@ -2,10 +2,10 @@ class Settings():
     # APP SETTINGS
     # ///////////////////////////////////////////////////////////////
     ENABLE_CUSTOM_TITLE_BAR = True
-    MENU_WIDTH = 240
-    LEFT_BOX_WIDTH = 240
-    RIGHT_BOX_WIDTH = 240
-    LEFT_MENU_WIDTH = 240
+    MENU_WIDTH = 220
+    LEFT_BOX_WIDTH = 220
+    RIGHT_BOX_WIDTH = 220
+    LEFT_MENU_WIDTH = 220
     TIME_ANIMATION = 500
 
     # BTNS LEFT AND RIGHT BOX COLORS

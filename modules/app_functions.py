@@ -270,7 +270,7 @@ def reload_stickers():
 
     for i, item in enumerate(emojis_list):
         emojiButton = QPushButton(emojis_list[i])
-        emojiButton.setStyleSheet("font: 14pt; text-align: left;")
+        emojiButton.setStyleSheet("font: 14pt; text-align: center; border: 0;")
         widgets.emojisGridLayout.addWidget(emojiButton, i / 4 + 1, i % 4)
         emojiButtons.append(emojiButton)
 
@@ -288,6 +288,7 @@ def reload_stickers():
             stickerButton.setIcon(QIcon(sticker_path))
             stickerButton.setIconSize(QSize(40, 40))
             stickerButton.setProperty("sticker_path", sticker_path)
+            stickerButton.setStyleSheet("border: 0;")
             widgets.stickersGridLayout.addWidget(stickerButton, i / 3 + 1, i % 3)
             stickerButtons.append(stickerButton)
 

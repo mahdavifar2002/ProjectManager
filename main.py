@@ -93,7 +93,9 @@ class MainWindow(QMainWindow):
         widgets.btn_save.clicked.connect(self.buttonClick)
         widgets.btn_exit.clicked.connect(self.buttonClick)
 
-        # HIDE FEATURES THAT AREN'T YET IMPLEMENTED
+        # HIDE FEATURES THAT AREN'T YET IMPLEMENTED OR WANTED
+        widgets.bottomBar.hide()
+        widgets.btn_share.hide()
         widgets.btn_widgets.hide()
         widgets.btn_add.hide()
         widgets.btn_new.hide()
