@@ -502,7 +502,8 @@ def sendMessage(force_send=False):
         if file_copy:
             source_file_path = file_path
             file_name = file_path.split("\\")[-1]
-            folder_name = str(jdatetime.datetime.now().isoformat(' ', 'seconds')).replace(':', '.').replace(' ', '      ')
+            folder_name = datetime.datetime.now().strftime('%A') + '      '
+            folder_name += str(jdatetime.datetime.now().isoformat(' ', 'seconds')).replace(':', '.').replace(' ', '      ')
             file_dir = "\\\\" + User.find_by_username(target_username).share + "\\e\\Works Manager\\Attach\\" + folder_name
             file_path = f"{file_dir}\\{file_name}"
 
