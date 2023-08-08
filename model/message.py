@@ -46,9 +46,15 @@ class Message(conf.Base):
         return str(jdatetime.datetime.fromgregorian(datetime=self.time_seen)).replace(" ", "   ")
 
     def short_text(self):
+        max_len = 20
+
         the_text = self.text.replace("\n", " ")
-        if len(the_text) > 20:
-            the_text = the_text[:20] + "..."
+        if self.file_path is not None:
+            file_name = self.file_path.split('\\')[-1]
+            the_text = f"{file_name} " + the_text
+
+        if len(the_text) > max_len:
+            the_text = the_text[:max_len] + "..."
         return the_text
 
     @classmethod
