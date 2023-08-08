@@ -328,32 +328,33 @@ def customDropEvent(event: QDropEvent):
     widgets.chatPage.setGraphicsEffect(None)
     widgets.chatPage.setStyleSheet("")
 
+    # ask for link or copy
+    menu = QMenu(widgets.chatPage)
+    menu.move(QCursor.pos())
+    menu.addAction("Link")
+    menu.addAction("Copy")
+
+    user_action = menu.exec()
+
     if event.mimeData().hasUrls():
-        url = event.mimeData().urls()[0].toLocalFile()
+        for raw_url in event.mimeData().urls():
+            url = raw_url.toLocalFile()
 
-        # convert local link to share link
-        if url[0:2] != "//":
-            url = "//" + user.share + "/" + url
-        url = url.replace(":", "").replace("/", "\\")
+            # convert local link to share link
+            if url[0:2] != "//":
+                url = "//" + user.share + "/" + url
+            url = url.replace(":", "").replace("/", "\\")
 
-        # ask for link or copy
-        menu = QMenu(widgets.chatPage)
-        menu.move(QCursor.pos())
-        menu.addAction("Link")
-        menu.addAction("Copy")
+            if user_action is not None:
+                if user_action.text() == "Link":
+                    print("Link")
+                    # send url
+                    widgets.chatPage.setProperty("file_path", url)
+                    widgets.messengerTextEdit.setFocus()
+                    sendMessage(force_send=True)
 
-        user_action = menu.exec()
-
-        if user_action is not None:
-            if user_action.text() == "Link":
-                print("Link")
-                # send url
-                widgets.chatPage.setProperty("file_path", url)
-                widgets.messengerTextEdit.setFocus()
-                sendMessage(force_send=True)
-
-            elif user_action.text() == "Copy":
-                print("Copy")
+                elif user_action.text() == "Copy":
+                    print("Copy")
 
 
         event.accept()
