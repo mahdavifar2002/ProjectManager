@@ -14,7 +14,9 @@
 #
 # ///////////////////////////////////////////////////////////////
 import datetime
+import multiprocessing
 import pathlib
+import shutil
 import subprocess
 import traceback
 from typing import Optional, Dict
@@ -344,18 +346,17 @@ def customDropEvent(event: QDropEvent):
             if url[0:2] != "//":
                 url = "//" + user.share + "/" + url
             url = url.replace(":", "").replace("/", "\\")
+            widgets.chatPage.setProperty("file_path", url)
 
             if user_action is not None:
                 if user_action.text() == "Link":
-                    print("Link")
-                    # send url
-                    widgets.chatPage.setProperty("file_path", url)
-                    widgets.messengerTextEdit.setFocus()
-                    sendMessage(force_send=True)
-
+                    widgets.chatPage.setProperty("file_copy", False)
                 elif user_action.text() == "Copy":
-                    print("Copy")
+                    widgets.chatPage.setProperty("file_copy", True)
 
+                # send url
+                widgets.messengerTextEdit.setFocus()
+                sendMessage(force_send=True)
 
         event.accept()
     else:
@@ -486,20 +487,36 @@ def sendMessage(force_send=False):
     text = widgets.messengerTextEdit.toPlainText().strip()
     voice_path = widgets.recordButton.property("voice_path")
     widgets.recordButton.setProperty("voice_path", "")
-    file_path = widgets.chatPage.property("file_path")
-    widgets.chatPage.setProperty("file_path", "")
     sticker_path = widgets.stickersGridLayout.property("sticker_path")
     widgets.stickersGridLayout.setProperty("sticker_path", "")
+    file_path = widgets.chatPage.property("file_path")
+    widgets.chatPage.setProperty("file_path", "")
+    file_copy = widgets.chatPage.property("file_copy")
+    widgets.chatPage.setProperty("file_copy", "")
 
     if QFile.exists(sticker_path):
         text = f'<center><img height="150" src="{sticker_path}"></center>'
 
     if len(text) > 0 or QFile.exists(voice_path) or QFile.exists(file_path):
+        # copy, if asked
+        if file_copy:
+            source_file_path = file_path
+            file_name = file_path.split("\\")[-1]
+            folder_name = str(jdatetime.datetime.now().isoformat(' ', 'seconds')).replace(':', '.').replace(' ', '      ')
+            file_dir = "\\\\" + User.find_by_username(target_username).share + "\\e\\Works Manager\\Attach\\" + folder_name
+            file_path = f"{file_dir}\\{file_name}"
+
+            if not os.path.exists(file_path):
+                os.makedirs(file_dir)
+
+            copy_process = multiprocessing.Process(target=shutil.copy, args=(source_file_path, file_path))
+            copy_process.start()
+
         # send new message
         if widgets.editFrame.isHidden():
             reply_to = None if widgets.replyFrame.isHidden() else int(widgets.replyLabel.toolTip())
-            message = Message(sender_username=sender, receiver_username=receiver, text=text,
-                              reply_to=reply_to, voice_path=voice_path, file_path=file_path)
+            message = Message(sender_username=sender, receiver_username=receiver, text=text, reply_to=reply_to,
+                              voice_path=voice_path, file_path=file_path, file_copy=file_copy)
             message.save()
             newMessage(message.id)
             send_broadcast(f"new_message {receiver} {user.username} {message.id}")
