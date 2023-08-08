@@ -478,11 +478,11 @@ class ContactButton(QPushButton):
 
 
 def watch_copy_file(message: Message):
-    file_size = QFileInfo(message.file_path).size()
+    file_size = FileWidget.fileSize(message.file_path)
 
     while file_size != message.file_size:
         sleep(0.3)
-        file_size = QFileInfo(message.file_path).size()
+        file_size = FileWidget.fileSize(message.file_path)
         send_broadcast(f"reload_message {message.id}")
 
     send_broadcast(f"reload_message {message.id}")
@@ -507,8 +507,11 @@ def sendMessage(force_send=False):
     file_copy = widgets.chatPage.property("file_copy")
     widgets.chatPage.setProperty("file_copy", False)
     file_size = 0
+    file_is_dir = False
     if QFile.exists(file_path):
-        file_size = QFileInfo(file_path).size()
+        file_size = FileWidget.fileSize(file_path)
+    if os.path.isdir(file_path):
+        file_is_dir = True
 
     if QFile.exists(sticker_path):
         text = f'<center><img height="150" src="{sticker_path}"></center>'
@@ -529,7 +532,7 @@ def sendMessage(force_send=False):
                 except:
                     pass
 
-            if os.path.isdir(source_file_path):
+            if file_is_dir:
                 copy_process = multiprocessing.Process(target=shutil.copytree, args=(source_file_path, file_path))
             else:
                 copy_process = multiprocessing.Process(target=shutil.copy, args=(source_file_path, file_path))
@@ -543,7 +546,7 @@ def sendMessage(force_send=False):
             reply_to = None if widgets.replyFrame.isHidden() else int(widgets.replyLabel.toolTip())
             message = Message(sender_username=sender, receiver_username=receiver, text=text, reply_to=reply_to,
                               voice_path=voice_path, file_path=file_path, file_size=file_size, file_copy=file_copy,
-                              copy_pid=copy_pid)
+                              copy_pid=copy_pid, file_is_dir=file_is_dir)
             message.save()
             newMessage(message.id)
             send_broadcast(f"new_message {receiver} {user.username} {message.id}")
@@ -1112,6 +1115,7 @@ class FileWidget(QFrame):
         self.file_path = self.message_widget.message.file_path
         self.file_size = self.message_widget.message.file_size
         self.file_copy = self.message_widget.message.file_copy
+        self.file_is_dir = self.message_widget.message.file_is_dir
 
         self.hbox = QHBoxLayout()
         self.hbox.setContentsMargins(0, 0, 0, 0)
@@ -1119,6 +1123,8 @@ class FileWidget(QFrame):
         self.setLayout(self.hbox)
 
         self.fileButton = QPushButton("📋" if self.file_copy else "🔗", self)
+        if self.file_is_dir:
+            self.fileButton.setText("📂")
         self.fileButton.setStyleSheet("font: 20px; background-color: transparent;")
         self.hbox.addWidget(self.fileButton)
 
@@ -1127,13 +1133,6 @@ class FileWidget(QFrame):
         self.fileNameLabel.setStyleSheet("font-weight: bold;")
         self.fileSizeLabel = QLabel(self.pretty_size(self.info.size()))
         self.fileSizeLabel.setStyleSheet("color: gray;")
-
-        # check for directory
-        if os.path.isdir(self.file_path):
-            self.fileButton.setText("📂")
-            _, _, files = next(os.walk(self.file_path))
-            file_count = len(files)
-            self.fileSizeLabel.setText(f"{file_count} items")
 
         # preview file if it's an image
         result = QImageReader.imageFormat(self.file_path)
@@ -1172,15 +1171,41 @@ class FileWidget(QFrame):
         self.setToolTip(self.file_path)
 
     def updateFileSize(self):
-        new_size = QFileInfo(self.file_path).size()
+        # check for directory
+        if self.file_is_dir:
+            self.fileButton.setText("📂")
+            self.fileSizeLabel.setText(f"{FileWidget.countItems(self.file_path)} items")
+
+        # otherwise, monitor file size
+        new_size = FileWidget.fileSize(self.file_path)
         if new_size == self.file_size:
             self.fileSizeLabel.setText(self.pretty_size(new_size))
         elif self.file_size != 0:
             self.fileSizeLabel.setText(f"{self.pretty_size(new_size)} / {self.pretty_size(self.file_size)} "
                                        f"({new_size*100 // self.file_size}%)")
 
+    @classmethod
+    def countItems(cls, folder_path):
+        try:
+            _, _, files = next(os.walk(folder_path))
+            file_count = len(files)
+            return file_count
+        except:
+            return 0
+
+    @classmethod
+    def fileSize(cls, file_path):
+        if os.path.isdir(file_path):
+            return FileWidget.countItems(file_path)
+        else:
+            return QFileInfo(file_path).size()
+
+
 
     def pretty_size(self, size: int):
+        if self.file_is_dir:
+            return f"{size} items"
+
         if size > 1_000_000_000:
             return str(round(size / 1_000_000_000, 3)) + " GB"
         if size > 1_000_000:

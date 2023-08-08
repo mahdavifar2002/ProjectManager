@@ -12,6 +12,7 @@ class Message(conf.Base):
     voice_path = conf.Column(conf.Text)
     file_path = conf.Column(conf.Text)
     file_copy = conf.Column(conf.Boolean, default=False)
+    file_is_dir = conf.Column(conf.Boolean, default=False)
     file_size = conf.Column(conf.BigInteger, default=0)
     copy_pid = conf.Column(conf.Integer, default=0)
     copy_percent = conf.Column(conf.Integer, default=0)
