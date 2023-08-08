@@ -57,14 +57,15 @@ def insert():
                             text = args[2]
                             _datetime = args[3].replace(".", ":")
                             file_path = str(args[4].replace("/", "\\")).strip()
-                            file_size = args[5]
+                            file_size = args[5] if isinstance(args[5], int) else 0
                             file_type = str(args[6])
                             if file_type not in ["Link", "Copy"]:
                                 file_type = ""
-                            percent = args[7]
+                            percent = args[7] if isinstance(args[7], int) else 100
                             widget_size = args[8]
                             has_been_seen = bool(args[9])
                             file_source = args[10].replace("/", "\\")
+                            copy_pid = args[11] if isinstance(args[11], int) else 0
 
                             _datetime = _datetime.split("      ", maxsplit=1)[1]
                             time_created = jdatetime.datetime.strptime(_datetime, "%Y-%m-%d      %H:%M:%S").togregorian()
@@ -83,7 +84,9 @@ def insert():
                                 if user.username in [sender, receiver] and contact_username in [sender, receiver]:
                                     message = Message(sender_username=sender, receiver_username=receiver, text=text,
                                                       time_created=time_created, file_path=file_path,
-                                                      file_copy=(file_type == "Copy"), has_been_seen=has_been_seen)
+                                                      file_copy=(file_type == "Copy"), file_size=file_size,
+                                                      copy_pid=copy_pid, copy_percent=percent,
+                                                      has_been_seen=has_been_seen)
                                     messages.append(message)
 
                             except Exception as e:

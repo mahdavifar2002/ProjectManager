@@ -179,13 +179,14 @@ class MainWindow(QMainWindow):
         editor = widgets.messengerTextEdit
 
         # add emoji to text editor
-        editor.setPlainText(editor.toPlainText() + btn.text())
+        # editor.setPlainText(editor.toPlainText() + btn.text())
+        editor.insertPlainText(btn.text())
         editor.setFocus()
 
-        # move cursor to the end of text editor
-        textCursor = editor.textCursor()
-        textCursor.setPosition(len(editor.toPlainText()))
-        editor.setTextCursor(textCursor)
+        # # move cursor to the end of text editor
+        # textCursor = editor.textCursor()
+        # textCursor.setPosition(2*len(editor.toPlainText()))
+        # editor.setTextCursor(textCursor)
 
     # STICKER CLICK
     # ///////////////////////////////////////////////////////////////

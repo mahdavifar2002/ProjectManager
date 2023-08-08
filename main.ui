@@ -4037,6 +4037,12 @@ border: none;</string>
                 </item>
                 <item>
                  <widget class="QStackedWidget" name="extraRightBox">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="maximumSize">
                    <size>
                     <width>0</width>
@@ -4078,7 +4084,7 @@ border: none;</string>
                        <item>
                         <widget class="QTabWidget" name="tabWidget">
                          <property name="currentIndex">
-                          <number>1</number>
+                          <number>0</number>
                          </property>
                          <widget class="QWidget" name="tab_emojis">
                           <attribute name="title">
@@ -4164,8 +4170,8 @@ border: none;</string>
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>29</width>
-                                <height>405</height>
+                                <width>214</width>
+                                <height>413</height>
                                </rect>
                               </property>
                               <layout class="QGridLayout" name="stickersGridLayout">

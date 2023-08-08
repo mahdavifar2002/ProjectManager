@@ -8,9 +8,14 @@ class Message(conf.Base):
 
     id = conf.Column(conf.Integer, primary_key=True)
     text = conf.Column(conf.Text, nullable=False)
+
     voice_path = conf.Column(conf.Text)
     file_path = conf.Column(conf.Text)
     file_copy = conf.Column(conf.Boolean, default=False)
+    file_size = conf.Column(conf.BigInteger, default=0)
+    copy_pid = conf.Column(conf.Integer, default=0)
+    copy_percent = conf.Column(conf.Integer, default=0)
+
     sender_username = conf.Column(
         conf.String(50),
         conf.ForeignKey('users.username'),

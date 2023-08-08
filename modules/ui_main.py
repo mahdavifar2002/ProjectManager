@@ -2018,6 +2018,7 @@ class Ui_MainWindow(object):
 
         self.extraRightBox = QStackedWidget(self.content)
         self.extraRightBox.setObjectName(u"extraRightBox")
+        self.extraRightBox.setMinimumSize(QSize(0, 0))
         self.extraRightBox.setMaximumSize(QSize(0, 16777215))
         self.extraRightBox.setFrameShape(QFrame.NoFrame)
         self.extraRightBox.setFrameShadow(QFrame.Raised)
@@ -2068,7 +2069,7 @@ class Ui_MainWindow(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollAreaWidgetContents_4 = QWidget()
         self.scrollAreaWidgetContents_4.setObjectName(u"scrollAreaWidgetContents_4")
-        self.scrollAreaWidgetContents_4.setGeometry(QRect(0, 0, 29, 405))
+        self.scrollAreaWidgetContents_4.setGeometry(QRect(0, 0, 214, 413))
         self.stickersGridLayout = QGridLayout(self.scrollAreaWidgetContents_4)
         self.stickersGridLayout.setSpacing(0)
         self.stickersGridLayout.setObjectName(u"stickersGridLayout")
@@ -2224,7 +2225,7 @@ class Ui_MainWindow(object):
         self.stackedWidget.setCurrentIndex(3)
         self.chatStackedWidget.setCurrentIndex(1)
         self.extraRightBox.setCurrentIndex(0)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)

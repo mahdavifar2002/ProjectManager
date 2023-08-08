@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Boolean
+from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Boolean, BigInteger
 from sqlalchemy import and_, or_, desc
 from sqlalchemy import func
 from sqlalchemy import select
