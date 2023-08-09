@@ -37,7 +37,11 @@ class Message(conf.Base):
     pinned = conf.Column(conf.Boolean, default=False)
 
     def get_time_created(self):
-        return str(jdatetime.datetime.fromgregorian(datetime=self.time_created)).replace(" ", "   ")
+        week = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه']
+        text = week[self.time_created.weekday()]
+        text += "  "
+        text += str(jdatetime.datetime.fromgregorian(datetime=self.time_created)).replace(" ", "  ")
+        return text
 
     def get_time_updated(self):
         return str(jdatetime.datetime.fromgregorian(datetime=self.time_updated)).replace(" ", "   ")

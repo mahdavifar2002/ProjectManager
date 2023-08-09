@@ -872,8 +872,8 @@ class MessageWidget(QFrame):
             main_text = self.message.text.replace("\n", "<br/>")
             seen_text = "✅ " if is_sender and self.message.has_been_seen else ""
             pin_text = "📌 " if self.message.pinned else ""
-            edit_text = " (edited)" if self.message.has_been_edited else ""
-            date_label_text = "\n" + "<p style='color: gray; white-space:pre;'>" + seen_text + pin_text + self.message.get_time_created() + edit_text + "</p>"
+            edit_text = "(ویرایش‌شده)<br/>" if self.message.has_been_edited else ""
+            date_label_text = "<p dir='ltr' style='color: gray; white-space:pre;'>" + edit_text + seen_text + pin_text + self.message.get_time_created() + "</p>"
             self.message_core.text_edit.setHtml(main_text)
             self.message_core.date_label.setText(date_label_text)
 
