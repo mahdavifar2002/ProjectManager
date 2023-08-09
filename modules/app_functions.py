@@ -512,14 +512,14 @@ def forwardMessage(forward_message_id, forward_username):
             clone_message.save()
             send_broadcast(f"new_message {clone_message.receiver_username} {user.username} {clone_message.id}")
 
-    msg = QMessageBox()
-    msg.setIcon(QMessageBox.Information)
-    msg.setText(f"Fotwarding to {forward_username}")
-    msg.setInformativeText("Are you sure?")
-    msg.setWindowTitle("Send to...")
-    msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-    msg.buttonClicked.connect(msgbtn)
-    msg.exec()
+    msgBox = QMessageBox()
+    msgBox.setIcon(QMessageBox.Information)
+    msgBox.setText(f"Fotwarding to {forward_username}")
+    msgBox.setInformativeText("Are you sure?")
+    msgBox.setWindowTitle("Send to...")
+    msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+    msgBox.buttonClicked.connect(msgbtn)
+    msgBox.exec()
 
 
 def sendMessage(force_send=False):
@@ -984,10 +984,21 @@ class MessageWidget(QFrame):
         widgets.messengerTextEdit.setFocus()
 
     def deleteSlot(self, event):
-        self.message.deleted = True
-        self.message.pinned = False
-        self.message.save()
-        send_broadcast(f"reload_message {self.message.id}")
+        def msgbtn(i):
+            if i.text() == "&Yes":
+                self.message.deleted = True
+                self.message.pinned = False
+                self.message.save()
+                send_broadcast(f"reload_message {self.message.id}")
+
+        msgBox = QMessageBox()
+        msgBox.setIcon(QMessageBox.Information)
+        msgBox.setText(f"Deleting message")
+        msgBox.setInformativeText("Are you sure?")
+        msgBox.setWindowTitle("Delete")
+        msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msgBox.buttonClicked.connect(msgbtn)
+        msgBox.exec()
 
 
 class MessageCoreWidget(QFrame):
