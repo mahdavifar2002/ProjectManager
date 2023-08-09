@@ -50,6 +50,12 @@ audioInput: Optional[QAudioInput] = None
 recorder: Optional[QMediaRecorder] = None
 captureSession: Optional[QMediaCaptureSession] = None
 
+emojis_list = "😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩" \
+              "🥳😏😒😞😔😟😕🙁😣😖😫😩🥺😢😭😤😠😡🤬🤯😳🥵🥶😶😱😨😰😥😓🤗" \
+              "🤔🤭🤫🤥😶😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😮😵😵💫🤐🥴🤢🤮🤧😷🤒🤕" \
+              "🤑🤠😈👿👹👺🤡👻💀👽👾🤖🎃😺😸😹😻😼😽🙀😿😾🤲👐🙌👏🤝👍👎👊" \
+              "✊🤛🤜🤞🤟🤘👌🤏👈👉👆👇✋🤚🖐🖖👋🤙💪🙏"
+
 
 # WITH ACCESS TO MAIN WINDOW WIDGETS
 # ///////////////////////////////////////////////////////////////
@@ -262,13 +268,12 @@ def prepareMessengerPage():
     # widgets.chatScrollArea.stackUnder(widgets.contactInfoBox)
 
 
+def resize_emoji(emoji):
+    return f"<span style='font-size: 20px;'>{emoji}</span>"
+
+
 def reload_stickers():
     # Prepare emojis buttons
-    emojis_list = "😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩" \
-                  "🥳😏😒😞😔😟😕🙁😣😖😫😩🥺😢😭😤😠😡🤬🤯😳🥵🥶😶😱😨😰😥😓🤗" \
-                  "🤔🤭🤫🤥😶😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😮😵😵💫🤐🥴🤢🤮🤧😷🤒🤕" \
-                  "🤑🤠😈👿👹👺🤡👻💀👽👾🤖🎃😺😸😹😻😼😽🙀😿😾🤲👐🙌👏🤝👍👎👊" \
-                  "✊🤛🤜🤞🤟🤘👌🤏👈👉👆👇✋🤚🖐🖖👋🤙💪🙏"
     emojiButtons = []
 
     for i, item in enumerate(emojis_list):
@@ -492,6 +497,19 @@ def watch_copy_file(message: Message):
     send_broadcast(f"reload_message {message.id}")
 
 
+def forwardMessage(forward_message_id, forward_username):
+    message = Message.find_by_id(forward_message_id)
+    clone_message = conf.clone_model(message)
+    clone_message.text = f"[forwarded from {message.sender_username}]\n" + clone_message.text
+    clone_message.text = clone_message.text.strip()
+    clone_message.sender_username = user.username
+    clone_message.receiver_username = forward_username
+    clone_message.time_created = conf.db_time()
+    clone_message.has_been_seen = False
+    clone_message.save()
+    send_broadcast(f"new_message {clone_message.receiver_username} {user.username} {clone_message.id}")
+
+
 def sendMessage(force_send=False):
     if not force_send and \
             not widgets.messengerTextEdit.hasFocus() \
@@ -501,7 +519,9 @@ def sendMessage(force_send=False):
 
     sender = user.username
     receiver = target_username
-    text = widgets.messengerTextEdit.toPlainText().strip()
+    text = "<p style='white-space: pre-wrap;'>" + \
+           widgets.messengerTextEdit.toPlainText() + \
+           "</p>"
     voice_path = widgets.recordButton.property("voice_path")
     widgets.recordButton.setProperty("voice_path", "")
     sticker_path = widgets.stickersGridLayout.property("sticker_path")
@@ -546,6 +566,10 @@ def sendMessage(force_send=False):
             copy_pid = copy_process.pid
         else:
             copy_pid = 0
+
+        # resize emojis
+        for emoji in emojis_list:
+            text = text.replace(emoji, resize_emoji(emoji))
 
         # send new message
         if widgets.editFrame.isHidden():
@@ -849,8 +873,9 @@ class MessageWidget(QFrame):
             seen_text = "✅ " if is_sender and self.message.has_been_seen else ""
             pin_text = "📌 " if self.message.pinned else ""
             edit_text = " (edited)" if self.message.has_been_edited else ""
-            main_text += "\n" + "<p style='color: gray; white-space:pre;'>" + seen_text + pin_text + self.message.get_time_created() + edit_text + "</p>"
+            date_label_text = "\n" + "<p style='color: gray; white-space:pre;'>" + seen_text + pin_text + self.message.get_time_created() + edit_text + "</p>"
             self.message_core.text_edit.setHtml(main_text)
+            self.message_core.date_label.setText(date_label_text)
 
             # Set tooltip of seen time
             if is_sender and self.message.has_been_seen and self.message.time_seen is not None:
@@ -889,6 +914,19 @@ class MessageWidget(QFrame):
             editAction.triggered.connect(lambda: self.deleteSlot(event))
             self.menu.addAction(editAction)
 
+        # send to other user
+        self.sendTo = self.menu.addMenu("Send to...")
+
+        sendToUserActions = []
+        for i, target_user in enumerate(User.users()):
+            sendToUserAction = QAction(target_user.fullname, self)
+            sendToUserAction.setProperty("username", target_user.username)
+            sendToUserAction.setProperty("message_id", self.message.id)
+            sendToUserActions.append(sendToUserAction)
+            self.sendTo.addAction(sendToUserAction)
+
+        mainWindow.connectSendToActions(sendToUserActions)
+
         # add other required actions
         self.menu.popup(QCursor.pos())
 
@@ -917,8 +955,13 @@ class MessageWidget(QFrame):
         widgets.editLabel.setText(self.message.short_text())
         widgets.editLabel.setToolTip(str(self.message.id))
 
+        text = self.message.text
+        # remove emojis resize tag
+        for emoji in emojis_list:
+            text = text.replace(resize_emoji(emoji), emoji)
+
         editor = widgets.messengerTextEdit
-        editor.setPlainText(self.message.text)
+        editor.setHtml(text)
 
         textCursor = editor.textCursor()
         textCursor.setPosition(len(editor.toPlainText()))
@@ -940,6 +983,7 @@ class MessageCoreWidget(QFrame):
         super().__init__()
         self.messageWidget = messageWidget
         self.text_edit = MessageTextWidget(messageWidget)
+        self.date_label = QLabel()
 
         self.setLayout(QVBoxLayout())
         self.layout().setSpacing(0)
@@ -956,6 +1000,7 @@ class MessageCoreWidget(QFrame):
             self.layout().addWidget(self.file_widget)
 
         self.layout().addWidget(self.text_edit)
+        self.layout().addWidget(self.date_label)
 
         # creating a blur effect
         self.blur_effect = QGraphicsBlurEffect(blurRadius=15)

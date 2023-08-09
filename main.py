@@ -221,6 +221,21 @@ class MainWindow(QMainWindow):
         UIFunctions.resetStyle(self, btn.objectName())
         btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
 
+    # SEND TO CLICK
+    # ///////////////////////////////////////////////////////////////
+    def connectSendToActions(self, sendToActions):
+        for sendToAction in sendToActions:
+            sendToAction.triggered.connect(self.sendToTrigger)
+
+    def sendToTrigger(self):
+        action = self.sender()
+        forward_username = action.property("username")
+        forward_message_id = action.property("message_id")
+        print(f"forward message with id {forward_message_id} to user {forward_username}")
+        app_functions.forwardMessage(forward_message_id, forward_username)
+
+
+
     # EXTRA LEFT BOX
     # ///////////////////////////////////////////////////////////////
     def openCloseLeftBox(self):
