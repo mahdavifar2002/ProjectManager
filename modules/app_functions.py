@@ -500,7 +500,7 @@ def watch_copy_file(message: Message):
 def forwardMessage(forward_message_id, forward_username):
     message = Message.find_by_id(forward_message_id)
     clone_message = conf.clone_model(message)
-    clone_message.text = f"[forwarded from {message.sender_username}]\n\n" + clone_message.text
+    clone_message.text = f"<p style='color: gray; white-space:pre;'>[بازارسال‌شده از {message.sender_username}]</p>" + clone_message.text
     clone_message.text = clone_message.text.strip()
     clone_message.sender_username = user.username
     clone_message.receiver_username = forward_username
