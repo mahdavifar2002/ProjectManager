@@ -8,7 +8,7 @@ sock.bind(("", 0))
 
 
 def send_broadcast(message: str):
-    sock.sendto(message.encode("ascii"), ("255.255.255.255", 5005))
+    sock.sendto(message.encode("ascii"), ("255.255.255.255", 50050))
 
 
 # def main():
