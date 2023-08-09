@@ -500,14 +500,26 @@ def watch_copy_file(message: Message):
 def forwardMessage(forward_message_id, forward_username):
     message = Message.find_by_id(forward_message_id)
     clone_message = conf.clone_model(message)
-    clone_message.text = f"[forwarded from {message.sender_username}]\n" + clone_message.text
+    clone_message.text = f"[forwarded from {message.sender_username}]\n\n" + clone_message.text
     clone_message.text = clone_message.text.strip()
     clone_message.sender_username = user.username
     clone_message.receiver_username = forward_username
     clone_message.time_created = conf.db_time()
     clone_message.has_been_seen = False
-    clone_message.save()
-    send_broadcast(f"new_message {clone_message.receiver_username} {user.username} {clone_message.id}")
+
+    def msgbtn(i):
+        if i.text() == "&Yes":
+            clone_message.save()
+            send_broadcast(f"new_message {clone_message.receiver_username} {user.username} {clone_message.id}")
+
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Information)
+    msg.setText(f"Fotwarding to {forward_username}")
+    msg.setInformativeText("Are you sure?")
+    msg.setWindowTitle("Send to...")
+    msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+    msg.buttonClicked.connect(msgbtn)
+    msg.exec()
 
 
 def sendMessage(force_send=False):

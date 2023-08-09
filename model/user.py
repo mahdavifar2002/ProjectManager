@@ -64,7 +64,7 @@ class User(conf.Base):
         return messages
 
     def search_messages(self, search: str):
-        query = conf.session.query(message.Message).filter(conf.and_(conf.or_(
+        query = conf.session.query(message.Message).filter(message.Message.deleted == False).filter(conf.and_(conf.or_(
             message.Message.sender_username == self.username,
             message.Message.receiver_username == self.username)),
             conf.or_(message.Message.text.contains(search), message.Message.file_path.contains(search)))
@@ -77,7 +77,7 @@ class User(conf.Base):
         if before_id is None:
             before_id = 2147483647 # max int in mysql
 
-        query = conf.session.query(message.Message).filter(conf.and_(conf.or_(
+        query = conf.session.query(message.Message).filter(message.Message.deleted == False).filter(conf.and_(conf.or_(
             message.Message.sender_username == self.username,
             message.Message.receiver_username == self.username)),
             conf.or_(message.Message.text.contains(search), message.Message.file_path.contains(search)))
