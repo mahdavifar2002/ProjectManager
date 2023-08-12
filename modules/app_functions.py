@@ -531,9 +531,7 @@ def sendMessage(force_send=False):
 
     sender = user.username
     receiver = target_username
-    text = "<p style='white-space: pre-wrap;'>" + \
-           widgets.messengerTextEdit.toPlainText() + \
-           "</p>"
+    text = widgets.messengerTextEdit.toPlainText()
     voice_path = widgets.recordButton.property("voice_path")
     widgets.recordButton.setProperty("voice_path", "")
     sticker_path = widgets.stickersGridLayout.property("sticker_path")
@@ -881,7 +879,7 @@ class MessageWidget(QFrame):
             self.hide()
         else:
             is_sender = (self.message.sender_username == user.username)
-            main_text = self.message.text.replace("\n", "<br/>")
+            main_text = "<p style='white-space: pre-wrap;'>" + self.message.text.replace("\n", "<br/>") + "</p>"
             seen_text = "✅ " if is_sender and self.message.has_been_seen else ""
             pin_text = "📌 " if self.message.pinned else ""
             edit_text = "(ویرایش‌شده)<br/>" if self.message.has_been_edited else ""
