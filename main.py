@@ -153,6 +153,15 @@ class MainWindow(QMainWindow):
                 username = argv[1]
                 password = argv[2]
 
+                if username == 'default':
+                    with open('//alireza/e/Works Manager/List/Account.lst', "r", encoding="utf8") as file:
+                        Account = [list(eval(file.read()))][0]
+                        for Person in Account:
+                            if Person[2].lower() == (os.environ["COMPUTERNAME"]).lower():
+                                username = Person[3][1:].lower()
+                                password = "96321"
+
+
             widgets.usernameLineEdit.setText(username)
             widgets.passwordLineEdit.setText(password)
 
@@ -164,8 +173,37 @@ class MainWindow(QMainWindow):
                 widgets.leftMenuBg.hide()
 
                 if len(argv) >= 4:
-                    app_functions.reloadChat(argv[3])
+                    target = argv[3]
+                    if target == 'default':
+
+                        self.menu = QMenu(self)
+                        # self.sendTo = self.menu.addMenu("Send to...")
+
+                        sendToUserActions = []
+                        for i, target_user in enumerate(User.users()):
+                            sendToUserAction = QAction(target_user.fullname, self)
+                            sendToUserAction.setProperty("username", target_user.username)
+                            sendToUserAction.setProperty("message_id", -1)
+                            sendToUserActions.append(sendToUserAction)
+                            self.menu.addAction(sendToUserAction)
+
+                        self.connectSendToActions(sendToUserActions)
+
+                        # add other required actions
+                        self.menu.exec(QCursor.pos())
+                        print(argv)
+
+                    else:
+                        app_functions.reloadChat(target)
+
                     widgets.messengerTextEdit.setFocus()
+
+                    for url in argv[5:]:
+                        widgets.chatPage.setProperty("file_path", url)
+                        widgets.chatPage.setProperty("file_copy", argv[4] == "Copy")
+                        # send url
+                        widgets.messengerTextEdit.setFocus()
+                        sendMessage(force_send=True)
 
                 else:
                     self.openLeftBox()
@@ -231,8 +269,12 @@ class MainWindow(QMainWindow):
         action = self.sender()
         forward_username = action.property("username")
         forward_message_id = action.property("message_id")
-        print(f"forward message with id {forward_message_id} to user {forward_username}")
-        app_functions.forwardMessage(forward_message_id, forward_username)
+
+        if forward_message_id == -1:
+            app_functions.reloadChat(forward_username)
+        else:
+            print(f"forward message with id {forward_message_id} to user {forward_username}")
+            app_functions.forwardMessage(forward_message_id, forward_username)
 
 
 
@@ -374,6 +416,8 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+    os.chdir(sys.path[0])
+
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow(sys.argv)
