@@ -1224,6 +1224,8 @@ class FileWidget(QFrame):
         if result != '':
             self.setToolTip(f'<img height="200"'
                             f'src="{self.file_path}">')
+        else:
+            self.setToolTip(self.file_path)
 
         # # preview middle frame if file is a video
         # elif self.file_path[-3:] in ["mov", "mp4", "avi", "mpg"]: # player.hasVideo():
@@ -1253,7 +1255,6 @@ class FileWidget(QFrame):
         self.hbox.addStretch()
 
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.setToolTip(self.file_path)
 
     def set_icon(self):
         if self.file_is_dir:
