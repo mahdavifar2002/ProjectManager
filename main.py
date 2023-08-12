@@ -36,7 +36,7 @@ user: Optional[User] = None
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, argv):
         QMainWindow.__init__(self)
 
         # SET AS GLOBAL WIDGETS
@@ -62,8 +62,8 @@ class MainWindow(QMainWindow):
         self.description = ""
 
         # APPLY TEXTS
-        if len(sys.argv) >= 4:
-            self.setWindowTitle("Message " + sys.argv[3])
+        if len(argv) >= 4:
+            self.setWindowTitle("Message " + argv[3])
         else:
             self.setWindowTitle(self.title)
 
@@ -144,14 +144,14 @@ class MainWindow(QMainWindow):
 
         # LOGIN IF COMMANDLINE PASSED LOGIN INFO
         # ///////////////////////////////////////////////////////////////
-        if len(sys.argv) >= 3:
+        if len(argv) >= 3:
 
             try:
                 with open("userpass.txt", "r") as file:
                     username, password = file.read().split('\n')
             except Exception as e:
-                username = sys.argv[1]
-                password = sys.argv[2]
+                username = argv[1]
+                password = argv[2]
 
             widgets.usernameLineEdit.setText(username)
             widgets.passwordLineEdit.setText(password)
@@ -163,8 +163,8 @@ class MainWindow(QMainWindow):
                 widgets.btn_messenger.setStyleSheet(UIFunctions.selectMenu(widgets.btn_messenger.styleSheet()))
                 widgets.leftMenuBg.hide()
 
-                if len(sys.argv) >= 4:
-                    app_functions.reloadChat(sys.argv[3])
+                if len(argv) >= 4:
+                    app_functions.reloadChat(argv[3])
                     widgets.messengerTextEdit.setFocus()
 
                 else:
@@ -376,5 +376,5 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icon.ico"))
-    window = MainWindow()
+    window = MainWindow(sys.argv)
     sys.exit(app.exec())
