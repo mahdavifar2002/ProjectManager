@@ -914,6 +914,11 @@ class MessageWidget(QFrame):
         pinAction.triggered.connect(lambda: self.pinSlot(event))
         self.menu.addAction(pinAction)
 
+        # copy
+        copyAction = QAction('Copy', self)
+        copyAction.triggered.connect(lambda: self.copySlot(event))
+        self.menu.addAction(copyAction)
+
         # edit
         if self.message.sender_username == user.username:
             editAction = QAction('Edit', self)
@@ -960,6 +965,11 @@ class MessageWidget(QFrame):
         self.message.pinned = not self.message.pinned
         self.message.save()
         send_broadcast(f"reload_message {self.message.id}")
+
+    def copySlot(self, event):
+        cb = QApplication.clipboard()
+        cb.clear(mode=cb.Clipboard)
+        cb.setText(self.message.text, mode=cb.Clipboard)
 
     def editSlot(self, event):
         widgets.editLabel.setText(self.message.short_text())
