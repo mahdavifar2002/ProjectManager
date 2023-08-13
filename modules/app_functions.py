@@ -559,8 +559,19 @@ def sendMessage(force_send=False):
             folder_name = datetime.datetime.now().strftime('%A') + '      '
             folder_name += str(jdatetime.datetime.now().isoformat(' ', 'seconds')).replace(':', '.').replace(' ',
                                                                                                              '      ')
-            file_dir = "\\\\" + User.find_by_username(
-                target_username).share + "\\e\\Works Manager\\Attach\\" + folder_name
+            works_manager_dir = "\\\\" + User.find_by_username(target_username).share + "\\e\\Works Manager"
+
+            if not os.path.exists(works_manager_dir):
+                msgBox = QMessageBox()
+                msgBox.setIcon(QMessageBox.Information)
+                msgBox.setText(f"Cannot copy")
+                msgBox.setInformativeText("سیستم مقابل خاموش است یا شما دسترسی کپی به آن سیستم را ندارید.")
+                msgBox.setWindowTitle("Copy failed")
+                msgBox.setStandardButtons(QMessageBox.Ok)
+                msgBox.exec()
+                return
+
+            file_dir = works_manager_dir + "\\Attach\\" + folder_name
             file_path = f"{file_dir}\\{file_name}"
 
             if not os.path.exists(file_dir):
