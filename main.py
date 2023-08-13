@@ -48,10 +48,6 @@ class MainWindow(QMainWindow):
         app_functions.widgets = widgets
         app_functions.mainWindow = self
 
-        # SET CLIENT FOR BROADCAST PACKAGES
-        # ///////////////////////////////////////////////////////////////
-        prepareClientThread()
-
         # USE CUSTOM TITLE BAR | USE AS "False" FOR MAC OR LINUX
         # ///////////////////////////////////////////////////////////////
         Settings.ENABLE_CUSTOM_TITLE_BAR = True
@@ -68,6 +64,10 @@ class MainWindow(QMainWindow):
             self.setWindowTitle(self.title)
 
         widgets.titleRightInfo.setText(self.description)
+
+        # SET CLIENT FOR BROADCAST PACKAGES
+        # ///////////////////////////////////////////////////////////////
+        prepareClientThread()
 
         # TOGGLE MENU
         # ///////////////////////////////////////////////////////////////
