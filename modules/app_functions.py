@@ -15,6 +15,7 @@
 # ///////////////////////////////////////////////////////////////
 import datetime
 import multiprocessing
+import os
 import pathlib
 import shutil
 import signal
@@ -562,7 +563,7 @@ def sendMessage(force_send=False):
                 target_username).share + "\\e\\Works Manager\\Attach\\" + folder_name
             file_path = f"{file_dir}\\{file_name}"
 
-            if not os.path.exists(file_path):
+            if not os.path.exists(file_dir):
                 try:
                     os.makedirs(file_dir)
                 except:
@@ -994,10 +995,7 @@ class MessageWidget(QFrame):
     def deleteSlot(self, event):
         def msgbtn(i):
             if i.text() == "&Yes":
-                self.message.deleted = True
-                self.message.pinned = False
-                self.message.save()
-                send_broadcast(f"reload_message {self.message.id}")
+                self.deleteMessage()
 
         msgBox = QMessageBox()
         msgBox.setIcon(QMessageBox.Information)
@@ -1007,6 +1005,12 @@ class MessageWidget(QFrame):
         msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         msgBox.buttonClicked.connect(msgbtn)
         msgBox.exec()
+
+    def deleteMessage(self):
+        self.message.deleted = True
+        self.message.pinned = False
+        self.message.save()
+        send_broadcast(f"reload_message {self.message.id}")
 
 
 class MessageCoreWidget(QFrame):
@@ -1210,7 +1214,7 @@ class FileWidget(QFrame):
         self.set_icon()
         self.fileButton.setStyleSheet("font: 20px; background-color: transparent;")
         if self.file_copy and psutil.pid_exists(self.copy_pid):
-            self.fileButton.clicked.connect(lambda: os.kill(self.copy_pid, signal.SIGTERM))
+            self.fileButton.clicked.connect(self.cancel_copy)
         self.hbox.addWidget(self.fileButton)
 
         self.info = QFileInfo(self.file_path)
@@ -1280,6 +1284,20 @@ class FileWidget(QFrame):
 
             self.fileSizeLabel.setText(f"{self.pretty_size(new_size)} / {self.pretty_size(self.file_size)} "
                                        f"({new_size * 100 // self.file_size}%)")
+
+    def cancel_copy(self):
+        os.kill(self.copy_pid, signal.SIGTERM)
+        self.message_widget.deleteMessage()
+
+        try:
+            if self.file_is_dir:
+                os.rmdir(self.file_path)
+                # delete_process = multiprocessing.Process(target=os.rmdir, args=(self.file_path,))
+            else:
+                os.remove(self.file_path)
+                # delete_process = multiprocessing.Process(target=os.remove, args=(self.file_path,))
+        except OSError as e:
+            print(e)
 
     def clear_stop_button(self):
         try:
