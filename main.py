@@ -148,18 +148,20 @@ class MainWindow(QMainWindow):
 
             try:
                 with open("userpass.txt", "r") as file:
-                    username, password = file.read().split('\n')
+                    # username, password = file.read().split('\n')
+                    username, password = [list(eval(file.read()))][0]
+
             except Exception as e:
                 username = argv[1]
                 password = argv[2]
 
-                if username == 'default':
-                    with open('//alireza/e/Works Manager/List/Account.lst', "r", encoding="utf8") as file:
-                        Account = [list(eval(file.read()))][0]
-                        for Person in Account:
-                            if Person[2].lower() == (os.environ["COMPUTERNAME"]).lower():
-                                username = Person[3][1:].lower()
-                                password = "96321"
+            if username == 'default':
+                with open('//alireza/e/Works Manager/List/Account.lst', "r", encoding="utf8") as file:
+                    Account = [list(eval(file.read()))][0]
+                    for Person in Account:
+                        if Person[2].lower() == (os.environ["COMPUTERNAME"]).lower():
+                            username = Person[3][1:].lower()
+                            password = "96321"
 
 
             widgets.usernameLineEdit.setText(username)
