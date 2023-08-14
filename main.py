@@ -20,6 +20,8 @@ import platform
 from time import sleep
 from typing import Optional
 
+import win32gui
+
 from model.user import User
 
 # IMPORT / GUI AND MODULES AND WIDGETS
@@ -59,9 +61,9 @@ class MainWindow(QMainWindow):
 
         # APPLY TEXTS
         if len(argv) >= 4:
-            self.setWindowTitle("Message " + argv[3])
-        else:
-            self.setWindowTitle(self.title)
+            self.title = "Message " + argv[3]
+
+        self.setWindowTitle(self.title)
 
         widgets.titleRightInfo.setText(self.description)
 
@@ -163,7 +165,6 @@ class MainWindow(QMainWindow):
                             username = Person[3][1:].lower()
                             password = "96321"
 
-
             widgets.usernameLineEdit.setText(username)
             widgets.passwordLineEdit.setText(password)
 
@@ -198,6 +199,8 @@ class MainWindow(QMainWindow):
                     else:
                         app_functions.reloadChat(target)
 
+                    self.setForeground()
+
                     widgets.messengerTextEdit.setFocus()
 
                     for url in argv[5:]:
@@ -209,6 +212,26 @@ class MainWindow(QMainWindow):
 
                 else:
                     self.openLeftBox()
+
+    # SET WINDOW FOREGROUND
+    # ///////////////////////////////////////////////////////////////
+    def setForeground(self):
+        # Find the handle of your application's window
+        handle = win32gui.FindWindow(None, self.title)
+
+        # Check if the handle was found
+        if handle:
+            # Flash the window icon in taskbar
+            try:
+                win32gui.FlashWindow(handle, True)
+            except:
+                pass
+
+            # Bring the window to the foreground
+            try:
+                win32gui.SetForegroundWindow(handle)
+            except:
+                pass
 
     # EMOJI CLICK
     # ///////////////////////////////////////////////////////////////
@@ -278,8 +301,6 @@ class MainWindow(QMainWindow):
             print(f"forward message with id {forward_message_id} to user {forward_username}")
             app_functions.forwardMessage(forward_message_id, forward_username)
 
-
-
     # EXTRA LEFT BOX
     # ///////////////////////////////////////////////////////////////
     def openCloseLeftBox(self):
@@ -296,7 +317,7 @@ class MainWindow(QMainWindow):
             self.openCloseLeftBox()
 
     def openLeftBox(self):
-            self.openCloseLeftBox()
+        self.openCloseLeftBox()
 
     # EXTRA RIGHT BOX
     # ///////////////////////////////////////////////////////////////

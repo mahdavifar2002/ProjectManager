@@ -722,7 +722,8 @@ def reloadChat(new_target, message_id=None):
         scroll_to_message_id(message_id)
 
     # Set window name
-    mainWindow.setWindowTitle("Message " + target_username)
+    mainWindow.title = "Message " + target_username
+    mainWindow.setWindowTitle(mainWindow.title)
 
     # # check seen messages
     # on_chat_scroll()
