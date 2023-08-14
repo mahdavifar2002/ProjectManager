@@ -26,6 +26,7 @@ from typing import Optional, Dict
 
 import jdatetime
 import psutil
+import win32api
 
 # MAIN FILE
 # ///////////////////////////////////////////////////////////////
@@ -200,9 +201,34 @@ def setUsersForAddTask():
         widgets.assignUserComboBox.addItem(other_user.username)
 
 
+class MessengerTextEdit(AutoResizingTextEdit):
+    def __init__(self, parent):
+        self.old_keyboard_layout = '00000429'
+        super().__init__(parent)
+        self.setMinimumLines(3)
+
+    def focusInEvent(self, e):
+        print("changing language to Persian")
+        self.old_keyboard_layout = win32api.GetKeyboardLayout()
+        print(self.old_keyboard_layout)
+        win32api.LoadKeyboardLayout('00000429', 1)
+        super().focusInEvent(e)
+    
+    def focusOutEvent(self, e):
+        # Stay Persian
+        if self.old_keyboard_layout == 0x4290429:
+            win32api.LoadKeyboardLayout('00000429', 1)
+        # back to English
+        if self.old_keyboard_layout == 0x4090409:
+            win32api.LoadKeyboardLayout('00000409', 1)
+
+
+            # win32api.LoadKeyboardLayout(self.old_keyboard_layout, 1)
+        super().focusOutEvent(e)
+        
+
 def prepareMessengerPage():
-    new_text_edit = AutoResizingTextEdit(widgets.chatTextBox)
-    new_text_edit.setMinimumLines(3)
+    new_text_edit = MessengerTextEdit(widgets.chatTextBox)
     new_text_edit.setStyleSheet(widgets.messengerTextEdit.styleSheet())
     new_text_edit.textChanged.connect(messenger_text_changed)
     widgets.chatTextBoxVerticalLayout.replaceWidget(widgets.messengerTextEdit, new_text_edit)
