@@ -1,115 +1,70 @@
-# Import necessary modules
 import sys
-from PySide6.QtWidgets import *
 from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 
-# Define class to create the stop watch
-class StopWatchWindow(QMainWindow):
 
+class SnippingWidget(QWidget):
     def __init__(self):
-        # Call the parent constructor
         super().__init__()
+        self.setWindowTitle("Snipping ")
+        self.begin = QPoint()
+        self.end = QPoint()
 
-        # Set the title of the window
-        self.setWindowTitle("Stop Watch using QTimer")
-        # Set the geometry for the window
-        self.setGeometry(100, 100, 300, 200)
+        self.setWindowOpacity(0.3)
 
-        # Set the necessary variables
-        self.counter = 0
-        self.minute = '00'
-        self.second = '00'
-        self.count = '00'
-        self.startWatch = False
+        QApplication.setOverrideCursor(QCursor(Qt.CrossCursor))
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        print("Capture the screen...")
 
-        # Create label to display the watch
-        self.label = QLabel(self)
-        # Set geometry for the label
-        self.label.setGeometry(100, 40, 150, 70)
+        self.showFullScreen()
 
+    def paintEvent(self, event):
+        qp = QPainter(self)
+        qp.setPen(QPen(QColor("black"), 3))
+        qp.setBrush(QColor(128, 128, 255, 128))
+        qp.drawRect(QRect(self.begin, self.end))
 
-        # Create start button
-        self.start = QPushButton("Start", self)
-        # Set geometry to the start button
-        self.start.setGeometry(50, 120, 100, 40)
-        # Call start() method when the start button is clicked
-        self.start.pressed.connect(self.Start)
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        self.begin = event.globalPosition().toPoint()
+        self.end = self.begin
+        self.update()
 
-        # Create reset button
-        resetWatch = QPushButton("Reset", self)
-        # Set geometry to the stop button
-        resetWatch.setGeometry(160, 120, 100, 40)
-        # Call reset() method when the reset button is clicked
-        resetWatch.pressed.connect(self.Reset)
+    def mouseMoveEvent(self, event):
+        super().mouseMoveEvent(event)
+        self.end = event.globalPosition().toPoint()
+        self.update()
 
+    def mouseReleaseEvent(self, event):
+        self.close()
+        QTimer.singleShot(1000, self.screenshot)
 
-        # Create timer object
-        timer = QTimer(self)
-        # Add a method with the timer
-        timer.timeout.connect(self.showCounter)
-        # Call start() method to modify the timer value
-        timer.start(100)
+    def screenshot(self):
+        print("screenshot")
+        screen = QGuiApplication.primaryScreen()
+        window = self.windowHandle()
+        if window is not None:
+            screen = window.screen()
+        if screen is None:
+            print("failed")
+            return
 
-        # Move the position of the window
-        self.move(900, 400)
-        # Display the window
-        self.show()
+        original_pixmap = screen.grabWindow(0)
+        output_pixmap = original_pixmap.copy(
+            QRect(self.begin, self.end).normalized()
+        )
+        output_pixmap.save("capture.png")
 
-    # Define a method to modify the values of minutes and seconds based on the timer value
-    def showCounter(self):
-        # Check the value of startWatch  variable to start or stop the Stop Watch
-        if self.startWatch:
-            # Increment counter by 1
-            self.counter += 1
-
-            # Count and set the time counter value
-            cnt = int((self.counter/10 - int(self.counter/10))*10)
-            self.count = '0' + str(cnt)
-
-            # Set the second value
-            if int(self.counter/10) < 10 :
-                self.second = '0' + str(int(self.counter / 10))
-            else:
-                self.second = str(int(self.counter / 10))
-                # Set the minute value
-                if self.counter / 10 == 60.0 :
-                    self.second == '00'
-                    self.counter = 0
-                    min = int(self.minute) + 1
-                    if min < 10 :
-                        self.minute = '0' + str(min)
-                    else:
-                        self.minute = str(min)
+        self.label = QLabel(pixmap=output_pixmap)
+        self.label.show()
+        app.setQuitOnLastWindowClosed(True)
 
 
-        # Merge the mintue, second and count values
-        text = self.minute + ':' + self.second + ':' + self.count
-        # Display the stop watch values in the label
-        self.label.setText('<h1 style="color:blue">' + text + '</h1>')
-
-    # Define method to handle the start button
-    def Start(self):
-        # Set the caption of the start button based on previous caption
-        if self.start.text() == 'Stop':
-            self.start.setText('Resume')
-            self.startWatch = False
-        else:
-            # making startWatch to true
-            self.startWatch = True
-            self.start.setText('Stop')
-
-    # Define method to handle the reset button
-    def Reset(self):
-        self.startWatch = False
-        # Reset all counter variables
-        self.counter = 0
-        self.minute = '00'
-        self.second = '00'
-        self.count = '00'
-        # Set the initial values for the stop watch
-        self.label.setText(str(self.counter))
-
-# Create app object and run the app
-app = QApplication(sys.argv)
-stopWt = StopWatchWindow()
-app.exec()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = SnippingWidget()
+    window.show()
+    app.aboutToQuit.connect(app.deleteLater)
+    app.setQuitOnLastWindowClosed(False)
+    sys.exit(app.exec())

@@ -114,11 +114,11 @@ def date_human_readable(date: datetime):
     return delta_human_readable(relativedelta(now, date))
 
 
-def generate_filename(username: str, exention: str):
+def generate_filename(username: str, exention: str, prefix=""):
     now = jdatetime.datetime.fromgregorian(datetime=datetime.now()).strftime("%Y-%m-%d_%H-%M-%S")
     uuid4 = str(uuid.uuid4())[:4]
 
-    filename = now + "_" + username + "_" + uuid4 + "." + exention
+    filename = prefix + now + "_" + username + "_" + uuid4 + "." + exention
     return filename
 
 def clone_model(model, **kwargs):

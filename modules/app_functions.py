@@ -50,6 +50,7 @@ last_user_update: datetime.datetime = datetime.datetime.now()
 audioInput: Optional[QAudioInput] = None
 recorder: Optional[QMediaRecorder] = None
 captureSession: Optional[QMediaCaptureSession] = None
+snippingWindow = None
 
 emojis_list = "😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩" \
               "🥳😏😒😞😔😟😕🙁😣😖😫😩🥺😢😭😤😠😡🤬🤯😳🥵🥶😶😱😨😰😥😓🤗" \
@@ -201,9 +202,10 @@ def setUsersForAddTask():
 
 def prepareMessengerPage():
     new_text_edit = AutoResizingTextEdit(widgets.chatTextBox)
+    new_text_edit.setMinimumLines(3)
     new_text_edit.setStyleSheet(widgets.messengerTextEdit.styleSheet())
     new_text_edit.textChanged.connect(messenger_text_changed)
-    widgets.chatTextBoxHorizontalLayout.replaceWidget(widgets.messengerTextEdit, new_text_edit)
+    widgets.chatTextBoxVerticalLayout.replaceWidget(widgets.messengerTextEdit, new_text_edit)
     widgets.messengerTextEdit.deleteLater()
     widgets.messengerTextEdit = new_text_edit
 
@@ -219,6 +221,9 @@ def prepareMessengerPage():
     QShortcut(QKeySequence("Ctrl+Return"),
               widgets.messengerTextEdit,
               sendMessage)
+
+    # Prepare snipping button
+    widgets.snippingButton.clicked.connect(snippingTool)
 
     # Prepare emoji button
     widgets.emojiButton.clicked.connect(mainWindow.openCloseRightBox)
@@ -353,9 +358,7 @@ def customDropEvent(event: QDropEvent):
             url = raw_url.toLocalFile()
 
             # convert local link to share link
-            if url[0:2] != "//":
-                url = "//" + user.share + "/" + url
-            url = url.replace(":", "").replace("/", "\\")
+            url = url_local_to_share(url)
             widgets.chatPage.setProperty("file_path", url)
 
             if user_action is not None:
@@ -371,6 +374,13 @@ def customDropEvent(event: QDropEvent):
         event.accept()
     else:
         event.ignore()
+
+
+def url_local_to_share(url):
+    if url[0:2] != "//":
+        url = "//" + user.share + "/" + url
+    url = url.replace(":", "").replace("/", "\\")
+    return url
 
 
 def messenger_text_changed():
@@ -619,6 +629,78 @@ def sendMessage(force_send=False):
 
     widgets.messengerTextEdit.setPlainText("")
     widgets.replyFrame.hide()
+
+
+def snippingTool():
+    global snippingWindow
+    snippingWindow = SnippingWidget()
+    snippingWindow.show()
+
+
+class SnippingWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Snipping ")
+        self.begin = QPoint()
+        self.end = QPoint()
+
+        self.setWindowOpacity(0.3)
+
+        self.setCursor(QCursor(Qt.CrossCursor))
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        print("Capture the screen...")
+
+        self.showFullScreen()
+
+    def paintEvent(self, event):
+        qp = QPainter(self)
+        qp.setPen(QPen(QColor("black"), 3))
+        qp.setBrush(QColor(128, 128, 255, 128))
+        qp.drawRect(QRect(self.begin, self.end))
+
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        self.begin = event.globalPosition().toPoint()
+        self.end = self.begin
+        self.update()
+
+    def mouseMoveEvent(self, event):
+        super().mouseMoveEvent(event)
+        self.end = event.globalPosition().toPoint()
+        self.update()
+
+    def mouseReleaseEvent(self, event):
+        self.close()
+        QTimer.singleShot(1000, self.screenshot)
+
+    def screenshot(self):
+        print("screenshot")
+        screen = QGuiApplication.primaryScreen()
+        window = self.windowHandle()
+        if window is not None:
+            screen = window.screen()
+        if screen is None:
+            print("failed")
+            return
+
+        original_pixmap = screen.grabWindow(0)
+        output_pixmap = original_pixmap.copy(
+            QRect(self.begin, self.end).normalized()
+        )
+
+        filename = conf.generate_filename(user.username, "png", prefix="Screenshot ")
+        filepath = str(pathlib.Path(QDir.toNativeSeparators("//alireza/E/Works Manager/Screenshots")) / filename)
+        output_pixmap.save(filepath)
+
+        # self.label = QLabel(pixmap=output_pixmap)
+        # self.label.show()
+
+        widgets.chatPage.setProperty("file_path", filepath)
+        widgets.chatPage.setProperty("file_copy", False)
+
+        # send url
+        widgets.messengerTextEdit.setFocus()
+        sendMessage(force_send=True)
 
 
 def recordMessage():
