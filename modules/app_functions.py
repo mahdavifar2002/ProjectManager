@@ -688,19 +688,33 @@ class SnippingWidget(QWidget):
             QRect(self.begin, self.end).normalized()
         )
 
-        filename = conf.generate_filename(user.username, "png", prefix="Screenshot ")
-        filepath = str(pathlib.Path(QDir.toNativeSeparators("//alireza/E/Works Manager/Screenshots")) / filename)
-        output_pixmap.save(filepath)
+        def msgbtn(i):
+            print(i.text())
+            if i.text() == "OK":
+                filename = conf.generate_filename(user.username, "png", prefix="Screenshot ")
+                filepath = str(
+                    pathlib.Path(QDir.toNativeSeparators("//alireza/E/Works Manager/Screenshots")) / filename)
+                output_pixmap.save(filepath)
 
-        # self.label = QLabel(pixmap=output_pixmap)
-        # self.label.show()
+                # self.label = QLabel(pixmap=output_pixmap)
+                # self.label.show()
 
-        widgets.chatPage.setProperty("file_path", filepath)
-        widgets.chatPage.setProperty("file_copy", False)
+                widgets.chatPage.setProperty("file_path", filepath)
+                widgets.chatPage.setProperty("file_copy", False)
 
-        # send url
-        widgets.messengerTextEdit.setFocus()
-        sendMessage(force_send=True)
+                # send url
+                widgets.messengerTextEdit.setFocus()
+                sendMessage(force_send=True)
+
+        msgBox = QMessageBox()
+        msgBox.setIcon(QMessageBox.Information)
+        msgBox.setWindowTitle("Screenshot")
+        # msgBox.setText(f"Sending Screenshot")
+        # msgBox.setInformativeText("Are you sure?")
+        msgBox.setIconPixmap(output_pixmap.scaled(700, 700, Qt.AspectRatioMode.KeepAspectRatio))
+        msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        msgBox.buttonClicked.connect(msgbtn)
+        msgBox.exec()
 
 
 def recordMessage():
