@@ -208,9 +208,7 @@ class MessengerTextEdit(AutoResizingTextEdit):
         self.setMinimumLines(3)
 
     def focusInEvent(self, e):
-        print("changing language to Persian")
         self.old_keyboard_layout = win32api.GetKeyboardLayout()
-        print(self.old_keyboard_layout)
         win32api.LoadKeyboardLayout('00000429', 1)
         super().focusInEvent(e)
     
