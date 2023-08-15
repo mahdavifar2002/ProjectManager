@@ -1959,7 +1959,7 @@ background-color: transparent;</string>
                       <string notr="true">background-color: rgb(40, 44, 52);</string>
                      </property>
                      <property name="currentIndex">
-                      <number>3</number>
+                      <number>0</number>
                      </property>
                      <widget class="QWidget" name="home">
                       <property name="styleSheet">
@@ -2164,28 +2164,14 @@ background-repeat: no-repeat;</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="1" column="0">
-                             <widget class="QLabel" name="usernameLabel">
-                              <property name="text">
-                               <string>Username</string>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="1" column="1">
-                             <widget class="QLineEdit" name="loggedInUsernameLineEdit">
-                              <property name="readOnly">
-                               <bool>true</bool>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="2" column="1">
+                            <item row="3" column="1">
                              <widget class="QPushButton" name="logoutPushButton">
                               <property name="text">
                                <string>Log out</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="3" column="1">
+                            <item row="4" column="1">
                              <spacer name="verticalSpacer_2">
                               <property name="orientation">
                                <enum>Qt::Vertical</enum>
@@ -2197,6 +2183,34 @@ background-repeat: no-repeat;</string>
                                </size>
                               </property>
                              </spacer>
+                            </item>
+                            <item row="1" column="1">
+                             <widget class="QLineEdit" name="loggedInUsernameLineEdit">
+                              <property name="readOnly">
+                               <bool>true</bool>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="1" column="0">
+                             <widget class="QLabel" name="usernameLabel">
+                              <property name="text">
+                               <string>Username</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="1">
+                             <widget class="QLineEdit" name="shareLineEdit">
+                              <property name="readOnly">
+                               <bool>true</bool>
+                              </property>
+                             </widget>
+                            </item>
+                            <item row="2" column="0">
+                             <widget class="QLabel" name="shareLabel">
+                              <property name="text">
+                               <string>Share</string>
+                              </property>
+                             </widget>
                             </item>
                            </layout>
                           </item>
@@ -2822,7 +2836,7 @@ background-repeat: no-repeat;</string>
                                 <rect>
                                  <x>0</x>
                                  <y>0</y>
-                                 <width>218</width>
+                                 <width>274</width>
                                  <height>218</height>
                                 </rect>
                                </property>

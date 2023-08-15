@@ -1191,10 +1191,14 @@ class Ui_MainWindow(object):
 
         self.formLayout_3.setWidget(0, QFormLayout.FieldRole, self.fullNameLineEdit)
 
-        self.usernameLabel = QLabel(self.logOutArea)
-        self.usernameLabel.setObjectName(u"usernameLabel")
+        self.logoutPushButton = QPushButton(self.logOutArea)
+        self.logoutPushButton.setObjectName(u"logoutPushButton")
 
-        self.formLayout_3.setWidget(1, QFormLayout.LabelRole, self.usernameLabel)
+        self.formLayout_3.setWidget(3, QFormLayout.FieldRole, self.logoutPushButton)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.formLayout_3.setItem(4, QFormLayout.FieldRole, self.verticalSpacer_2)
 
         self.loggedInUsernameLineEdit = QLineEdit(self.logOutArea)
         self.loggedInUsernameLineEdit.setObjectName(u"loggedInUsernameLineEdit")
@@ -1202,14 +1206,21 @@ class Ui_MainWindow(object):
 
         self.formLayout_3.setWidget(1, QFormLayout.FieldRole, self.loggedInUsernameLineEdit)
 
-        self.logoutPushButton = QPushButton(self.logOutArea)
-        self.logoutPushButton.setObjectName(u"logoutPushButton")
+        self.usernameLabel = QLabel(self.logOutArea)
+        self.usernameLabel.setObjectName(u"usernameLabel")
 
-        self.formLayout_3.setWidget(2, QFormLayout.FieldRole, self.logoutPushButton)
+        self.formLayout_3.setWidget(1, QFormLayout.LabelRole, self.usernameLabel)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.shareLineEdit = QLineEdit(self.logOutArea)
+        self.shareLineEdit.setObjectName(u"shareLineEdit")
+        self.shareLineEdit.setReadOnly(True)
 
-        self.formLayout_3.setItem(3, QFormLayout.FieldRole, self.verticalSpacer_2)
+        self.formLayout_3.setWidget(2, QFormLayout.FieldRole, self.shareLineEdit)
+
+        self.shareLabel = QLabel(self.logOutArea)
+        self.shareLabel.setObjectName(u"shareLabel")
+
+        self.formLayout_3.setWidget(2, QFormLayout.LabelRole, self.shareLabel)
 
 
         self.verticalLayout_23.addLayout(self.formLayout_3)
@@ -1454,7 +1465,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 218, 218))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 274, 218))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"
@@ -2226,7 +2237,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(3)
+        self.stackedWidget.setCurrentIndex(0)
         self.chatStackedWidget.setCurrentIndex(1)
         self.extraRightBox.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(0)
@@ -2287,8 +2298,9 @@ class Ui_MainWindow(object):
         self.userImage.setText("")
         self.fullNameLabel.setText(QCoreApplication.translate("MainWindow", u"Name", None))
         self.fullNameLineEdit.setText("")
-        self.usernameLabel.setText(QCoreApplication.translate("MainWindow", u"Username", None))
         self.logoutPushButton.setText(QCoreApplication.translate("MainWindow", u"Log out", None))
+        self.usernameLabel.setText(QCoreApplication.translate("MainWindow", u"Username", None))
+        self.shareLabel.setText(QCoreApplication.translate("MainWindow", u"Share", None))
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"SHOW TASKS", None))
         ___qtablewidgetitem = self.userTasksTableWidget.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"0", None));

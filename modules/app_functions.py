@@ -158,12 +158,28 @@ def loginUser(by_GUI=True) -> bool:
 
             widgets.userImage.setPixmap(QPixmap(user.image_path))
             widgets.loggedInUsernameLineEdit.setText(user.username)
+            widgets.shareLineEdit.setText(user.share)
             widgets.fullNameLineEdit.setText(user.fullname)
             updateHomepageVisibilities()
 
             if by_GUI:
                 with open("userpass.txt", "w") as file:
                     file.write(str([username, password]))
+
+                    new_share = (os.environ["COMPUTERNAME"]).lower()
+                    if new_share != user.share:
+                        def msgbtn(i):
+                            if i.text() == "&Yes":
+                                user.share = new_share
+
+                        msgBox = QMessageBox()
+                        msgBox.setIcon(QMessageBox.Information)
+                        msgBox.setText(f"شما از یک سیستم جدید لاگین کردید.")
+                        msgBox.setInformativeText("آیا مایلید share اکانت شما این سیستم باشد؟")
+                        msgBox.setWindowTitle("سیستم جدید")
+                        msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+                        msgBox.buttonClicked.connect(msgbtn)
+                        msgBox.exec()
 
             return True
         else:
