@@ -557,7 +557,7 @@ def forwardMessage(forward_message_id, forward_username):
 
     msgBox = QMessageBox()
     msgBox.setIcon(QMessageBox.Information)
-    msgBox.setText(f"Fotwarding to {forward_username}")
+    msgBox.setText(f"Forwarding to {forward_username}")
     msgBox.setInformativeText("Are you sure?")
     msgBox.setWindowTitle("Send to...")
     msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
