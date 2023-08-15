@@ -204,6 +204,7 @@ class MainWindow(QMainWindow):
                     widgets.messengerTextEdit.setFocus()
 
                     for url in argv[5:]:
+                        url = url_local_to_share(url)
                         widgets.chatPage.setProperty("file_path", url)
                         widgets.chatPage.setProperty("file_copy", argv[4] == "Copy")
                         # send url
