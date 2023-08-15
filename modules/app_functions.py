@@ -171,6 +171,8 @@ def loginUser(by_GUI=True) -> bool:
                         def msgbtn(i):
                             if i.text() == "&Yes":
                                 user.share = new_share
+                                widgets.shareLineEdit.setText(user.share)
+                                user.save()
 
                         msgBox = QMessageBox()
                         msgBox.setIcon(QMessageBox.Information)
