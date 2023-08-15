@@ -1941,17 +1941,6 @@ class Ui_MainWindow(object):
 
         self.chatGridLayout = QGridLayout()
         self.chatGridLayout.setObjectName(u"chatGridLayout")
-        self.loadMoreButton = QPushButton(self.chatScrollAreaWidgetContents)
-        self.loadMoreButton.setObjectName(u"loadMoreButton")
-        self.loadMoreButton.setMinimumSize(QSize(0, 40))
-        self.loadMoreButton.setStyleSheet(u"background: transparent;\n"
-"border: none;")
-        icon14 = QIcon()
-        icon14.addFile(u":/icons/images/icons/cil-cloud-download.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.loadMoreButton.setIcon(icon14)
-
-        self.chatGridLayout.addWidget(self.loadMoreButton, 0, 0, 1, 1)
-
 
         self.chatVerticalLayout.addLayout(self.chatGridLayout)
 
@@ -2084,7 +2073,7 @@ class Ui_MainWindow(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollAreaWidgetContents_4 = QWidget()
         self.scrollAreaWidgetContents_4.setObjectName(u"scrollAreaWidgetContents_4")
-        self.scrollAreaWidgetContents_4.setGeometry(QRect(0, 0, 29, 405))
+        self.scrollAreaWidgetContents_4.setGeometry(QRect(0, 0, 98, 28))
         self.stickersGridLayout = QGridLayout(self.scrollAreaWidgetContents_4)
         self.stickersGridLayout.setSpacing(0)
         self.stickersGridLayout.setObjectName(u"stickersGridLayout")
@@ -2420,7 +2409,6 @@ class Ui_MainWindow(object):
         self.pinIconButton.setText("")
         self.pinLabel.setText(QCoreApplication.translate("MainWindow", u"Pin message", None))
         self.closePinButton.setText("")
-        self.loadMoreButton.setText(QCoreApplication.translate("MainWindow", u"   Press to load more messages", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"ADD TASK", None))
         self.assignUserLabel.setText(QCoreApplication.translate("MainWindow", u"Assign to user", None))
         self.taskDescriptionLabel.setText(QCoreApplication.translate("MainWindow", u"Task Description", None))

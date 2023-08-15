@@ -288,8 +288,8 @@ def prepareMessengerPage():
     # Prepare handling scroll to top to fetch new search messages
     widgets.contactsScrollArea.verticalScrollBar().actionTriggered.connect(on_search_scroll)
 
-    # Prepare 'load more messages' button
-    widgets.loadMoreButton.clicked.connect(fetch_ten_messages)
+    # # Prepare 'load more messages' button
+    # widgets.loadMoreButton.clicked.connect(fetch_ten_messages)
 
     # Prepare drag and drop of image
     prepareDragAndDrop()
