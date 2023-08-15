@@ -248,6 +248,7 @@ def prepareMessengerPage():
 
     # Prepare snipping button
     widgets.snippingButton.clicked.connect(snippingTool)
+    widgets.snippingButton.setToolTip("screenshot")
 
     # Prepare emoji button
     widgets.emojiButton.clicked.connect(mainWindow.openCloseRightBox)
