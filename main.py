@@ -169,6 +169,8 @@ class MainWindow(QMainWindow):
             widgets.passwordLineEdit.setText(password)
 
             if app_functions.loginUser(by_GUI=False):
+                num_windows = app_functions.count_messenger_windows() - 3
+                self.move(self.pos() + QPoint(num_windows*35, num_windows*35))
                 self.resize(460, 600)
                 widgets.stackedWidget.setCurrentWidget(widgets.messenger)
                 UIFunctions.resetStyle(self, widgets.btn_messenger.objectName())

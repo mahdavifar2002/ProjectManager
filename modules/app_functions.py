@@ -1537,6 +1537,17 @@ class ClickSlider(QSlider):
             self.sliderMoved.emit(value)
 
 
+def enum_callback(hwnd, keyword):
+    global count
+    if win32gui.GetWindowText(hwnd).startswith(keyword):
+        count += 1
+
+def count_messenger_windows():
+    global count
+    count = 0
+    win32gui.EnumWindows(enum_callback, "Message ")
+    return count
+
 def prepareShowTasks():
     reloadTasks()
 
