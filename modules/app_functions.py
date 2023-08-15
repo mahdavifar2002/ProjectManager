@@ -549,6 +549,13 @@ def forwardMessage(forward_message_id, forward_username):
             clone_message.save()
             send_broadcast(f"new_message {clone_message.receiver_username} {user.username} {clone_message.id}")
 
+            subprocess.Popen(["pythonw",
+                              "E:\\Works Manager\\Messenger\\main.py",
+                              user.username,
+                              user.password,
+                              forward_username],
+                             cwd="E:\\Works Manager\\Messenger")
+
     msgBox = QMessageBox()
     msgBox.setIcon(QMessageBox.Information)
     msgBox.setText(f"Fotwarding to {forward_username}")
