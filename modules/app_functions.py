@@ -1134,7 +1134,7 @@ class MessageWidget(QFrame):
     def copySlot(self, event):
         cb = QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)
-        cb.setText(self.message.text, mode=cb.Clipboard)
+        cb.setText(self.message_core.text_edit.toPlainText(), mode=cb.Clipboard)
 
     def editSlot(self, event):
         widgets.editLabel.setText(self.message.short_text())
