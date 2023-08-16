@@ -229,7 +229,7 @@ class MessengerTextEdit(AutoResizingTextEdit):
         self.old_keyboard_layout = win32api.GetKeyboardLayout()
         win32api.LoadKeyboardLayout('00000429', 1)
         super().focusInEvent(e)
-    
+
     def focusOutEvent(self, e):
         # Stay Persian
         if self.old_keyboard_layout == 0x4290429:
@@ -241,7 +241,7 @@ class MessengerTextEdit(AutoResizingTextEdit):
 
             # win32api.LoadKeyboardLayout(self.old_keyboard_layout, 1)
         super().focusOutEvent(e)
-        
+
 
 def prepareMessengerPage():
     new_text_edit = MessengerTextEdit(widgets.chatTextBox)
@@ -1289,7 +1289,8 @@ class VoiceWidget(QFrame):
         self.setLayout(self.hbox)
         self.hbox.addWidget(self.playPauseButton)
 
-        self.timeLabel = QLabel("00:00:00")
+        # self.timeLabel = QLabel("00:00:00")
+        self.timeLabel = QLabel(self.position_to_time_str(self.player.duration()))
         self.timeLabel.setStyleSheet("color: gray;")
 
         self.voiceFrame = QFrame()
@@ -1330,12 +1331,24 @@ class VoiceWidget(QFrame):
 
         self.slider.setValue(position_)
 
+        label = self.position_to_time_str(self.player.duration())
+        if position_ != 0:
+            label = self.position_to_time_str(position_) + " / " + label
+
+        self.timeLabel.setText(label)
+
+    def position_to_time_str(self, position_):
         seconds = (position_ / 1_000) % 60
         minutes = (position_ / 60_000) % 60
         hours = (position_ / 3_600_000)
-
         time = QTime(hours, minutes, seconds)
-        self.timeLabel.setText(time.toString())
+        time_str = time.toString()
+
+        # remove 00: from beginning, if voice is below 1 hour
+        if hours < 1:
+            time_str = time_str[3:]
+
+        return time_str
 
     def media_status_changed(self, status):
         if status == QMediaPlayer.MediaStatus.EndOfMedia:
