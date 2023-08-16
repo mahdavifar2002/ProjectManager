@@ -496,7 +496,7 @@ def fetch_ten_search_messages(search):
 
 
 class ContactButton(QPushButton):
-    def __init__(self, other_user, selected_message):
+    def __init__(self, other_user, selected_message, top=False):
         super().__init__()
         self.user = other_user
         self.selected_message = selected_message
@@ -504,8 +504,12 @@ class ContactButton(QPushButton):
 
         self.setToolTip(self.user.username)
         self.setIcon(QIcon(other_user.image_path))
-        self.setIconSize(QSize(45, 45))
-        self.setMinimumHeight(60)
+        if top:
+            self.setIconSize(QSize(35, 35))
+            self.setMinimumHeight(45)
+        else:
+            self.setIconSize(QSize(45, 45))
+            self.setMinimumHeight(60)
         self.setStyleSheet("text-align: left; border: none; padding: 7px;")
 
         # Prepare user_button text (username + last message, if any)
@@ -831,6 +835,7 @@ def reloadChat(new_target, message_id=None):
     # Clear chatbox
     clearLayout(widgets.chatGridLayout)
     clearLayout(widgets.contactInfoHorizontalLayout)
+    clearLayout(widgets.leftBoxHorizontalLayout)
     # remove pin frame
     widgets.pinFrame.hide()
     widgets.pinLabel.setToolTip(str(-1))
@@ -845,9 +850,9 @@ def reloadChat(new_target, message_id=None):
 
     # Contact info box
     target_user = User.find_by_username(target_username)
-    user_button = ContactButton(target_user, None)
+    user_button = ContactButton(target_user, None, top=True)
     widgets.contactUserButton = user_button
-    widgets.contactInfoHorizontalLayout.addWidget(user_button)
+    widgets.leftBoxHorizontalLayout.addWidget(user_button, 1)
 
     # Messages
     messages_dict.clear()

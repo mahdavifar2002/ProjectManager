@@ -1609,7 +1609,7 @@ background-color: transparent;</string>
                <property name="frameShadow">
                 <enum>QFrame::Raised</enum>
                </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <layout class="QHBoxLayout" name="leftBoxHorizontalLayout">
                 <property name="spacing">
                  <number>0</number>
                 </property>
@@ -3821,13 +3821,13 @@ QTextEdit:focus {
                                 <property name="minimumSize">
                                  <size>
                                   <width>0</width>
-                                  <height>63</height>
+                                  <height>0</height>
                                  </size>
                                 </property>
                                 <property name="maximumSize">
                                  <size>
                                   <width>16777215</width>
-                                  <height>63</height>
+                                  <height>0</height>
                                  </size>
                                 </property>
                                 <layout class="QHBoxLayout" name="contactInfoHorizontalLayout">
@@ -3950,7 +3950,7 @@ QTextEdit:focus {
                                 <x>0</x>
                                 <y>0</y>
                                 <width>858</width>
-                                <height>99</height>
+                                <height>162</height>
                                </rect>
                               </property>
                               <layout class="QVBoxLayout" name="chatScrollVerticalLayout">
