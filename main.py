@@ -379,6 +379,7 @@ class MainWindow(QMainWindow):
             widgets.stackedWidget.setCurrentWidget(widgets.home)
             UIFunctions.resetStyle(self, btnName)
             btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+            app_functions.clearLayout(widgets.leftBoxHorizontalLayout)
 
         # SHOW ADD TASK PAGE
         if btnName == "btn_add":
