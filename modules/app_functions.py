@@ -238,7 +238,6 @@ class MessengerTextEdit(AutoResizingTextEdit):
         if self.old_keyboard_layout == 0x4090409:
             win32api.LoadKeyboardLayout('00000409', 1)
 
-
             # win32api.LoadKeyboardLayout(self.old_keyboard_layout, 1)
         super().focusOutEvent(e)
 
@@ -505,6 +504,7 @@ class ContactButton(QPushButton):
         self.setToolTip(self.user.username)
         self.setIcon(QIcon(other_user.image_path))
         if top:
+            # self.mouseMoveEvent = widgets.titleRightInfo.mouseMoveEvent
             self.setIconSize(QSize(35, 35))
             self.setMinimumHeight(45)
         else:
@@ -1378,6 +1378,34 @@ def short_text(text):
     return the_text
 
 
+class VerticalLabel(QLabel):
+
+    def __init__(self, *args):
+        QLabel.__init__(self, *args)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.translate(0, self.height())
+        painter.rotate(-90)
+        # calculate the size of the font
+        fm = QFontMetrics(painter.font())
+        xoffset = int(fm.boundingRect(self.text()).width() / 2)
+        yoffset = int(fm.boundingRect(self.text()).height() / 2)
+        x = int(self.width() / 2) + yoffset
+        y = int(self.height() / 2) - xoffset
+        # because we rotated the label, x affects the vertical placement, and y affects the horizontal
+        painter.drawText(y, x, self.text())
+        painter.end()
+
+    def minimumSizeHint(self):
+        size = QLabel.minimumSizeHint(self)
+        return QSize(size.height(), size.width())
+
+    def sizeHint(self):
+        size = QLabel.sizeHint(self)
+        return QSize(size.height(), size.width())
+
+
 class FileWidget(QFrame):
     def __init__(self, message_widget):
         super().__init__()
@@ -1391,8 +1419,15 @@ class FileWidget(QFrame):
 
         self.hbox = QHBoxLayout()
         self.hbox.setContentsMargins(0, 0, 0, 0)
-        self.hbox.setSpacing(10)
+        self.hbox.setSpacing(5)
         self.setLayout(self.hbox)
+
+        self.type_label = VerticalLabel("COPY" if self.file_copy else "LINK")
+        is_sender = (self.message_widget.message.sender_username == user.username)
+        self.type_label.setObjectName("file-from-" + ("me" if is_sender else "them"))
+        self.type_label.setStyleSheet(
+            f"border-right: 2px solid {'hsl(270, 30%, 15%)' if is_sender else 'hsl(270, 30%, 25%)'};")
+        self.hbox.addWidget(self.type_label)
 
         self.fileButton = QPushButton(self)
         self.set_icon()
@@ -1436,8 +1471,10 @@ class FileWidget(QFrame):
         self.vbox.setContentsMargins(0, 0, 0, 0)
         self.vbox.setSpacing(0)
         self.infoFrame.setLayout(self.vbox)
+        self.vbox.addStretch()
         self.vbox.addWidget(self.fileNameLabel)
         self.vbox.addWidget(self.fileSizeLabel)
+        self.vbox.addStretch()
 
         self.hbox.addWidget(self.infoFrame)
         self.hbox.addStretch()
@@ -1587,11 +1624,13 @@ def enum_callback(hwnd, keyword):
     if win32gui.GetWindowText(hwnd).startswith(keyword):
         count += 1
 
+
 def count_messenger_windows():
     global count
     count = 0
     win32gui.EnumWindows(enum_callback, "Message ")
     return count
+
 
 def prepareShowTasks():
     reloadTasks()

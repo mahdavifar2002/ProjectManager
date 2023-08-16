@@ -566,6 +566,19 @@ QFrame[objectName^="from"] {
     background-color: hsl(300, 30%, 75%);
 }
 
+QLabel[objectName^="file-from"] {
+    font: 13pt;
+    font-weight: 1000;
+    padding-bottom: 10px;
+    border-right: 1px solid white;
+}
+#file-from-me {
+    color: hsl(270, 30%, 85%);
+}
+#file-from-them {
+    color: hsl(270, 25%, 70%);
+}
+
 #contactInfoBox , #chatTextBox {
     background-color: #6272a4;
 }

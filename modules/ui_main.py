@@ -957,7 +957,10 @@ class Ui_MainWindow(object):
         self.leftBoxHorizontalLayout.setSpacing(0)
         self.leftBoxHorizontalLayout.setObjectName(u"leftBoxHorizontalLayout")
         self.leftBoxHorizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.titleRightInfo = QLabel(self.leftBox)
+
+        self.horizontalLayout.addWidget(self.leftBox)
+
+        self.titleRightInfo = QLabel(self.contentTopBg)
         self.titleRightInfo.setObjectName(u"titleRightInfo")
         sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         sizePolicy2.setHorizontalStretch(0)
@@ -968,10 +971,7 @@ class Ui_MainWindow(object):
         self.titleRightInfo.setFont(font)
         self.titleRightInfo.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
-        self.leftBoxHorizontalLayout.addWidget(self.titleRightInfo)
-
-
-        self.horizontalLayout.addWidget(self.leftBox)
+        self.horizontalLayout.addWidget(self.titleRightInfo)
 
         self.rightButtons = QFrame(self.contentTopBg)
         self.rightButtons.setObjectName(u"rightButtons")

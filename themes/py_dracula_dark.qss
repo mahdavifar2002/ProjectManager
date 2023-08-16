@@ -551,6 +551,19 @@ QWidget[objectName^="from"] {
     background-color: hsl(300, 30%, 25%);
 }
 
+QLabel[objectName^="file-from"] {
+    font: 13pt;
+    font-weight: 1000;
+    padding-bottom: 10px;
+    border-right: 1px solid white;
+}
+#file-from-me {
+    color: hsl(270, 25%, 15%);
+}
+#file-from-them {
+    color: hsl(270, 25%, 25%);
+}
+
 #contactInfoBox , #chatTextBox {
     background-color: rgb(33, 37, 43);
 }
