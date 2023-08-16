@@ -1041,14 +1041,20 @@ class MessageWidget(QFrame):
             main_text = "<p style='white-space: pre-wrap;'>" + self.message.text.replace("\n", "<br/>") + "</p>"
             seen_text = "✅ " if is_sender and self.message.has_been_seen else ""
             pin_text = "📌 " if self.message.pinned else ""
-            edit_text = "(ویرایش‌شده)<br/>" if self.message.has_been_edited else ""
-            date_label_text = "<p dir='ltr' style='color: gray; white-space:pre;'>" + edit_text + seen_text + pin_text + self.message.get_time_created() + "</p>"
+            edit_text = "<p dir='ltr' style='color: gray; white-space:pre;'> (ویرایش‌شده) </p>" if self.message.has_been_edited else ""
+            date_label_text = "<p dir='ltr' style='color: gray; white-space:pre;'>" + seen_text + pin_text + self.message.get_time_created() + "</p>"
             self.message_core.text_edit.setHtml(main_text)
+            self.message_core.edit_label.setText(edit_text)
             self.message_core.date_label.setText(date_label_text)
 
+            # Set tooltip of edit time
+            if edit_text == "":
+                self.message_core.edit_label.hide()
+            else:
+                self.message_core.edit_label.setToolTip("Edited at   " + self.message.get_time_updated())
             # Set tooltip of seen time
             if is_sender and self.message.has_been_seen and self.message.time_seen is not None:
-                self.message_core.text_edit.setToolTip("Seen at   " + self.message.get_time_seen())
+                self.message_core.date_label.setToolTip("Seen at   " + self.message.get_time_seen())
 
             # Update file size
             if self.message_core.file_widget is not None:
@@ -1176,6 +1182,7 @@ class MessageCoreWidget(QFrame):
         super().__init__()
         self.messageWidget = messageWidget
         self.text_edit = MessageTextWidget(messageWidget)
+        self.edit_label = QLabel()
         self.date_label = QLabel()
 
         self.setLayout(QVBoxLayout())
@@ -1193,6 +1200,7 @@ class MessageCoreWidget(QFrame):
             self.layout().addWidget(self.file_widget)
 
         self.layout().addWidget(self.text_edit)
+        self.layout().addWidget(self.edit_label)
         self.layout().addWidget(self.date_label)
 
         # creating a blur effect
