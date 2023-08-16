@@ -504,7 +504,8 @@ class ContactButton(QPushButton):
         self.setToolTip(self.user.username)
         self.setIcon(QIcon(other_user.image_path))
         if top:
-            # self.mouseMoveEvent = widgets.titleRightInfo.mouseMoveEvent
+            self.mouseMoveEvent = widgets.titleRightInfo.mouseMoveEvent
+            self.mousePressEvent = widgets.titleRightInfo.mousePressEvent
             self.setIconSize(QSize(35, 35))
             self.setMinimumHeight(45)
         else:
