@@ -1791,19 +1791,20 @@ class Ui_MainWindow(object):
         self.chatTextBoxVerticalLayout = QVBoxLayout(self.chatWriteTextBox)
         self.chatTextBoxVerticalLayout.setSpacing(9)
         self.chatTextBoxVerticalLayout.setObjectName(u"chatTextBoxVerticalLayout")
+        self.chatTextBoxVerticalLayout.setContentsMargins(0, -1, 0, 0)
         self.messengerTextEdit = QTextEdit(self.chatWriteTextBox)
         self.messengerTextEdit.setObjectName(u"messengerTextEdit")
         self.messengerTextEdit.setMaximumSize(QSize(16777215, 100))
         self.messengerTextEdit.setLayoutDirection(Qt.LeftToRight)
         self.messengerTextEdit.setStyleSheet(u"QTextEdit {\n"
-"	border: none;\n"
+"	border: 1px solid rgba(128, 128, 128, 0.5);\n"
 "}\n"
 "\n"
 "QTextEdit:hover {\n"
-"	border: none;\n"
+"	border: 1px solid rgba(128, 128, 128, 0.5);\n"
 "}\n"
 "QTextEdit:focus {\n"
-"	border: none;\n"
+"	border: 1px solid rgba(128, 128, 128, 0.5);\n"
 "}")
 
         self.chatTextBoxVerticalLayout.addWidget(self.messengerTextEdit)
@@ -1815,10 +1816,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10 = QHBoxLayout(self.chatButtonsWidget)
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_10.addItem(self.horizontalSpacer_5)
-
         self.snippingButton = QPushButton(self.chatButtonsWidget)
         self.snippingButton.setObjectName(u"snippingButton")
         self.snippingButton.setStyleSheet(u"border: 0;")
@@ -1848,6 +1845,10 @@ class Ui_MainWindow(object):
         self.recordButton.setIconSize(QSize(32, 32))
 
         self.horizontalLayout_10.addWidget(self.recordButton)
+
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_10.addItem(self.horizontalSpacer_5)
 
         self.chatSendButton = QPushButton(self.chatButtonsWidget)
         self.chatSendButton.setObjectName(u"chatSendButton")
@@ -1941,7 +1942,7 @@ class Ui_MainWindow(object):
         self.chatScrollArea.setWidgetResizable(True)
         self.chatScrollAreaWidgetContents = QWidget()
         self.chatScrollAreaWidgetContents.setObjectName(u"chatScrollAreaWidgetContents")
-        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 858, 90))
+        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 858, 99))
         self.chatScrollVerticalLayout = QVBoxLayout(self.chatScrollAreaWidgetContents)
         self.chatScrollVerticalLayout.setObjectName(u"chatScrollVerticalLayout")
         self.chatVerticalLayout = QVBoxLayout()
@@ -2237,7 +2238,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(3)
         self.chatStackedWidget.setCurrentIndex(1)
         self.extraRightBox.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(0)
