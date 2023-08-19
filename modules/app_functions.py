@@ -921,7 +921,7 @@ def addMessageWidget(message: Message):
 
     is_sender = (message.sender_username == user.username)
     message_widget = MessageWidget(message, widgets)
-    widgets.chatGridLayout.addWidget(message_widget, 1 + message.id, is_sender, 1, 2)
+    widgets.chatGridLayout.addWidget(message_widget, 1 + message.id, is_sender, 1, 4)
     # Fill the message dictionary
     messages_dict[message.id] = message_widget
     # check for pin
@@ -1391,7 +1391,7 @@ class VerticalLabel(QLabel):
         # calculate the size of the font
         fm = QFontMetrics(painter.font())
         xoffset = int(fm.boundingRect(self.text()).width() / 2)
-        yoffset = int(fm.boundingRect(self.text()).height() / 2)
+        yoffset = int(fm.boundingRect(self.text()).height() / 2) - 5
         x = int(self.width() / 2) + yoffset
         y = int(self.height() / 2) - xoffset
         # because we rotated the label, x affects the vertical placement, and y affects the horizontal
@@ -1426,8 +1426,11 @@ class FileWidget(QFrame):
         self.type_label = VerticalLabel("COPY" if self.file_copy else "LINK")
         is_sender = (self.message_widget.message.sender_username == user.username)
         self.type_label.setObjectName("file-from-" + ("me" if is_sender else "them"))
-        self.type_label.setStyleSheet(
-            f"border-right: 2px solid {'hsl(270, 30%, 15%)' if is_sender else 'hsl(270, 30%, 25%)'};")
+        if is_sender:
+            self.type_label.setStyleSheet("border-right: 2px solid hsl(270, 30%, 15%);")
+        else: # 'hsl(270, 30%, 25%)'};")
+            self.type_label.setStyleSheet("border-left: 2px solid hsl(270, 30%, 25%);")
+
         self.hbox.addWidget(self.type_label)
 
         self.fileButton = QPushButton(self)
@@ -1476,6 +1479,14 @@ class FileWidget(QFrame):
         self.vbox.addWidget(self.fileNameLabel)
         self.vbox.addWidget(self.fileSizeLabel)
         self.vbox.addStretch()
+
+        if not is_sender:
+            self.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+
+            self.infoFrame.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+            self.vbox.setAlignment(Qt.AlignmentFlag.AlignRight)
+            self.fileNameLabel.setAlignment(Qt.AlignmentFlag.AlignRight)
+            self.fileSizeLabel.setAlignment(Qt.AlignmentFlag.AlignRight)
 
         self.hbox.addWidget(self.infoFrame)
         self.hbox.addStretch()
