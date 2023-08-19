@@ -563,6 +563,14 @@ QLabel[objectName^="file-from"] {
 #file-from-them {
     color: hsl(270, 25%, 25%);
 }
+#image-me {
+    padding: 5px;
+    background-color: hsl(270, 30%, 15%);
+}
+#image-them {
+    padding: 5px;
+    background-color: hsl(270, 25%, 30%);
+}
 
 #contactInfoBox , #chatTextBox {
     background-color: rgb(33, 37, 43);

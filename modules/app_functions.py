@@ -48,6 +48,9 @@ search_messages_dict_full: bool = False
 target_username: Optional[str] = None
 last_user_update: datetime.datetime = datetime.datetime.now()
 
+image_me: Optional[QImage] = None
+image_them: Optional[QImage] = None
+
 audioInput: Optional[QAudioInput] = None
 recorder: Optional[QMediaRecorder] = None
 captureSession: Optional[QMediaCaptureSession] = None
@@ -840,6 +843,10 @@ def reloadChat(new_target, message_id=None):
 
     target_username = new_target
 
+    # Load image of me and them
+    image_me = QImage(user.image_path)
+    image_them = QImage(target_username)
+
     # Clear chatbox
     clearLayout(widgets.chatGridLayout)
     clearLayout(widgets.contactInfoHorizontalLayout)
@@ -1002,20 +1009,39 @@ class MessageWidget(QFrame):
         self.widgets = widgets
         self.message = message
 
+        is_sender = (message.sender_username == user.username)
+        self.setObjectName("from-me" if is_sender else "from-them")
+
         self.message_core = MessageCoreWidget(self)
         self.updateMessage()
 
+        message_hbox = QHBoxLayout()
+        message_hbox.setContentsMargins(0, 0, 0, 0)
+        message_hbox.setSpacing(0)
+        self.setLayout(message_hbox)
+
+        if is_sender:
+            self.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+            message_hbox.setAlignment(Qt.AlignmentFlag.AlignRight)
+
+
+        self.sender_image = QLabel()
+
+        self.sender_image.setPixmap(QPixmap(QImage(user.image_path) if is_sender else QImage(User.find_by_username(target_username).image_path)).scaled(45, 45, Qt.AspectRatioMode.KeepAspectRatio))
+        message_hbox.addWidget(self.sender_image)
+        self.sender_image.setObjectName("image-me" if is_sender else "image-them")
+
+        message_vbox_widget = QWidget()
+        message_vbox_widget.setStyleSheet("background-color: transparent;")
         message_vbox = QVBoxLayout()
-        self.setLayout(message_vbox)
+        message_vbox_widget.setLayout(message_vbox)
+        message_hbox.addWidget(message_vbox_widget)
 
         if message.reply_to is not None:
             replied_widget = RepliedWidget(message, self)
             message_vbox.addWidget(replied_widget)
 
         message_vbox.addWidget(self.message_core)
-
-        is_sender = (message.sender_username == user.username)
-        self.setObjectName("from-me" if is_sender else "from-them")
 
     def jumpTo(self):
         widgets.chatScrollArea.ensureWidgetVisible(self)
@@ -1456,7 +1482,7 @@ class FileWidget(QFrame):
         self.hbox.addWidget(self.fileButton)
 
         self.info = QFileInfo(self.file_path)
-        self.fileNameLabel = QLabel(short_text(self.info.fileName(), length=30))
+        self.fileNameLabel = QLabel(short_text(self.info.fileName(), length=20))
         self.fileNameLabel.setStyleSheet("font-weight: bold;")
         self.fileSizeLabel = QLabel(self.pretty_size(self.info.size()))
         self.fileSizeLabel.setStyleSheet("color: gray;")
@@ -1487,7 +1513,9 @@ class FileWidget(QFrame):
         self.vbox.addWidget(self.fileSizeLabel)
         self.vbox.addStretch()
 
-        if not is_sender:
+        if is_sender:
+            self.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
+        else:
             self.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
 
             self.infoFrame.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
@@ -1541,6 +1569,7 @@ class FileWidget(QFrame):
         elif self.file_size != 0:
             if self.is_sender and psutil.pid_exists(self.copy_pid):
                 self.fileButton.setText("❌")
+                self.fileButton.setIcon(QIcon(None))
             else:
                 self.clear_stop_button()
 
