@@ -773,7 +773,7 @@ class SnippingWidget(QWidget):
         msgBox.setWindowTitle("Screenshot")
         # msgBox.setText(f"Sending Screenshot")
         # msgBox.setInformativeText("Are you sure?")
-        msgBox.setIconPixmap(output_pixmap.scaled(700, 700, Qt.AspectRatioMode.KeepAspectRatio))
+        msgBox.setIconPixmap(output_pixmap.scaled(400, 400, Qt.AspectRatioMode.KeepAspectRatio))
         msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
         msgBox.buttonClicked.connect(msgbtn)
         msgBox.exec()
