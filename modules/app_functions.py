@@ -1425,6 +1425,14 @@ class FileWidget(QFrame):
         self.file_is_dir = self.message_widget.message.file_is_dir
         self.is_sender = (self.message_widget.message.sender_username == user.username)
 
+        # preview file if it's an image
+        self.is_image = (QImageReader.imageFormat(self.file_path) != '')
+        if self.is_image:
+            self.setToolTip(f'<img height="200"'
+                            f'src="{self.file_path}">')
+        else:
+            self.setToolTip(self.file_path)
+
         self.hbox = QHBoxLayout()
         self.hbox.setContentsMargins(0, 0, 0, 0)
         self.hbox.setSpacing(5)
@@ -1442,7 +1450,7 @@ class FileWidget(QFrame):
 
         self.fileButton = QPushButton(self)
         self.set_icon()
-        self.fileButton.setStyleSheet("font: 20px; background-color: transparent;")
+        self.fileButton.setStyleSheet("font: 35px; background-color: transparent;")
         if self.file_copy and psutil.pid_exists(self.copy_pid):
             self.fileButton.clicked.connect(self.cancel_copy)
         self.hbox.addWidget(self.fileButton)
@@ -1452,14 +1460,6 @@ class FileWidget(QFrame):
         self.fileNameLabel.setStyleSheet("font-weight: bold;")
         self.fileSizeLabel = QLabel(self.pretty_size(self.info.size()))
         self.fileSizeLabel.setStyleSheet("color: gray;")
-
-        # preview file if it's an image
-        result = QImageReader.imageFormat(self.file_path)
-        if result != '':
-            self.setToolTip(f'<img height="200"'
-                            f'src="{self.file_path}">')
-        else:
-            self.setToolTip(self.file_path)
 
         # # preview middle frame if file is a video
         # elif self.file_path[-3:] in ["mov", "mp4", "avi", "mpg"]: # player.hasVideo():
@@ -1500,9 +1500,31 @@ class FileWidget(QFrame):
 
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
+    def extension(self):
+        try:
+            return self.file_path.split('.')[-1]
+        except:
+            return ''
+
     def set_icon(self):
+        self.fileButton.setText("")
+        self.fileButton.setIconSize(QSize(40, 40))
+        extension = self.extension().lower()
+
         if self.file_is_dir:
-            self.fileButton.setText("📂")
+            # self.fileButton.setText("📂")
+            self.fileButton.setIcon(QIcon("./resources/icons/explorer.png"))
+        elif self.is_image or extension in ['jpg', 'png', 'jpeg', 'bmp']:
+            self.fileButton.setIcon(QIcon("./resources/icons/image.png"))
+        elif extension in ["mp4", "mov", "avi", "wmv", "mkv", "flv", "webm", "m4v", "mpeg", "3gp"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/video.png"))
+        elif extension in ['ma', 'mb']:
+            self.fileButton.setIcon(QIcon("./resources/icons/maya.png"))
+        elif extension in ["fbx", "obj"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/3d.png"))
+
+
+
         elif self.file_copy:
             self.fileButton.setText("📋")
         else:
