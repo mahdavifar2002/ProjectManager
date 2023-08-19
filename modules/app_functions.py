@@ -315,6 +315,13 @@ def prepareMessengerPage():
     # widgets.chatPageGridLayout.addWidget(widgets.chatScrollArea, 0, 0)
     # widgets.chatScrollArea.stackUnder(widgets.contactInfoBox)
 
+    # # Overlapping toEnd button
+    # widgets.chatPageGridLayout.removeWidget(widgets.toEndHorizontalWidget)
+    # widgets.chatPageGridLayout.addWidget(widgets.toEndHorizontalWidget, 1, 0)
+    # widgets.chatScrollArea.stackUnder(widgets.toEndHorizontalWidget)
+    # widgets.chatPageGridLayout.setAlignment(Qt.AlignmentFlag.AlignBottom)
+    widgets.toEndHorizontalWidget.hide()
+
 
 def resize_emoji(emoji):
     return f"<span style='font-size: 20px;'>{emoji}</span>"

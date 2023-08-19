@@ -944,13 +944,26 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 10, 0)
-        self.leftBox = QFrame(self.contentTopBg)
-        self.leftBox.setObjectName(u"leftBox")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        self.titleRightInfo = QLabel(self.contentTopBg)
+        self.titleRightInfo.setObjectName(u"titleRightInfo")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.leftBox.sizePolicy().hasHeightForWidth())
-        self.leftBox.setSizePolicy(sizePolicy1)
+        sizePolicy1.setHeightForWidth(self.titleRightInfo.sizePolicy().hasHeightForWidth())
+        self.titleRightInfo.setSizePolicy(sizePolicy1)
+        self.titleRightInfo.setMaximumSize(QSize(16777215, 45))
+        self.titleRightInfo.setFont(font)
+        self.titleRightInfo.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+
+        self.horizontalLayout.addWidget(self.titleRightInfo)
+
+        self.leftBox = QFrame(self.contentTopBg)
+        self.leftBox.setObjectName(u"leftBox")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.leftBox.sizePolicy().hasHeightForWidth())
+        self.leftBox.setSizePolicy(sizePolicy2)
         self.leftBox.setFrameShape(QFrame.NoFrame)
         self.leftBox.setFrameShadow(QFrame.Raised)
         self.leftBoxHorizontalLayout = QHBoxLayout(self.leftBox)
@@ -959,19 +972,6 @@ class Ui_MainWindow(object):
         self.leftBoxHorizontalLayout.setContentsMargins(0, 0, 0, 0)
 
         self.horizontalLayout.addWidget(self.leftBox)
-
-        self.titleRightInfo = QLabel(self.contentTopBg)
-        self.titleRightInfo.setObjectName(u"titleRightInfo")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.titleRightInfo.sizePolicy().hasHeightForWidth())
-        self.titleRightInfo.setSizePolicy(sizePolicy2)
-        self.titleRightInfo.setMaximumSize(QSize(16777215, 45))
-        self.titleRightInfo.setFont(font)
-        self.titleRightInfo.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
-
-        self.horizontalLayout.addWidget(self.titleRightInfo)
 
         self.rightButtons = QFrame(self.contentTopBg)
         self.rightButtons.setObjectName(u"rightButtons")
@@ -1465,7 +1465,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 274, 218))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 218, 218))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"
@@ -1698,6 +1698,79 @@ class Ui_MainWindow(object):
         self.chatPageGridLayout = QGridLayout(self.chatPage)
         self.chatPageGridLayout.setObjectName(u"chatPageGridLayout")
         self.chatPageGridLayout.setContentsMargins(0, 0, 0, 0)
+        self.contactInfoBox = QFrame(self.chatPage)
+        self.contactInfoBox.setObjectName(u"contactInfoBox")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.contactInfoBox.sizePolicy().hasHeightForWidth())
+        self.contactInfoBox.setSizePolicy(sizePolicy4)
+        self.verticalLayout_29 = QVBoxLayout(self.contactInfoBox)
+        self.verticalLayout_29.setSpacing(0)
+        self.verticalLayout_29.setObjectName(u"verticalLayout_29")
+        self.verticalLayout_29.setContentsMargins(0, 0, 0, 0)
+        self.contactInfoFrame = QFrame(self.contactInfoBox)
+        self.contactInfoFrame.setObjectName(u"contactInfoFrame")
+        self.contactInfoFrame.setMinimumSize(QSize(0, 0))
+        self.contactInfoFrame.setMaximumSize(QSize(16777215, 0))
+        self.contactInfoHorizontalLayout = QHBoxLayout(self.contactInfoFrame)
+        self.contactInfoHorizontalLayout.setObjectName(u"contactInfoHorizontalLayout")
+        self.contactInfoHorizontalLayout.setContentsMargins(9, 0, 0, 0)
+        self.contactUserButton = QPushButton(self.contactInfoFrame)
+        self.contactUserButton.setObjectName(u"contactUserButton")
+        self.contactUserButton.setStyleSheet(u"border: none;")
+
+        self.contactInfoHorizontalLayout.addWidget(self.contactUserButton)
+
+
+        self.verticalLayout_29.addWidget(self.contactInfoFrame)
+
+        self.pinFrame = QFrame(self.contactInfoBox)
+        self.pinFrame.setObjectName(u"pinFrame")
+        sizePolicy4.setHeightForWidth(self.pinFrame.sizePolicy().hasHeightForWidth())
+        self.pinFrame.setSizePolicy(sizePolicy4)
+        self.pinFrame.setStyleSheet(u"#pinFrame {\n"
+"	border-top: 1px solid;\n"
+"	border-color: gray;\n"
+"}")
+        self.horizontalLayout_18 = QHBoxLayout(self.pinFrame)
+        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
+        self.pinIconButton = QPushButton(self.pinFrame)
+        self.pinIconButton.setObjectName(u"pinIconButton")
+        sizePolicy5 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.pinIconButton.sizePolicy().hasHeightForWidth())
+        self.pinIconButton.setSizePolicy(sizePolicy5)
+        self.pinIconButton.setStyleSheet(u"border: 0;")
+        icon7 = QIcon()
+        icon7.addFile(u":/icons/images/icons/cil-pin.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pinIconButton.setIcon(icon7)
+        self.pinIconButton.setIconSize(QSize(32, 16))
+
+        self.horizontalLayout_18.addWidget(self.pinIconButton)
+
+        self.pinLabel = QLabel(self.pinFrame)
+        self.pinLabel.setObjectName(u"pinLabel")
+
+        self.horizontalLayout_18.addWidget(self.pinLabel)
+
+        self.closePinButton = QPushButton(self.pinFrame)
+        self.closePinButton.setObjectName(u"closePinButton")
+        sizePolicy5.setHeightForWidth(self.closePinButton.sizePolicy().hasHeightForWidth())
+        self.closePinButton.setSizePolicy(sizePolicy5)
+        self.closePinButton.setStyleSheet(u"border: 0;")
+        self.closePinButton.setIcon(icon)
+        self.closePinButton.setIconSize(QSize(32, 16))
+
+        self.horizontalLayout_18.addWidget(self.closePinButton)
+
+
+        self.verticalLayout_29.addWidget(self.pinFrame)
+
+
+        self.chatPageGridLayout.addWidget(self.contactInfoBox, 0, 0, 1, 1, Qt.AlignTop)
+
         self.chatTextBox = QFrame(self.chatPage)
         self.chatTextBox.setObjectName(u"chatTextBox")
         self.verticalLayout_10 = QVBoxLayout(self.chatTextBox)
@@ -1712,15 +1785,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
         self.editIconButton = QPushButton(self.editFrame)
         self.editIconButton.setObjectName(u"editIconButton")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.editIconButton.sizePolicy().hasHeightForWidth())
-        self.editIconButton.setSizePolicy(sizePolicy4)
+        sizePolicy5.setHeightForWidth(self.editIconButton.sizePolicy().hasHeightForWidth())
+        self.editIconButton.setSizePolicy(sizePolicy5)
         self.editIconButton.setStyleSheet(u"border: 0;")
-        icon7 = QIcon()
-        icon7.addFile(u":/icons/images/icons/cil-pencil.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.editIconButton.setIcon(icon7)
+        icon8 = QIcon()
+        icon8.addFile(u":/icons/images/icons/cil-pencil.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.editIconButton.setIcon(icon8)
         self.editIconButton.setIconSize(QSize(32, 16))
 
         self.horizontalLayout_16.addWidget(self.editIconButton)
@@ -1732,8 +1802,8 @@ class Ui_MainWindow(object):
 
         self.closeEditButton = QPushButton(self.editFrame)
         self.closeEditButton.setObjectName(u"closeEditButton")
-        sizePolicy4.setHeightForWidth(self.closeEditButton.sizePolicy().hasHeightForWidth())
-        self.closeEditButton.setSizePolicy(sizePolicy4)
+        sizePolicy5.setHeightForWidth(self.closeEditButton.sizePolicy().hasHeightForWidth())
+        self.closeEditButton.setSizePolicy(sizePolicy5)
         self.closeEditButton.setStyleSheet(u"border: 0;")
         self.closeEditButton.setIcon(icon)
         self.closeEditButton.setIconSize(QSize(32, 16))
@@ -1753,12 +1823,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
         self.replyIconButton = QPushButton(self.replyFrame)
         self.replyIconButton.setObjectName(u"replyIconButton")
-        sizePolicy4.setHeightForWidth(self.replyIconButton.sizePolicy().hasHeightForWidth())
-        self.replyIconButton.setSizePolicy(sizePolicy4)
+        sizePolicy5.setHeightForWidth(self.replyIconButton.sizePolicy().hasHeightForWidth())
+        self.replyIconButton.setSizePolicy(sizePolicy5)
         self.replyIconButton.setStyleSheet(u"border: 0;")
-        icon8 = QIcon()
-        icon8.addFile(u":/icons/images/icons/cil-action-redo.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.replyIconButton.setIcon(icon8)
+        icon9 = QIcon()
+        icon9.addFile(u":/icons/images/icons/cil-action-redo.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.replyIconButton.setIcon(icon9)
         self.replyIconButton.setIconSize(QSize(32, 16))
 
         self.horizontalLayout_15.addWidget(self.replyIconButton)
@@ -1770,8 +1840,8 @@ class Ui_MainWindow(object):
 
         self.closeReplyButton = QPushButton(self.replyFrame)
         self.closeReplyButton.setObjectName(u"closeReplyButton")
-        sizePolicy4.setHeightForWidth(self.closeReplyButton.sizePolicy().hasHeightForWidth())
-        self.closeReplyButton.setSizePolicy(sizePolicy4)
+        sizePolicy5.setHeightForWidth(self.closeReplyButton.sizePolicy().hasHeightForWidth())
+        self.closeReplyButton.setSizePolicy(sizePolicy5)
         self.closeReplyButton.setStyleSheet(u"border: 0;")
         self.closeReplyButton.setIcon(icon)
         self.closeReplyButton.setIconSize(QSize(32, 16))
@@ -1783,11 +1853,8 @@ class Ui_MainWindow(object):
 
         self.chatWriteTextBox = QFrame(self.chatTextBox)
         self.chatWriteTextBox.setObjectName(u"chatWriteTextBox")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.chatWriteTextBox.sizePolicy().hasHeightForWidth())
-        self.chatWriteTextBox.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.chatWriteTextBox.sizePolicy().hasHeightForWidth())
+        self.chatWriteTextBox.setSizePolicy(sizePolicy4)
         self.chatTextBoxVerticalLayout = QVBoxLayout(self.chatWriteTextBox)
         self.chatTextBoxVerticalLayout.setSpacing(9)
         self.chatTextBoxVerticalLayout.setObjectName(u"chatTextBoxVerticalLayout")
@@ -1811,17 +1878,17 @@ class Ui_MainWindow(object):
 
         self.chatButtonsWidget = QWidget(self.chatWriteTextBox)
         self.chatButtonsWidget.setObjectName(u"chatButtonsWidget")
-        sizePolicy5.setHeightForWidth(self.chatButtonsWidget.sizePolicy().hasHeightForWidth())
-        self.chatButtonsWidget.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.chatButtonsWidget.sizePolicy().hasHeightForWidth())
+        self.chatButtonsWidget.setSizePolicy(sizePolicy4)
         self.horizontalLayout_10 = QHBoxLayout(self.chatButtonsWidget)
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
         self.snippingButton = QPushButton(self.chatButtonsWidget)
         self.snippingButton.setObjectName(u"snippingButton")
         self.snippingButton.setStyleSheet(u"border: 0;")
-        icon9 = QIcon()
-        icon9.addFile(u":/icons/images/icons/cil-screen-desktop.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.snippingButton.setIcon(icon9)
+        icon10 = QIcon()
+        icon10.addFile(u":/icons/images/icons/cil-screen-desktop.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.snippingButton.setIcon(icon10)
         self.snippingButton.setIconSize(QSize(32, 32))
 
         self.horizontalLayout_10.addWidget(self.snippingButton)
@@ -1829,9 +1896,9 @@ class Ui_MainWindow(object):
         self.emojiButton = QPushButton(self.chatButtonsWidget)
         self.emojiButton.setObjectName(u"emojiButton")
         self.emojiButton.setStyleSheet(u"border: 0;")
-        icon10 = QIcon()
-        icon10.addFile(u":/icons/images/icons/cil-smile.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.emojiButton.setIcon(icon10)
+        icon11 = QIcon()
+        icon11.addFile(u":/icons/images/icons/cil-smile.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.emojiButton.setIcon(icon11)
         self.emojiButton.setIconSize(QSize(32, 32))
 
         self.horizontalLayout_10.addWidget(self.emojiButton)
@@ -1839,9 +1906,9 @@ class Ui_MainWindow(object):
         self.recordButton = QPushButton(self.chatButtonsWidget)
         self.recordButton.setObjectName(u"recordButton")
         self.recordButton.setStyleSheet(u"border: 0;")
-        icon11 = QIcon()
-        icon11.addFile(u":/icons/images/icons/cil-microphone.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.recordButton.setIcon(icon11)
+        icon12 = QIcon()
+        icon12.addFile(u":/icons/images/icons/cil-microphone.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.recordButton.setIcon(icon12)
         self.recordButton.setIconSize(QSize(32, 32))
 
         self.horizontalLayout_10.addWidget(self.recordButton)
@@ -1853,9 +1920,9 @@ class Ui_MainWindow(object):
         self.chatSendButton = QPushButton(self.chatButtonsWidget)
         self.chatSendButton.setObjectName(u"chatSendButton")
         self.chatSendButton.setStyleSheet(u"border: 0;")
-        icon12 = QIcon()
-        icon12.addFile(u":/icons/images/icons/cil-paper-plane.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.chatSendButton.setIcon(icon12)
+        icon13 = QIcon()
+        icon13.addFile(u":/icons/images/icons/cil-paper-plane.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.chatSendButton.setIcon(icon13)
         self.chatSendButton.setIconSize(QSize(32, 32))
 
         self.horizontalLayout_10.addWidget(self.chatSendButton)
@@ -1867,74 +1934,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.addWidget(self.chatWriteTextBox)
 
 
-        self.chatPageGridLayout.addWidget(self.chatTextBox, 2, 0, 1, 1)
-
-        self.contactInfoBox = QFrame(self.chatPage)
-        self.contactInfoBox.setObjectName(u"contactInfoBox")
-        sizePolicy5.setHeightForWidth(self.contactInfoBox.sizePolicy().hasHeightForWidth())
-        self.contactInfoBox.setSizePolicy(sizePolicy5)
-        self.verticalLayout_29 = QVBoxLayout(self.contactInfoBox)
-        self.verticalLayout_29.setSpacing(0)
-        self.verticalLayout_29.setObjectName(u"verticalLayout_29")
-        self.verticalLayout_29.setContentsMargins(0, 0, 0, 0)
-        self.contactInfoFrame = QFrame(self.contactInfoBox)
-        self.contactInfoFrame.setObjectName(u"contactInfoFrame")
-        self.contactInfoFrame.setMinimumSize(QSize(0, 0))
-        self.contactInfoFrame.setMaximumSize(QSize(16777215, 0))
-        self.contactInfoHorizontalLayout = QHBoxLayout(self.contactInfoFrame)
-        self.contactInfoHorizontalLayout.setObjectName(u"contactInfoHorizontalLayout")
-        self.contactInfoHorizontalLayout.setContentsMargins(9, 0, 0, 0)
-        self.contactUserButton = QPushButton(self.contactInfoFrame)
-        self.contactUserButton.setObjectName(u"contactUserButton")
-        self.contactUserButton.setStyleSheet(u"border: none;")
-
-        self.contactInfoHorizontalLayout.addWidget(self.contactUserButton)
-
-
-        self.verticalLayout_29.addWidget(self.contactInfoFrame)
-
-        self.pinFrame = QFrame(self.contactInfoBox)
-        self.pinFrame.setObjectName(u"pinFrame")
-        sizePolicy5.setHeightForWidth(self.pinFrame.sizePolicy().hasHeightForWidth())
-        self.pinFrame.setSizePolicy(sizePolicy5)
-        self.pinFrame.setStyleSheet(u"#pinFrame {\n"
-"	border-top: 1px solid;\n"
-"	border-color: gray;\n"
-"}")
-        self.horizontalLayout_18 = QHBoxLayout(self.pinFrame)
-        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
-        self.pinIconButton = QPushButton(self.pinFrame)
-        self.pinIconButton.setObjectName(u"pinIconButton")
-        sizePolicy4.setHeightForWidth(self.pinIconButton.sizePolicy().hasHeightForWidth())
-        self.pinIconButton.setSizePolicy(sizePolicy4)
-        self.pinIconButton.setStyleSheet(u"border: 0;")
-        icon13 = QIcon()
-        icon13.addFile(u":/icons/images/icons/cil-pin.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pinIconButton.setIcon(icon13)
-        self.pinIconButton.setIconSize(QSize(32, 16))
-
-        self.horizontalLayout_18.addWidget(self.pinIconButton)
-
-        self.pinLabel = QLabel(self.pinFrame)
-        self.pinLabel.setObjectName(u"pinLabel")
-
-        self.horizontalLayout_18.addWidget(self.pinLabel)
-
-        self.closePinButton = QPushButton(self.pinFrame)
-        self.closePinButton.setObjectName(u"closePinButton")
-        sizePolicy4.setHeightForWidth(self.closePinButton.sizePolicy().hasHeightForWidth())
-        self.closePinButton.setSizePolicy(sizePolicy4)
-        self.closePinButton.setStyleSheet(u"border: 0;")
-        self.closePinButton.setIcon(icon)
-        self.closePinButton.setIconSize(QSize(32, 16))
-
-        self.horizontalLayout_18.addWidget(self.closePinButton)
-
-
-        self.verticalLayout_29.addWidget(self.pinFrame)
-
-
-        self.chatPageGridLayout.addWidget(self.contactInfoBox, 0, 0, 1, 1, Qt.AlignTop)
+        self.chatPageGridLayout.addWidget(self.chatTextBox, 5, 0, 1, 1)
 
         self.chatScrollArea = QScrollArea(self.chatPage)
         self.chatScrollArea.setObjectName(u"chatScrollArea")
@@ -1942,7 +1942,7 @@ class Ui_MainWindow(object):
         self.chatScrollArea.setWidgetResizable(True)
         self.chatScrollAreaWidgetContents = QWidget()
         self.chatScrollAreaWidgetContents.setObjectName(u"chatScrollAreaWidgetContents")
-        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 858, 162))
+        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 858, 106))
         self.chatScrollVerticalLayout = QVBoxLayout(self.chatScrollAreaWidgetContents)
         self.chatScrollVerticalLayout.setObjectName(u"chatScrollVerticalLayout")
         self.chatVerticalLayout = QVBoxLayout()
@@ -1962,6 +1962,41 @@ class Ui_MainWindow(object):
         self.chatScrollArea.setWidget(self.chatScrollAreaWidgetContents)
 
         self.chatPageGridLayout.addWidget(self.chatScrollArea, 1, 0, 1, 1)
+
+        self.toEndHorizontalWidget = QWidget(self.chatPage)
+        self.toEndHorizontalWidget.setObjectName(u"toEndHorizontalWidget")
+        sizePolicy6 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.toEndHorizontalWidget.sizePolicy().hasHeightForWidth())
+        self.toEndHorizontalWidget.setSizePolicy(sizePolicy6)
+        self.toEndHorizontalWidget.setMaximumSize(QSize(16777215, 50))
+        self.toEndHorizontalWidget.setStyleSheet(u"background-color: transparent;")
+        self.toEndHorizontalLayout = QHBoxLayout(self.toEndHorizontalWidget)
+        self.toEndHorizontalLayout.setObjectName(u"toEndHorizontalLayout")
+        self.toEndHorizontalLayout.setContentsMargins(-1, -1, 20, 20)
+        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.toEndHorizontalLayout.addItem(self.horizontalSpacer_6)
+
+        self.toEndPushButton = QPushButton(self.toEndHorizontalWidget)
+        self.toEndPushButton.setObjectName(u"toEndPushButton")
+        self.toEndPushButton.setStyleSheet(u" background-color: gray;\n"
+" border-style: solid;\n"
+" border-width:1px;\n"
+" border-radius:15px;\n"
+" max-width:30px;\n"
+" max-height:30px;\n"
+" min-width:30px;\n"
+" min-height:30px;")
+        icon14 = QIcon()
+        icon14.addFile(u":/icons/images/icons/cil-arrow-bottom.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.toEndPushButton.setIcon(icon14)
+
+        self.toEndHorizontalLayout.addWidget(self.toEndPushButton)
+
+
+        self.chatPageGridLayout.addWidget(self.toEndHorizontalWidget, 2, 0, 1, 1)
 
         self.chatStackedWidget.addWidget(self.chatPage)
 
@@ -2044,8 +2079,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_33.setObjectName(u"verticalLayout_33")
         self.emojisGridWidget = QWidget(self.emojiPage)
         self.emojisGridWidget.setObjectName(u"emojisGridWidget")
-        sizePolicy2.setHeightForWidth(self.emojisGridWidget.sizePolicy().hasHeightForWidth())
-        self.emojisGridWidget.setSizePolicy(sizePolicy2)
+        sizePolicy1.setHeightForWidth(self.emojisGridWidget.sizePolicy().hasHeightForWidth())
+        self.emojisGridWidget.setSizePolicy(sizePolicy1)
         self.verticalLayout_32 = QVBoxLayout(self.emojisGridWidget)
         self.verticalLayout_32.setObjectName(u"verticalLayout_32")
         self.verticalLayout_32.setContentsMargins(0, 0, 0, 0)
@@ -2405,6 +2440,10 @@ class Ui_MainWindow(object):
         self.tableWidget.setSortingEnabled(__sortingEnabled1)
 
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Select a chat to start messaging", None))
+        self.contactUserButton.setText(QCoreApplication.translate("MainWindow", u"Contact user button here", None))
+        self.pinIconButton.setText("")
+        self.pinLabel.setText(QCoreApplication.translate("MainWindow", u"Pin message", None))
+        self.closePinButton.setText("")
         self.editIconButton.setText("")
         self.editLabel.setText(QCoreApplication.translate("MainWindow", u"Edit message", None))
         self.closeEditButton.setText("")
@@ -2418,10 +2457,7 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.recordButton.setText("")
         self.chatSendButton.setText("")
-        self.contactUserButton.setText(QCoreApplication.translate("MainWindow", u"Contact user button here", None))
-        self.pinIconButton.setText("")
-        self.pinLabel.setText(QCoreApplication.translate("MainWindow", u"Pin message", None))
-        self.closePinButton.setText("")
+        self.toEndPushButton.setText("")
         self.label.setText(QCoreApplication.translate("MainWindow", u"ADD TASK", None))
         self.assignUserLabel.setText(QCoreApplication.translate("MainWindow", u"Assign to user", None))
         self.taskDescriptionLabel.setText(QCoreApplication.translate("MainWindow", u"Task Description", None))
