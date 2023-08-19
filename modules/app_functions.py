@@ -1372,10 +1372,10 @@ class VoiceWidget(QFrame):
         self.slider.setRange(0, duration)
 
 
-def short_text(text):
+def short_text(text, length=20):
     the_text = text.replace("\n", " ")
-    if len(the_text) > 20:
-        the_text = the_text[:20] + "..."
+    if len(the_text) > length:
+        the_text = the_text[:length] + "..."
     return the_text
 
 
@@ -1441,7 +1441,7 @@ class FileWidget(QFrame):
         self.hbox.addWidget(self.fileButton)
 
         self.info = QFileInfo(self.file_path)
-        self.fileNameLabel = QLabel(short_text(self.info.fileName()))
+        self.fileNameLabel = QLabel(short_text(self.info.fileName(), length=30))
         self.fileNameLabel.setStyleSheet("font-weight: bold;")
         self.fileSizeLabel = QLabel(self.pretty_size(self.info.size()))
         self.fileSizeLabel.setStyleSheet("color: gray;")
