@@ -1509,6 +1509,8 @@ class FileWidget(QFrame):
         #         print(e)
 
         self.infoFrame = QFrame()
+        self.infoFrame.mousePressEvent = self.myMousePressEvent
+        self.infoFrame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.vbox = QVBoxLayout()
         self.vbox.setContentsMargins(0, 0, 0, 0)
         self.vbox.setSpacing(0)
@@ -1530,8 +1532,6 @@ class FileWidget(QFrame):
 
         self.hbox.addWidget(self.infoFrame)
         self.hbox.addStretch()
-
-        self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
     def extension(self):
         try:
@@ -1571,7 +1571,7 @@ class FileWidget(QFrame):
             self.fileButton.setIcon(QIcon("./resources/icons/exr.png"))
         elif extension in ["docx", "doc"]:
             self.fileButton.setIcon(QIcon("./resources/icons/word.png"))
-        elif extension in ["xlsx", "xls"]:
+        elif extension in ["xlsx", "xls", "xlsm"]:
             self.fileButton.setIcon(QIcon("./resources/icons/excel.png"))
         elif extension in ["pptx", "pptm", "ppt"]:
             self.fileButton.setIcon(QIcon("./resources/icons/powerpoint.png"))
@@ -1701,7 +1701,7 @@ class FileWidget(QFrame):
             print('ERROR: process timed out')
         return image
 
-    def mousePressEvent(self, e: QMouseEvent) -> None:
+    def myMousePressEvent(self, e: QMouseEvent) -> None:
         if e.button() == Qt.MouseButton.LeftButton:
             if self.parent().isBlur:
                 self.parent().mousePressEvent(e)
