@@ -1546,17 +1546,49 @@ class FileWidget(QFrame):
 
         if self.file_is_dir:
             # self.fileButton.setText("📂")
-            self.fileButton.setIcon(QIcon("./resources/icons/explorer.png"))
-        elif self.is_image or extension in ['jpg', 'png', 'jpeg', 'bmp']:
+            self.fileButton.setIcon(QIcon("./resources/icons/folder.png"))
+        elif self.is_image or extension in ["jpg", "png", "bmp", "gif", "tiff", "webp", "svg", "ico", "jpeg"]:
             self.fileButton.setIcon(QIcon("./resources/icons/image.png"))
         elif extension in ["mp4", "mov", "avi", "wmv", "mkv", "flv", "webm", "m4v", "mpeg", "3gp"]:
             self.fileButton.setIcon(QIcon("./resources/icons/video.png"))
-        elif extension in ['ma', 'mb']:
+        elif extension in ["mp3", "wav", "flac", "aac", "ogg", "wma", "m4a", "ape", "alac", "aiff"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/audio.png"))
+        elif extension in ["ma", "mb"]:
             self.fileButton.setIcon(QIcon("./resources/icons/maya.png"))
-        elif extension in ["fbx", "obj"]:
-            self.fileButton.setIcon(QIcon("./resources/icons/3d.png"))
-
-
+        elif extension in ["obj"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/obj.png"))
+        elif extension in ["fbx"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/fbx.png"))
+        elif extension in ["abc"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/abc.png"))
+        elif extension in ["pdf"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/pdf.png"))
+        elif extension in ["html", "htm"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/internet.png"))
+        elif extension in ["txt"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/txt.png"))
+        elif extension in ["exr"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/exr.png"))
+        elif extension in ["docx", "doc"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/word.png"))
+        elif extension in ["xlsx", "xls"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/excel.png"))
+        elif extension in ["pptx", "pptm", "ppt"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/powerpoint.png"))
+        elif extension in ["zip", "rar"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/archive.png"))
+        elif extension in ["psd", "psb"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/photoshop.png"))
+        elif extension in ["prproj", "prtl", "prm"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/premiere.png"))
+        elif extension in ["aep", "aepx", "aet"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/ae.png"))
+        elif extension in ["hip", "hipnc", "otl", "bgeos"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/houdini.png"))
+        elif extension in ["exe"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/exe.png"))
+        elif extension in ["3b", "3dclip"]:
+            self.fileButton.setIcon(QIcon("./resources/icons/3dcoat.png"))
 
         elif self.file_copy:
             self.fileButton.setText("📋")
