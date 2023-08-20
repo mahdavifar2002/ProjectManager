@@ -1110,6 +1110,10 @@ class MessageWidget(QFrame):
                 self.message_core.file_widget.updateFileSize()
 
     def contextMenuEvent(self, event):
+        # don't show context menu if message is blur (unseen)
+        if self.message_core.isBlur:
+            return
+
         self.menu = QMenu(self)
 
         if self.message.file_path is not None and len(self.message.file_path) > 0:
