@@ -319,11 +319,13 @@ def prepareMessengerPage():
     # widgets.chatScrollArea.stackUnder(widgets.contactInfoBox)
 
     # # Overlapping toEnd button
-    # widgets.chatPageGridLayout.removeWidget(widgets.toEndHorizontalWidget)
-    # widgets.chatPageGridLayout.addWidget(widgets.toEndHorizontalWidget, 1, 0)
-    # widgets.chatScrollArea.stackUnder(widgets.toEndHorizontalWidget)
+    # widgets.chatPageGridLayout.removeWidget(widgets.toEndVerticalWidget)
+    # widgets.chatPageGridLayout.addWidget(widgets.toEndVerticalWidget, 1, 0)
+    # widgets.chatScrollArea.stackUnder(widgets.toEndVerticalWidget)
     # widgets.chatPageGridLayout.setAlignment(Qt.AlignmentFlag.AlignBottom)
-    widgets.toEndHorizontalWidget.hide()
+    # widgets.toEndVerticalWidget.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+    # widgets.toEndPushButton.clicked.connect(scroll_to_end_of_chat)
+    widgets.toEndVerticalWidget.hide()
 
 
 def resize_emoji(emoji):
@@ -821,7 +823,10 @@ def newMessage(message_id: int):
     message = Message.find_by_id(message_id)
     addMessageWidget(message)
 
-    #  scroll to the end of chat
+    scroll_to_end_of_chat()
+
+
+def scroll_to_end_of_chat():
     for i in range(2):
         QCoreApplication.processEvents()
         widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().maximum())
