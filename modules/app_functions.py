@@ -831,6 +831,15 @@ def reloadChat(new_target, message_id=None):
     global target_username
     global messages_dict
     global messages_dict_full
+    global image_me
+    global image_them
+
+    # Load image of me and them
+    try:
+        image_me = QImage(user.image_path).scaled(45, 45, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        image_them = QImage(User.find_by_username(new_target).image_path).scaled(45, 45, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+    except:
+        pass
 
     if new_target == target_username:
         if message_id is not None:
@@ -842,10 +851,6 @@ def reloadChat(new_target, message_id=None):
         return
 
     target_username = new_target
-
-    # Load image of me and them
-    image_me = QImage(user.image_path)
-    image_them = QImage(target_username)
 
     # Clear chatbox
     clearLayout(widgets.chatGridLayout)
@@ -1027,7 +1032,7 @@ class MessageWidget(QFrame):
 
         self.sender_image = QLabel()
 
-        self.sender_image.setPixmap(QPixmap(QImage(user.image_path) if is_sender else QImage(User.find_by_username(target_username).image_path)).scaled(45, 45, Qt.AspectRatioMode.KeepAspectRatio))
+        self.sender_image.setPixmap(QPixmap(image_me if is_sender else image_them))
         message_hbox.addWidget(self.sender_image)
         self.sender_image.setObjectName("image-me" if is_sender else "image-them")
 
