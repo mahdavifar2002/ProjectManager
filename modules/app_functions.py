@@ -21,6 +21,7 @@ import shutil
 import signal
 import subprocess
 import threading
+import time
 import traceback
 from typing import Optional, Dict
 
@@ -583,12 +584,37 @@ def forwardMessage(forward_message_id, forward_username):
             clone_message.save()
             send_broadcast(f"new_message {clone_message.receiver_username} {user.username} {clone_message.id}")
 
-            subprocess.Popen(["pythonw",
-                              "E:\\Works Manager\\Messenger\\main.py",
-                              user.username,
-                              user.password,
-                              forward_username],
-                             cwd="E:\\Works Manager\\Messenger")
+            # Open window of the person whom a message is forwarded to (if it's not open already)
+            try:
+                windowName = "Message " + forward_username
+                ID = win32gui.FindWindowEx(None, None, None, windowName)
+                assert ID != 0
+
+            except Exception as e:
+                subprocess.Popen(["pythonw",
+                                  "E:\\Works Manager\\Messenger\\main.py",
+                                  user.username,
+                                  user.password,
+                                  forward_username],
+                                 cwd="E:\\Works Manager\\Messenger")
+
+            # Make the window foreground
+            try:
+                time.sleep(1)
+                windowName = "Message " + forward_username
+                ID = win32gui.FindWindowEx(None, None, None, windowName)
+                assert ID != 0
+                result = win32gui.FlashWindow(ID, True)
+                result = win32gui.SetForegroundWindow(ID)
+
+            except Exception as e:
+                pass
+            # subprocess.Popen(["pythonw",
+            #                   "E:\\Works Manager\\Messenger\\main.py",
+            #                   user.username,
+            #                   user.password,
+            #                   forward_username],
+            #                  cwd="E:\\Works Manager\\Messenger")
 
     msgBox = QMessageBox()
     msgBox.setIcon(QMessageBox.Information)
@@ -943,6 +969,9 @@ def addMessageWidget(message: Message):
     global user
     global messages_dict
 
+    if message.id in messages_dict:
+        return
+
     is_sender = (message.sender_username == user.username)
     message_widget = MessageWidget(message, widgets)
     widgets.chatGridLayout.addWidget(message_widget, 1 + message.id, is_sender, 1, 4)
@@ -1115,6 +1144,7 @@ class MessageWidget(QFrame):
             return
 
         self.menu = QMenu(self)
+        self.menu.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
 
         if self.message.file_path is not None and len(self.message.file_path) > 0:
             # show in folder
@@ -1787,6 +1817,9 @@ def actionOnBroadcast(msg: str):
         if command[1] == user.username:
             if command[2] == target_username:
                 print(f"new message... {command[3]}")
+                newMessage(int(command[3]))
+        if command[2] == user.username:
+            if command[1] == target_username:
                 newMessage(int(command[3]))
 
     elif command[0] == "reload_message":
