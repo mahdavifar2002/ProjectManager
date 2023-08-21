@@ -116,3 +116,7 @@ class User(conf.Base):
         # print(f"({correct_target_condition}, {freshness_condition}, {correct_target_condition + freshness_condition})")
         # print(f"({self.typing_date.timestamp()}, {datetime.datetime.now() - datetime.timedelta(seconds=3)})")
         return correct_target_condition + freshness_condition == 2
+
+    def offline_image_path(self):
+        arr = self.image_path.split('\\')
+        return '\\'.join(arr[:-1]) + '\\' + 'D' + arr[-1]

@@ -37,7 +37,7 @@ from model.message import Message
 from model.task import Task
 from model.user import User
 from modules.server import send_broadcast
-from modules.client import receive_broadcast
+from modules.client import receive_broadcast, check_share
 
 widgets: Optional[Ui_MainWindow] = None
 mainWindow: Optional[MainWindow] = None
@@ -517,6 +517,8 @@ class ContactButton(QPushButton):
         self.setToolTip(self.user.username)
         self.setIcon(QIcon(other_user.image_path))
         if top:
+            if not check_share(other_user.share):
+                self.setIcon(QIcon(other_user.offline_image_path()))
             self.mouseMoveEvent = widgets.titleRightInfo.mouseMoveEvent
             self.mousePressEvent = widgets.titleRightInfo.mousePressEvent
             self.setIconSize(QSize(35, 35))
