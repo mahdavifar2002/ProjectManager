@@ -120,3 +120,7 @@ class User(conf.Base):
     def offline_image_path(self):
         arr = self.image_path.split('\\')
         return '\\'.join(arr[:-1]) + '\\' + 'D' + arr[-1]
+
+    def online_image_path(self):
+        arr = self.image_path.split('\\')
+        return '\\'.join(arr[:-1]) + '\\' + 'O' + arr[-1][1:]
