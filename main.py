@@ -22,6 +22,7 @@ from typing import Optional
 
 import win32gui
 
+import modules as mod
 from model.user import User
 
 # IMPORT / GUI AND MODULES AND WIDGETS
@@ -47,8 +48,8 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         global widgets
         widgets = self.ui
-        app_functions.widgets = widgets
-        app_functions.mainWindow = self
+        mod.app_functions.widgets = widgets
+        mod.app_functions.mainWindow = self
 
         # USE CUSTOM TITLE BAR | USE AS "False" FOR MAC OR LINUX
         # ///////////////////////////////////////////////////////////////
@@ -69,15 +70,15 @@ class MainWindow(QMainWindow):
 
         # SET CLIENT FOR BROADCAST PACKAGES
         # ///////////////////////////////////////////////////////////////
-        prepareClientThread()
+        mod.app_functions.prepareClientThread()
 
         # TOGGLE MENU
         # ///////////////////////////////////////////////////////////////
-        widgets.toggleButton.clicked.connect(lambda: UIFunctions.toggleMenu(self, True))
+        widgets.toggleButton.clicked.connect(lambda: mod.ui_functions.UIFunctions.toggleMenu(self, True))
 
         # SET UI DEFINITIONS
         # ///////////////////////////////////////////////////////////////
-        UIFunctions.uiDefinitions(self)
+        mod.ui_functions.UIFunctions.uiDefinitions(self)
 
         # QTableWidget PARAMETERS
         # ///////////////////////////////////////////////////////////////
@@ -126,10 +127,10 @@ class MainWindow(QMainWindow):
             # SET THEME AND HACKS
             if useCustomTheme:
                 # LOAD AND APPLY STYLE
-                UIFunctions.theme(self, themeFiles[themeCounter % 2], True)
+                mod.ui_functions.UIFunctions.theme(self, themeFiles[themeCounter % 2], True)
 
                 # SET HACKS
-                AppFunctions.setThemeHack(self, themeCounter % 2)
+                mod.app_functions.AppFunctions.setThemeHack(self, themeCounter % 2)
                 themeCounter += 1
 
         toggleTheme()
@@ -137,12 +138,12 @@ class MainWindow(QMainWindow):
 
         # SET HOME PAGE AND SELECT MENU
         # ///////////////////////////////////////////////////////////////
-        prepareHomePage()
-        prepareAddTaskPage()
-        prepareMessengerPage()
-        prepareShowTasks()
+        mod.app_functions.prepareHomePage()
+        mod.app_functions.prepareAddTaskPage()
+        mod.app_functions.prepareMessengerPage()
+        mod.app_functions.prepareShowTasks()
         widgets.stackedWidget.setCurrentWidget(widgets.home)
-        widgets.btn_home.setStyleSheet(UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
+        widgets.btn_home.setStyleSheet(mod.ui_functions.UIFunctions.selectMenu(widgets.btn_home.styleSheet()))
 
         # LOGIN IF COMMANDLINE PASSED LOGIN INFO
         # ///////////////////////////////////////////////////////////////
@@ -168,13 +169,13 @@ class MainWindow(QMainWindow):
             widgets.usernameLineEdit.setText(username)
             widgets.passwordLineEdit.setText(password)
 
-            if app_functions.loginUser(by_GUI=False):
-                num_windows = app_functions.count_messenger_windows() - 3
+            if mod.app_functions.loginUser(by_GUI=False):
+                num_windows = mod.app_functions.count_messenger_windows() - 3
                 self.move(self.pos() + QPoint(num_windows*35, num_windows*35))
                 self.resize(460, 600)
                 widgets.stackedWidget.setCurrentWidget(widgets.messenger)
-                UIFunctions.resetStyle(self, widgets.btn_messenger.objectName())
-                widgets.btn_messenger.setStyleSheet(UIFunctions.selectMenu(widgets.btn_messenger.styleSheet()))
+                mod.ui_functions.UIFunctions.resetStyle(self, widgets.btn_messenger.objectName())
+                widgets.btn_messenger.setStyleSheet(mod.ui_functions.UIFunctions.selectMenu(widgets.btn_messenger.styleSheet()))
                 widgets.leftMenuBg.hide()
 
                 if len(argv) >= 4:
@@ -199,7 +200,7 @@ class MainWindow(QMainWindow):
                         print(argv)
 
                     else:
-                        app_functions.reloadChat(target)
+                        mod.app_functions.reloadChat(target)
 
                     self.setForeground()
 
@@ -269,7 +270,7 @@ class MainWindow(QMainWindow):
         # send sticker
         widgets.stickersGridLayout.setProperty("sticker_path", btn.property("sticker_path"))
 
-        app_functions.sendMessage(force_send=True)
+        mod.app_functions.sendMessage(force_send=True)
 
     # CONTACT CLICK
     # ///////////////////////////////////////////////////////////////
@@ -280,12 +281,12 @@ class MainWindow(QMainWindow):
     def contactClick(self):
         # GET BUTTON CLICKED
         btn = self.sender()
-        app_functions.reloadChat(btn.user.username, btn.selected_message_id)
+        mod.app_functions.reloadChat(btn.user.username, btn.selected_message_id)
         self.closeLeftBox()
 
         btn = widgets.btn_messenger
-        UIFunctions.resetStyle(self, btn.objectName())
-        btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+        mod.ui_functions.UIFunctions.resetStyle(self, btn.objectName())
+        btn.setStyleSheet(mod.ui_functions.UIFunctions.selectMenu(btn.styleSheet()))
 
     # SEND TO CLICK
     # ///////////////////////////////////////////////////////////////
@@ -299,18 +300,18 @@ class MainWindow(QMainWindow):
         forward_message_id = action.property("message_id")
 
         if forward_message_id == -1:
-            app_functions.reloadChat(forward_username)
+            mod.app_functions.reloadChat(forward_username)
         else:
             print(f"forward message with id {forward_message_id} to user {forward_username}")
-            app_functions.forwardMessage(forward_message_id, forward_username)
+            mod.app_functions.forwardMessage(forward_message_id, forward_username)
 
     # EXTRA LEFT BOX
     # ///////////////////////////////////////////////////////////////
     def openCloseLeftBox(self):
         if not self.leftBoxIsOpen() and widgets.contactsVerticalLayout.count() == 0:
-            app_functions.reload_contacts_list()
+            mod.app_functions.reload_contacts_list()
 
-        UIFunctions.toggleLeftBox(self, True)
+        mod.ui_functions.UIFunctions.toggleLeftBox(self, True)
 
     def leftBoxIsOpen(self):
         return self.ui.extraLeftBox.width() != 0
@@ -326,9 +327,9 @@ class MainWindow(QMainWindow):
     # ///////////////////////////////////////////////////////////////
     def openCloseRightBox(self):
         if not self.leftBoxIsOpen() and widgets.stickersGridLayout.count() == 1 and widgets.emojisGridLayout.count() == 1:
-            app_functions.reload_stickers()
+            mod.app_functions.reload_stickers()
 
-        UIFunctions.toggleRightBox(self, True)
+        mod.ui_functions.UIFunctions.toggleRightBox(self, True)
         widgets.messengerTextEdit.setFocus()
 
     def rightBoxIsOpen(self):
@@ -345,7 +346,7 @@ class MainWindow(QMainWindow):
     # EXTRA RIGHT BOX
     # ///////////////////////////////////////////////////////////////
     def openCloseLeftMenu(self):
-        UIFunctions.toggleLeftMenu(self, True)
+        mod.ui_functions.UIFunctions.toggleLeftMenu(self, True)
         widgets.messengerTextEdit.setFocus()
 
     def leftMenuIsOpen(self):
@@ -377,38 +378,38 @@ class MainWindow(QMainWindow):
         if btnName == "btn_home":
             # prepareHomePage()
             widgets.stackedWidget.setCurrentWidget(widgets.home)
-            UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
-            app_functions.clearLayout(widgets.leftBoxHorizontalLayout)
+            mod.ui_functions.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(mod.ui_functions.UIFunctions.selectMenu(btn.styleSheet()))
+            mod.app_functions.clearLayout(widgets.leftBoxHorizontalLayout)
 
         # SHOW ADD TASK PAGE
         if btnName == "btn_add":
             widgets.stackedWidget.setCurrentWidget(widgets.add_task)
-            UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+            mod.ui_functions.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(mod.ui_functions.UIFunctions.selectMenu(btn.styleSheet()))
 
         # SHOW WIDGETS PAGE
         if btnName == "btn_widgets":
             widgets.stackedWidget.setCurrentWidget(widgets.widgets)
-            UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+            mod.ui_functions.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(mod.ui_functions.UIFunctions.selectMenu(btn.styleSheet()))
 
         # SHOW MESSENGER PAGE
         if btnName == "btn_messenger":
             widgets.stackedWidget.setCurrentWidget(widgets.messenger)
-            UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
+            mod.ui_functions.UIFunctions.resetStyle(self, btnName)
+            btn.setStyleSheet(mod.ui_functions.UIFunctions.selectMenu(btn.styleSheet()))
             self.openLeftBox()
 
-            if app_functions.target_username is not None:
-                self.setWindowTitle("Message " + app_functions.target_username)
+            if mod.app_functions.target_username is not None:
+                self.setWindowTitle("Message " + mod.app_functions.target_username)
 
         # SHOW NEW PAGE
         if btnName == "btn_new":
             reloadTasks()
             widgets.stackedWidget.setCurrentWidget(widgets.new_page)  # SET PAGE
-            UIFunctions.resetStyle(self, btnName)  # RESET ANOTHERS BUTTONS SELECTED
-            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))  # SELECT MENU
+            mod.ui_functions.UIFunctions.resetStyle(self, btnName)  # RESET ANOTHERS BUTTONS SELECTED
+            btn.setStyleSheet(mod.ui_functions.UIFunctions.selectMenu(btn.styleSheet()))  # SELECT MENU
 
         if btnName == "btn_save":
             print("Save BTN clicked!")
@@ -420,7 +421,7 @@ class MainWindow(QMainWindow):
     # ///////////////////////////////////////////////////////////////
     def resizeEvent(self, event):
         # Update Size Grips
-        UIFunctions.resize_grips(self)
+        mod.ui_functions.UIFunctions.resize_grips(self)
 
     # MOUSE CLICK EVENTS
     # ///////////////////////////////////////////////////////////////
