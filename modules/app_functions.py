@@ -517,11 +517,21 @@ class ContactButton(QPushButton):
         self.setToolTip(self.user.username)
         self.setIcon(QIcon(other_user.image_path))
         if top:
-            if check_share(other_user.share):
-                if check_online(other_user.share):
-                    self.setIcon(QIcon(other_user.online_image_path()))
-            else:
-                self.setIcon(QIcon(other_user.offline_image_path()))
+            try:
+                if check_share(other_user.share):
+                    if check_online(other_user.share):
+                        # self.setIcon(QIcon(other_user.online_image_path()))
+                        self.setStyleSheet("")
+                    else:
+                        pass
+                        self.setStyleSheet("background-repeat:no-repeat; background-image: url('images/images/offline.png'); ")
+
+                else:
+                    pass
+                    # self.setEnabled(False)
+                    self.setIcon(QIcon(other_user.offline_image_path()))
+            except:
+                pass
 
             self.mouseMoveEvent = widgets.titleRightInfo.mouseMoveEvent
             self.mousePressEvent = widgets.titleRightInfo.mousePressEvent
@@ -530,7 +540,7 @@ class ContactButton(QPushButton):
         else:
             self.setIconSize(QSize(45, 45))
             self.setMinimumHeight(60)
-        self.setStyleSheet("text-align: left; border: none; padding: 7px;")
+        self.setStyleSheet(self.styleSheet() + " text-align: left; border: none; padding: 7px;")
 
         # Prepare user_button text (username + last message, if any)
         self.updateUser()
