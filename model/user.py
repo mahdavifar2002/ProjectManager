@@ -37,6 +37,14 @@ class User(conf.Base):
     def users():
         return conf.session.query(User).order_by(User.fullname).all()
 
+    def count_unseen_messages(self, target_username):
+        query = conf.session.query(message.Message).filter(message.Message.deleted == False).filter(conf.and_(
+            message.Message.sender_username == target_username,
+            message.Message.receiver_username == self.username,
+            message.Message.has_been_seen == False))
+
+        return query.count()
+
     def messages(self, target_username):
         query = conf.session.query(message.Message).filter(message.Message.deleted == False).filter(conf.or_(
             conf.and_(message.Message.sender_username == self.username,
