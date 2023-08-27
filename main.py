@@ -241,7 +241,12 @@ class MainWindow(QMainWindow):
     # ///////////////////////////////////////////////////////////////
     def connectEmojiButtons(self, emojiButtons):
         for emojiButton in emojiButtons:
+            # left click: add emoji to text box
             emojiButton.clicked.connect(self.emojiClicked)
+
+            # right click: add to frequently used
+            emojiButton.setContextMenuPolicy(Qt.CustomContextMenu)
+            emojiButton.customContextMenuRequested.connect(self.emojiRightClicked)
 
     def emojiClicked(self):
         btn = self.sender()
@@ -257,11 +262,20 @@ class MainWindow(QMainWindow):
         # textCursor.setPosition(2*len(editor.toPlainText()))
         # editor.setTextCursor(textCursor)
 
+    def emojiRightClicked(self):
+        btn = self.sender()
+        mod.app_functions.add_or_remove_frequent_emoji(btn.text())
+
     # STICKER CLICK
     # ///////////////////////////////////////////////////////////////
     def connectStickerButtons(self, stickerButtons):
         for stickerButton in stickerButtons:
+            # left click: send sticker
             stickerButton.clicked.connect(self.stickerClicked)
+
+            # right click: add to frequently used
+            stickerButton.setContextMenuPolicy(Qt.CustomContextMenu)
+            stickerButton.customContextMenuRequested.connect(self.stickerRightClicked)
 
     def stickerClicked(self):
         btn = self.sender()
@@ -271,6 +285,11 @@ class MainWindow(QMainWindow):
         widgets.stickersGridLayout.setProperty("sticker_path", btn.property("sticker_path"))
 
         mod.app_functions.sendMessage(force_send=True)
+
+    def stickerRightClicked(self):
+        btn = self.sender()
+        mod.app_functions.add_or_remove_frequent_sticker(btn.property("sticker_path"))
+
 
     # CONTACT CLICK
     # ///////////////////////////////////////////////////////////////

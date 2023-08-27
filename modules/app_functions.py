@@ -63,6 +63,9 @@ emojis_list = "😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰�
               "🤑🤠😈👿👹👺🤡👻💀👽👾🤖🎃😺😸😹😻😼😽🙀😿😾🤲👐🙌👏🤝👍👎👊" \
               "✊🤛🤜🤞🤟🤘👌🤏👈👉👆👇✋🤚🖐🖖👋🤙💪🙏"
 
+frequent_emojis = []
+frequent_stickers = []
+
 
 # WITH ACCESS TO MAIN WINDOW WIDGETS
 # ///////////////////////////////////////////////////////////////
@@ -314,6 +317,22 @@ def prepareMessengerPage():
     # Prepare drag and drop of image
     prepareDragAndDrop()
 
+    # Prepare frequent emojis
+    read_file("frequent/emojis.txt", frequent_emojis)
+    if len(frequent_emojis) == 0:
+        widgets.freqEmojiFrame.hide()
+    for emoji in frequent_emojis:
+        add_frequent_emoji_button(emoji)
+    widgets.closeFreqEmojiButton.clicked.connect(lambda: widgets.freqEmojiFrame.hide())
+
+    # Prepare frequent stickers
+    read_file("frequent/stickers.txt", frequent_stickers)
+    if len(frequent_stickers) == 0:
+        widgets.freqStickerFrame.hide()
+    for sticker_path in frequent_stickers:
+        add_frequent_sticker_button(sticker_path)
+    widgets.closeFreqStickerButton.clicked.connect(lambda: widgets.freqStickerFrame.hide())
+
     # # Overlapping contact
     # child = widgets.chatPageGridLayout.removeWidget(widgets.chatScrollArea)
     # widgets.chatPageGridLayout.addWidget(widgets.chatScrollArea, 0, 0)
@@ -362,6 +381,98 @@ def reload_stickers():
             stickerButtons.append(stickerButton)
 
     mainWindow.connectStickerButtons(stickerButtons)
+
+
+def write_file(file_path, file_list):
+    with open(file_path, "w", encoding="utf8") as file:
+        file.write(str(file_list))
+
+
+def read_file(file_path, file_list: list):
+    try:
+        file_list.clear()
+
+        with open(file_path, "r", encoding="utf8") as file:
+            new_list = [list(eval(file.read()))][0]
+            file_list.extend(new_list)
+    except:
+        pass
+
+
+def add_frequent_emoji_button(emoji):
+    emojiButton = QPushButton(emoji)
+    emojiButton.setStyleSheet("font: 12pt; text-align: center; border: 0;")
+    widgets.freqEmojiLayout.addWidget(emojiButton)
+    emojiButtons = [emojiButton]
+    mainWindow.connectEmojiButtons(emojiButtons)
+
+
+def add_frequent_sticker_button(sticker_path):
+    stickerButton = QPushButton()
+    stickerButton.setIcon(QIcon(sticker_path))
+    stickerButton.setIconSize(QSize(30, 30))
+    stickerButton.setProperty("sticker_path", sticker_path)
+    stickerButton.setStyleSheet("border: 0;")
+    widgets.freqStickerLayout.addWidget(stickerButton)
+    stickerButtons = [stickerButton]
+    mainWindow.connectStickerButtons(stickerButtons)
+
+
+def remove_frequent_emoji_button(emoji):
+    if len(frequent_emojis) == 0:
+        widgets.freqEmojiFrame.hide()
+
+    index = widgets.freqEmojiLayout.count() - 1
+    while index >= 0:
+        emojiButton = widgets.freqEmojiLayout.itemAt(index).widget()
+        if emojiButton.text() == emoji:
+            emojiButton.setParent(None)
+            emojiButton.deleteLater()
+        index -= 1
+
+
+def remove_frequent_sticker_button(sticker_path):
+    if len(frequent_stickers) == 0:
+        widgets.freqStickerFrame.hide()
+
+    index = widgets.freqStickerLayout.count() - 1
+    while index >= 0:
+        stickerButton = widgets.freqStickerLayout.itemAt(index).widget()
+        if stickerButton.property("sticker_path") == sticker_path:
+            stickerButton.setParent(None)
+            stickerButton.deleteLater()
+        index -= 1
+
+
+def add_or_remove_frequent_emoji(emoji):
+    widgets.freqEmojiFrame.show()
+
+    # remove
+    if emoji in frequent_emojis:
+        frequent_emojis.remove(emoji)
+        remove_frequent_emoji_button(emoji)
+    # add
+    else:
+        frequent_emojis.append(emoji)
+        add_frequent_emoji_button(emoji)
+
+    write_file("frequent/emojis.txt", frequent_emojis)
+
+
+def add_or_remove_frequent_sticker(sticker_path):
+    widgets.freqStickerFrame.show()
+
+    # remove
+    if sticker_path in frequent_stickers:
+        frequent_stickers.remove(sticker_path)
+        remove_frequent_sticker_button(sticker_path)
+
+    # add
+    else:
+        frequent_stickers.append(sticker_path)
+        add_frequent_sticker_button(sticker_path)
+
+    write_file("frequent/stickers.txt", frequent_stickers)
 
 
 def prepareDragAndDrop():
@@ -524,7 +635,8 @@ class ContactButton(QPushButton):
                         self.setStyleSheet("")
                     else:
                         pass
-                        self.setStyleSheet("background-repeat:no-repeat; background-image: url('images/images/offline.png'); ")
+                        self.setStyleSheet(
+                            "background-repeat:no-repeat; background-image: url('images/images/offline.png'); ")
 
                 else:
                     pass
@@ -883,8 +995,11 @@ def reloadChat(new_target, message_id=None):
 
     # Load image of me and them
     try:
-        image_me = QImage(user.image_path).scaled(45, 45, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
-        image_them = QImage(User.find_by_username(new_target).image_path).scaled(45, 45, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        image_me = QImage(user.image_path).scaled(45, 45, Qt.AspectRatioMode.KeepAspectRatio,
+                                                  Qt.TransformationMode.SmoothTransformation)
+        image_them = QImage(User.find_by_username(new_target).image_path).scaled(45, 45,
+                                                                                 Qt.AspectRatioMode.KeepAspectRatio,
+                                                                                 Qt.TransformationMode.SmoothTransformation)
     except:
         pass
 
@@ -1078,7 +1193,6 @@ class MessageWidget(QFrame):
         if is_sender:
             self.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
             message_hbox.setAlignment(Qt.AlignmentFlag.AlignRight)
-
 
         self.sender_image = QLabel()
 
@@ -1529,7 +1643,7 @@ class FileWidget(QFrame):
         self.type_label.setObjectName("file-from-" + ("me" if is_sender else "them"))
         if is_sender:
             self.type_label.setStyleSheet("border-right: 2px solid hsl(270, 30%, 15%);")
-        else: # 'hsl(270, 30%, 25%)'};")
+        else:  # 'hsl(270, 30%, 25%)'};")
             self.type_label.setStyleSheet("border-left: 2px solid hsl(270, 30%, 25%);")
 
         self.hbox.addWidget(self.type_label)

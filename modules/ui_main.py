@@ -845,6 +845,38 @@ class Ui_MainWindow(object):
         self.verticalLayout_12.setSpacing(0)
         self.verticalLayout_12.setObjectName(u"verticalLayout_12")
         self.verticalLayout_12.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_3 = QGridLayout()
+        self.gridLayout_3.setSpacing(9)
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.gridLayout_3.setContentsMargins(9, 9, 9, 9)
+        self.lineEdit_3 = QLineEdit(self.extraContent)
+        self.lineEdit_3.setObjectName(u"lineEdit_3")
+
+        self.gridLayout_3.addWidget(self.lineEdit_3, 1, 0, 1, 1)
+
+        self.label_8 = QLabel(self.extraContent)
+        self.label_8.setObjectName(u"label_8")
+
+        self.gridLayout_3.addWidget(self.label_8, 1, 1, 1, 1)
+
+        self.label_7 = QLabel(self.extraContent)
+        self.label_7.setObjectName(u"label_7")
+
+        self.gridLayout_3.addWidget(self.label_7, 2, 1, 1, 1)
+
+        self.lineEdit_2 = QLineEdit(self.extraContent)
+        self.lineEdit_2.setObjectName(u"lineEdit_2")
+
+        self.gridLayout_3.addWidget(self.lineEdit_2, 2, 0, 1, 1)
+
+        self.checkBox_2 = QCheckBox(self.extraContent)
+        self.checkBox_2.setObjectName(u"checkBox_2")
+
+        self.gridLayout_3.addWidget(self.checkBox_2, 0, 0, 1, 1)
+
+
+        self.verticalLayout_12.addLayout(self.gridLayout_3)
+
         self.contactsWidget = QWidget(self.extraContent)
         self.contactsWidget.setObjectName(u"contactsWidget")
         self.contactsWidget.setMaximumSize(QSize(240, 16777215))
@@ -879,7 +911,7 @@ class Ui_MainWindow(object):
         self.contactsScrollArea.setWidgetResizable(True)
         self.contactsScrollAreaWidgetContents = QWidget()
         self.contactsScrollAreaWidgetContents.setObjectName(u"contactsScrollAreaWidgetContents")
-        self.contactsScrollAreaWidgetContents.setGeometry(QRect(0, 0, 16, 393))
+        self.contactsScrollAreaWidgetContents.setGeometry(QRect(0, 0, 16, 290))
         self.contactsScrollAreaWidgetContents.setStyleSheet(u"border-radius: 0px;")
         self.verticalLayout_27 = QVBoxLayout(self.contactsScrollAreaWidgetContents)
         self.verticalLayout_27.setSpacing(0)
@@ -1782,6 +1814,68 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_10.addWidget(self.replyFrame)
 
+        self.freqStickerFrame = QFrame(self.chatTextBox)
+        self.freqStickerFrame.setObjectName(u"freqStickerFrame")
+        self.freqStickerFrame.setStyleSheet(u"#freqStickerFrame {\n"
+"	border-bottom: 1px solid;\n"
+"	border-color: gray;\n"
+"}")
+        self.horizontalLayout_21 = QHBoxLayout(self.freqStickerFrame)
+        self.horizontalLayout_21.setObjectName(u"horizontalLayout_21")
+        self.horizontalLayout_21.setContentsMargins(-1, 0, -1, 5)
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_21.addItem(self.horizontalSpacer_8)
+
+        self.freqStickerLayout = QHBoxLayout()
+        self.freqStickerLayout.setObjectName(u"freqStickerLayout")
+
+        self.horizontalLayout_21.addLayout(self.freqStickerLayout)
+
+        self.closeFreqStickerButton = QPushButton(self.freqStickerFrame)
+        self.closeFreqStickerButton.setObjectName(u"closeFreqStickerButton")
+        sizePolicy4.setHeightForWidth(self.closeFreqStickerButton.sizePolicy().hasHeightForWidth())
+        self.closeFreqStickerButton.setSizePolicy(sizePolicy4)
+        self.closeFreqStickerButton.setStyleSheet(u"border: 0;")
+        self.closeFreqStickerButton.setIcon(icon)
+        self.closeFreqStickerButton.setIconSize(QSize(32, 16))
+
+        self.horizontalLayout_21.addWidget(self.closeFreqStickerButton)
+
+
+        self.verticalLayout_10.addWidget(self.freqStickerFrame)
+
+        self.freqEmojiFrame = QFrame(self.chatTextBox)
+        self.freqEmojiFrame.setObjectName(u"freqEmojiFrame")
+        self.freqEmojiFrame.setStyleSheet(u"#freqEmojiFrame {\n"
+"	border-bottom: 1px solid;\n"
+"	border-color: gray;\n"
+"}")
+        self.horizontalLayout_20 = QHBoxLayout(self.freqEmojiFrame)
+        self.horizontalLayout_20.setObjectName(u"horizontalLayout_20")
+        self.horizontalLayout_20.setContentsMargins(-1, 0, -1, 5)
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_20.addItem(self.horizontalSpacer_7)
+
+        self.freqEmojiLayout = QHBoxLayout()
+        self.freqEmojiLayout.setObjectName(u"freqEmojiLayout")
+
+        self.horizontalLayout_20.addLayout(self.freqEmojiLayout)
+
+        self.closeFreqEmojiButton = QPushButton(self.freqEmojiFrame)
+        self.closeFreqEmojiButton.setObjectName(u"closeFreqEmojiButton")
+        sizePolicy4.setHeightForWidth(self.closeFreqEmojiButton.sizePolicy().hasHeightForWidth())
+        self.closeFreqEmojiButton.setSizePolicy(sizePolicy4)
+        self.closeFreqEmojiButton.setStyleSheet(u"border: 0;")
+        self.closeFreqEmojiButton.setIcon(icon)
+        self.closeFreqEmojiButton.setIconSize(QSize(32, 16))
+
+        self.horizontalLayout_20.addWidget(self.closeFreqEmojiButton)
+
+
+        self.verticalLayout_10.addWidget(self.freqEmojiFrame)
+
         self.chatWriteTextBox = QFrame(self.chatTextBox)
         self.chatWriteTextBox.setObjectName(u"chatWriteTextBox")
         sizePolicy5 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
@@ -1943,7 +2037,7 @@ class Ui_MainWindow(object):
         self.chatScrollArea.setWidgetResizable(True)
         self.chatScrollAreaWidgetContents = QWidget()
         self.chatScrollAreaWidgetContents.setObjectName(u"chatScrollAreaWidgetContents")
-        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 858, 79))
+        self.chatScrollAreaWidgetContents.setGeometry(QRect(0, 0, 858, 49))
         self.chatScrollVerticalLayout = QVBoxLayout(self.chatScrollAreaWidgetContents)
         self.chatScrollVerticalLayout.setObjectName(u"chatScrollVerticalLayout")
         self.chatVerticalLayout = QVBoxLayout()
@@ -2315,6 +2409,9 @@ class Ui_MainWindow(object):
         self.extraCloseColumnBtn.setToolTip(QCoreApplication.translate("MainWindow", u"Close left box", None))
 #endif // QT_CONFIG(tooltip)
         self.extraCloseColumnBtn.setText("")
+        self.label_8.setText(QCoreApplication.translate("MainWindow", u"\u0627\u0632 \u062a\u0627\u0631\u06cc\u062e", None))
+        self.label_7.setText(QCoreApplication.translate("MainWindow", u"\u062a\u0627 \u062a\u0627\u0631\u06cc\u062e", None))
+        self.checkBox_2.setText(QCoreApplication.translate("MainWindow", u"Search in current chat", None))
         self.searchLineEdit.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Search", None))
         self.searchPushButton.setText("")
         self.btn_share.setText(QCoreApplication.translate("MainWindow", u"Share", None))
@@ -2461,6 +2558,8 @@ class Ui_MainWindow(object):
         self.replyIconButton.setText("")
         self.replyLabel.setText(QCoreApplication.translate("MainWindow", u"Reply message", None))
         self.closeReplyButton.setText("")
+        self.closeFreqStickerButton.setText("")
+        self.closeFreqEmojiButton.setText("")
         self.snippingButton.setText("")
         self.emojiButton.setText("")
 #if QT_CONFIG(tooltip)
