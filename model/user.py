@@ -81,7 +81,7 @@ class User(conf.Base):
         messages = query.all()
         return messages
 
-    def ten_search_messages(self, search: str, before_id=None):
+    def ten_search_messages(self, search: str, target, from_date: datetime.datetime, to_date: datetime.datetime, before_id=None):
         if before_id is None:
             before_id = 2147483647 # max int in mysql
 
@@ -89,6 +89,14 @@ class User(conf.Base):
             message.Message.sender_username == self.username,
             message.Message.receiver_username == self.username)),
             conf.or_(message.Message.text.contains(search), message.Message.file_path.contains(search)))
+
+        query = query.filter(message.Message.time_created > from_date, message.Message.time_created < to_date)
+
+        if target is not None:
+            query = query.filter(conf.or_(
+                message.Message.sender_username == target,
+                message.Message.receiver_username == target))
+
         query = query.filter(message.Message.id < before_id).order_by(message.Message.time_created.desc()).limit(10)
 
         messages = query.all()

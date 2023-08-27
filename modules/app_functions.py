@@ -284,6 +284,7 @@ def prepareMessengerPage():
     widgets.emojiButton.clicked.connect(mainWindow.openCloseRightBox)
 
     # Prepare search button
+    widgets.toDateLineEdit.setText(jdatetime.datetime.fromgregorian(datetime=conf.db_time()).strftime("%Y-%m-%d"))
     widgets.searchPushButton.clicked.connect(lambda: (widgets.searchLineEdit.setText(""),
                                                       reload_contacts_list(widgets.searchLineEdit.text())))
 
@@ -620,9 +621,25 @@ def fetch_ten_search_messages(search):
     if search is None or search == "":
         return
 
-    before_id = min(search_messages_dict, default=2147483647)
+    from_date = jdatetime.datetime.strptime("1400-01-01_00-00-00", "%Y-%m-%d_%H-%M-%S")
+    to_date = jdatetime.datetime.strptime("1410-01-01_23-59-59", "%Y-%m-%d_%H-%M-%S")
 
-    messages = user.ten_search_messages(search, before_id)
+    try:
+        from_date = jdatetime.datetime.strptime(widgets.fromDateLineEdit.text() + "_00-00-00", "%Y-%m-%d_%H-%M-%S").togregorian()
+        to_date = jdatetime.datetime.strptime(widgets.toDateLineEdit.text() + "_23-59-59", "%Y-%m-%d_%H-%M-%S").togregorian()
+    except:
+        msgBox = QMessageBox()
+        msgBox.setIcon(QMessageBox.Warning)
+        msgBox.setText(f"لطفا تاریخ را به صورت 14xx-xx-xx وارد کنید.")
+        msgBox.setInformativeText("")
+        msgBox.setWindowTitle("خطای تاریخ")
+        msgBox.setStandardButtons(QMessageBox.Ok)
+        msgBox.exec()
+
+    before_id = min(search_messages_dict, default=2147483647)
+    target = target_username if widgets.singleSearchCheckBox.isChecked() else None
+
+    messages = user.ten_search_messages(search, target, from_date, to_date, before_id)
     users = [user.find_by_username(
         message.sender_username if message.sender_username != user.username else message.receiver_username)
         for message in messages]
