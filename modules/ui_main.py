@@ -698,6 +698,18 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_8.addWidget(self.btn_messenger)
 
+        self.btn_sync = QPushButton(self.topMenu)
+        self.btn_sync.setObjectName(u"btn_sync")
+        sizePolicy.setHeightForWidth(self.btn_sync.sizePolicy().hasHeightForWidth())
+        self.btn_sync.setSizePolicy(sizePolicy)
+        self.btn_sync.setMinimumSize(QSize(0, 45))
+        self.btn_sync.setFont(font)
+        self.btn_sync.setCursor(QCursor(Qt.PointingHandCursor))
+        self.btn_sync.setLayoutDirection(Qt.LeftToRight)
+        self.btn_sync.setStyleSheet(u"background-image: url(:/icons/images/icons/cil-reload.png);")
+
+        self.verticalLayout_8.addWidget(self.btn_sync)
+
         self.btn_add = QPushButton(self.topMenu)
         self.btn_add.setObjectName(u"btn_add")
         sizePolicy.setHeightForWidth(self.btn_add.sizePolicy().hasHeightForWidth())
@@ -1497,7 +1509,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 218, 218))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 274, 218))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"
@@ -2399,6 +2411,7 @@ class Ui_MainWindow(object):
         self.btn_home.setText(QCoreApplication.translate("MainWindow", u"Home", None))
         self.btn_widgets.setText(QCoreApplication.translate("MainWindow", u"Widgets", None))
         self.btn_messenger.setText(QCoreApplication.translate("MainWindow", u"Messenger", None))
+        self.btn_sync.setText(QCoreApplication.translate("MainWindow", u"Add Task", None))
         self.btn_add.setText(QCoreApplication.translate("MainWindow", u"Add Task", None))
         self.btn_new.setText(QCoreApplication.translate("MainWindow", u"New", None))
         self.btn_save.setText(QCoreApplication.translate("MainWindow", u"Save", None))

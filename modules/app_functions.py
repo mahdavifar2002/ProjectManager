@@ -146,6 +146,8 @@ def logoutUser():
     widgets.loginResult.setStyleSheet("color: green;")
     widgets.loginResult.setText("You logged out successfully")
 
+    widgets.btn_sync.hide()
+
 
 def loginUser(by_GUI=True) -> bool:
     global user
@@ -168,6 +170,10 @@ def loginUser(by_GUI=True) -> bool:
             widgets.shareLineEdit.setText(user.share)
             widgets.fullNameLineEdit.setText(user.fullname)
             updateHomepageVisibilities()
+
+            if user.username in ['alireza', 'hossein', 'pc25']:
+                widgets.btn_sync.show()
+
 
             if by_GUI:
                 with open("userpass.txt", "w") as file:
@@ -346,6 +352,19 @@ def prepareMessengerPage():
     # widgets.toEndVerticalWidget.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
     # widgets.toEndPushButton.clicked.connect(scroll_to_end_of_chat)
     widgets.toEndVerticalWidget.hide()
+
+
+def sync_users():
+    new_usernames = init_users.insert()
+    print(new_usernames)
+
+    msgBox = QMessageBox()
+    msgBox.setIcon(QMessageBox.Information)
+    msgBox.setText(f"{len(new_usernames)} کاربر جدید افزوده شد.")
+    msgBox.setInformativeText("\n".join(new_usernames))
+    msgBox.setWindowTitle("همگام‌سازی")
+    msgBox.setStandardButtons(QMessageBox.Ok)
+    msgBox.exec()
 
 
 def resize_emoji(emoji):

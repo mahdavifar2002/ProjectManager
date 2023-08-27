@@ -23,6 +23,7 @@ from typing import Optional
 import win32gui
 
 import modules as mod
+from model.init import init_users
 from model.user import User
 
 # IMPORT / GUI AND MODULES AND WIDGETS
@@ -91,6 +92,7 @@ class MainWindow(QMainWindow):
         widgets.btn_home.clicked.connect(self.buttonClick)
         widgets.btn_widgets.clicked.connect(self.buttonClick)
         widgets.btn_messenger.clicked.connect(self.buttonClick)
+        widgets.btn_sync.clicked.connect(self.buttonClick)
         widgets.btn_add.clicked.connect(self.buttonClick)
         widgets.btn_new.clicked.connect(self.buttonClick)
         widgets.btn_save.clicked.connect(self.buttonClick)
@@ -104,6 +106,7 @@ class MainWindow(QMainWindow):
         widgets.btn_new.hide()
         widgets.btn_save.hide()
         widgets.btn_exit.hide()
+        widgets.btn_sync.hide()
 
         # EXTRA LEFT BOX
         widgets.toggleLeftBox.clicked.connect(self.openCloseLeftBox)
@@ -422,6 +425,10 @@ class MainWindow(QMainWindow):
 
             if mod.app_functions.target_username is not None:
                 self.setWindowTitle("Message " + mod.app_functions.target_username)
+
+        # SYNC USERS WITH WORKS MANAGER
+        if btnName == "btn_sync":
+            mod.app_functions.sync_users()
 
         # SHOW NEW PAGE
         if btnName == "btn_new":
