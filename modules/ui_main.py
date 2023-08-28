@@ -2012,7 +2012,6 @@ class Ui_MainWindow(object):
 "	border-color: gray;\n"
 "}")
         self.horizontalLayout_18 = QHBoxLayout(self.pinFrame)
-        self.horizontalLayout_18.setSpacing(0)
         self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
         self.pinCounterLabel = QLabel(self.pinFrame)
         self.pinCounterLabel.setObjectName(u"pinCounterLabel")
@@ -2032,7 +2031,7 @@ class Ui_MainWindow(object):
         icon13 = QIcon()
         icon13.addFile(u":/icons/images/icons/cil-arrow-top.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pinUpButton.setIcon(icon13)
-        self.pinUpButton.setIconSize(QSize(32, 16))
+        self.pinUpButton.setIconSize(QSize(16, 16))
 
         self.horizontalLayout_18.addWidget(self.pinUpButton)
 
@@ -2044,7 +2043,7 @@ class Ui_MainWindow(object):
         icon14 = QIcon()
         icon14.addFile(u":/icons/images/icons/cil-arrow-bottom.png", QSize(), QIcon.Normal, QIcon.Off)
         self.pinDownButton.setIcon(icon14)
-        self.pinDownButton.setIconSize(QSize(32, 16))
+        self.pinDownButton.setIconSize(QSize(16, 16))
 
         self.horizontalLayout_18.addWidget(self.pinDownButton)
 

@@ -4089,9 +4089,6 @@ QTextEdit:focus {
 }</string>
                                 </property>
                                 <layout class="QHBoxLayout" name="horizontalLayout_18">
-                                 <property name="spacing">
-                                  <number>0</number>
-                                 </property>
                                  <item>
                                   <widget class="QLabel" name="pinCounterLabel">
                                    <property name="sizePolicy">
@@ -4125,7 +4122,7 @@ QTextEdit:focus {
                                    </property>
                                    <property name="iconSize">
                                     <size>
-                                     <width>32</width>
+                                     <width>16</width>
                                      <height>16</height>
                                     </size>
                                    </property>
@@ -4151,7 +4148,7 @@ QTextEdit:focus {
                                    </property>
                                    <property name="iconSize">
                                     <size>
-                                     <width>32</width>
+                                     <width>16</width>
                                      <height>16</height>
                                     </size>
                                    </property>

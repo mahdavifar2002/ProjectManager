@@ -49,6 +49,9 @@ search_messages_dict_full: bool = False         # True, if there are no more sea
 target_username: Optional[str] = None           # target (مخاطب) of current chat
 last_user_update: datetime.datetime = datetime.datetime.now()   # last time that user typing status has been updated
 
+pinned_messages = []
+pinned_message_index = -1
+
 image_me: Optional[QImage] = None               # QImage of current user profile picture
 image_them: Optional[QImage] = None             # QImage of target user profile image
 
@@ -327,6 +330,9 @@ def prepareMessengerPage():
     widgets.pinLabel.setToolTip(str(-1))
     widgets.pinLabel.mousePressEvent = jump_to_pin_message
     widgets.closePinButton.clicked.connect(unpin_message)
+    widgets.pinUpButton.clicked.connect(pin_move_up)
+    widgets.pinDownButton.clicked.connect(pin_move_down)
+    widgets.pinIconButton.hide()
 
     # Prepare handling scroll to top to fetch new messages
     widgets.chatScrollArea.verticalScrollBar().actionTriggered.connect(on_chat_scroll)
@@ -376,10 +382,12 @@ def sync_users():
     msgBox.exec()
 
 
+# Make emojis larger for better look
 def resize_emoji(emoji):
     return f"<span style='font-size: 20px;'>{emoji}</span>"
 
 
+# When user clicks to open the emoji/stickers box for the first time, they will be loaded
 def reload_stickers():
     # Prepare emojis buttons
     emojiButtons = []
@@ -411,11 +419,13 @@ def reload_stickers():
     mainWindow.connectStickerButtons(stickerButtons)
 
 
+# write list (frequent_emojies or frequent_stickers) to file
 def write_file(file_path, file_list):
     with open(file_path, "w", encoding="utf8") as file:
         file.write(str(file_list))
 
 
+# read list from file
 def read_file(file_path, file_list: list):
     try:
         file_list.clear()
@@ -427,6 +437,7 @@ def read_file(file_path, file_list: list):
         pass
 
 
+# When an emoji is right-clicked, it will be added to freqEmojiLayout for quick access
 def add_frequent_emoji_button(emoji):
     emojiButton = QPushButton(emoji)
     emojiButton.setStyleSheet("font: 12pt; text-align: center; border: 0;")
@@ -435,6 +446,7 @@ def add_frequent_emoji_button(emoji):
     mainWindow.connectEmojiButtons(emojiButtons)
 
 
+# When a sticker is right-clicked, it will be added to freqStickerLayout for quick access
 def add_frequent_sticker_button(sticker_path):
     stickerButton = QPushButton()
     stickerButton.setIcon(QIcon(sticker_path))
@@ -446,6 +458,7 @@ def add_frequent_sticker_button(sticker_path):
     mainWindow.connectStickerButtons(stickerButtons)
 
 
+# When a frequent emoji is right-clicked, it will be removed from freqEmojiLayout
 def remove_frequent_emoji_button(emoji):
     if len(frequent_emojis) == 0:
         widgets.freqEmojiFrame.hide()
@@ -459,6 +472,7 @@ def remove_frequent_emoji_button(emoji):
         index -= 1
 
 
+# When a frequent sticker is right-clicked, it will be removed from freqStickerLayout
 def remove_frequent_sticker_button(sticker_path):
     if len(frequent_stickers) == 0:
         widgets.freqStickerFrame.hide()
@@ -472,6 +486,7 @@ def remove_frequent_sticker_button(sticker_path):
         index -= 1
 
 
+# when an emoji is right-clicked, add it to frequent emojis if not added already, remove it otherwise
 def add_or_remove_frequent_emoji(emoji):
     widgets.freqEmojiFrame.show()
 
@@ -487,6 +502,7 @@ def add_or_remove_frequent_emoji(emoji):
     write_file("frequent/emojis.txt", frequent_emojis)
 
 
+# when an sticker is right-clicked, add it to frequent emojis if not added already, remove it otherwise
 def add_or_remove_frequent_sticker(sticker_path):
     widgets.freqStickerFrame.show()
 
@@ -503,6 +519,7 @@ def add_or_remove_frequent_sticker(sticker_path):
     write_file("frequent/stickers.txt", frequent_stickers)
 
 
+# prepare events for drag-and-drop file into chat page
 def prepareDragAndDrop():
     widgets.chatPage.setProperty("file_path", "")
 
@@ -516,6 +533,7 @@ def prepareDragAndDrop():
     widgets.messengerTextEdit.dropEvent = customDropEvent
 
 
+# object to blur the chat page when a file is dragged into chat page
 chatPage_blur_effect = None
 
 
@@ -534,6 +552,7 @@ def customDragLeaveEvent(event):
     event.accept()
 
 
+# send files when dropped into chat page
 def customDropEvent(event: QDropEvent):
     chatPage_blur_effect = None
     widgets.chatPage.setGraphicsEffect(None)
@@ -570,6 +589,7 @@ def customDropEvent(event: QDropEvent):
         event.ignore()
 
 
+# change links like E:/folder/file to \\share\E\folder\file
 def url_local_to_share(url):
     if url[0:2] != "//":
         url = "//" + user.share + "/" + url
@@ -577,6 +597,7 @@ def url_local_to_share(url):
     return url
 
 
+# when text edit is changed, set the user state as "typing"
 def messenger_text_changed():
     global user
     global target_username
@@ -598,12 +619,14 @@ def close_edit_area():
     widgets.messengerTextEdit.setPlainText("")
 
 
+# reload list of contacts, and if some keyword is set for search, show list of search results
 def reload_contacts_list(search=None):
     global search_messages_dict
     global search_messages_dict_full
 
     clearLayout(widgets.contactsVerticalLayout)
     search_messages_dict.clear()
+    pinned_messages.clear()
     search_messages_dict_full = False
 
     if search is None or search == "":
@@ -625,6 +648,7 @@ def reload_contacts_list(search=None):
     widgets.contactsVerticalLayout.addStretch()
 
 
+# fetch ten more search results and add their widgets
 def fetch_ten_search_messages(search):
     if search is None or search == "":
         return
@@ -662,6 +686,7 @@ def fetch_ten_search_messages(search):
     return len(user_buttons)
 
 
+# Button for each contact or search result
 class ContactButton(QPushButton):
     def __init__(self, other_user, selected_message, top=False):
         super().__init__()
@@ -728,6 +753,7 @@ class ContactButton(QPushButton):
         self.setText(text)
 
 
+# watch for size of copy message and update every 0.3 seconds
 def watch_copy_file(message: Message):
     file_size = FileWidget.fileSize(message.file_path)
 
@@ -741,6 +767,7 @@ def watch_copy_file(message: Message):
     send_broadcast(f"reload_message {message.id}")
 
 
+# forward a message to another user
 def forwardMessage(forward_message_id, forward_username):
     message = Message.find_by_id(forward_message_id)
     clone_message = conf.clone_model(message)
@@ -798,6 +825,11 @@ def forwardMessage(forward_message_id, forward_username):
     msgBox.exec()
 
 
+# send the message which its text comes from widgets.messengerTextEdit
+# if the message has voice -> the address of voice comes from widgets.recordButton.property("voice_path")
+# if the message has sticker -> the address of sticker image comes from widgets.stickersGridLayout.property("sticker_path")
+# if the message has file -> the address of file comes from widgets.chatPage.property("file_path")
+# if the message is copy -> the value in widgets.chatPage.property("file_copy") should be True
 def sendMessage(force_send=False):
     if not force_send and \
             not widgets.messengerTextEdit.hasFocus() \
@@ -896,6 +928,7 @@ def sendMessage(force_send=False):
     widgets.replyFrame.hide()
 
 
+# show window for cropping an area for screenshot
 def snippingTool():
     global snippingWindow
     snippingWindow = SnippingWidget()
@@ -982,6 +1015,7 @@ class SnippingWidget(QWidget):
         msgBox.exec()
 
 
+# this function is called to start/finish recording voice
 def recordMessage():
     global user
     global recorder
@@ -1014,6 +1048,7 @@ def recordMessage():
         widgets.recordButton.setToolTip("record")
 
 
+# when new message is arrived, this function fetches the message from database and adds its widget
 def newMessage(message_id: int):
     global target_username
     global messages_dict
@@ -1024,12 +1059,14 @@ def newMessage(message_id: int):
     scroll_to_end_of_chat()
 
 
+# go to the end of messages scroll area
 def scroll_to_end_of_chat():
     for i in range(2):
         QCoreApplication.processEvents()
         widgets.chatScrollArea.verticalScrollBar().setValue(widgets.chatScrollArea.verticalScrollBar().maximum())
 
 
+# when a new target has been chosen, this function clears previous chat and opens new chat messages
 def reloadChat(new_target, message_id=None):
     global target_username
     global messages_dict
@@ -1082,6 +1119,7 @@ def reloadChat(new_target, message_id=None):
 
     # Messages
     messages_dict.clear()
+    pinned_messages.clear()
     messages_dict_full = False
 
     fetch_ten_messages(load_all=False)
@@ -1106,6 +1144,7 @@ def reloadChat(new_target, message_id=None):
     # on_chat_scroll()
 
 
+# programmatically scroll to a selected message
 def scroll_to_message_id(message_id, focus=True):
     global messages_dict
 
@@ -1118,6 +1157,7 @@ def scroll_to_message_id(message_id, focus=True):
         message_widget.setFocus()
 
 
+# when user scrolls to the top, fetch ten more messages
 def fetch_ten_messages(load_all=False):
     global target_username
     global messages_dict
@@ -1140,6 +1180,7 @@ def fetch_ten_messages(load_all=False):
     return len(messages)
 
 
+# crease widget for new message object and add it on the right place on chatGridLayout
 def addMessageWidget(message: Message):
     global user
     global messages_dict
@@ -1157,6 +1198,7 @@ def addMessageWidget(message: Message):
         message_widget.pinMessage()
 
 
+# watch user scroll, and if there are more search results to fetch and user scrolled to end, call fetch_ten_search_messages
 def on_search_scroll():
     global search_messages_dict
     global search_messages_dict_full
@@ -1169,6 +1211,7 @@ def on_search_scroll():
                 search_messages_dict_full = True
 
 
+# watch user scroll, and if there are more messages to fetch and user scrolled to top, call fetch_ten_messages
 def on_chat_scroll():
     global messages_dict
     global messages_dict_full
@@ -1181,31 +1224,51 @@ def on_chat_scroll():
             else:
                 messages_dict_full = True
 
-    pass
-    # # check seens
-    # for message_widget in messages_dict.values():
-    #     if message_widget.message.receiver_username == user.username:
-    #         if not message_widget.visibleRegion().isEmpty():
-    #             if not message_widget.message.has_been_seen:
-    #                 message_widget.message.has_been_seen = True
-    #                 message_widget.message.save()
-    #                 send_broadcast(f"reload_message {message_widget.message.id}")
 
 
+# when user clicks on pinFrame, jump to pinned message
 def jump_to_pin_message(event):
     message_id = int(widgets.pinLabel.toolTip())
     if message_id in messages_dict:
         messages_dict[message_id].jumpTo()
 
 
+# move to next pinned message
+def pin_move_down():
+    global pinned_messages, pinned_message_index
+
+    if pinned_message_index + 1 < len(pinned_messages):
+        pinned_message_index += 1
+        pinned_messages[pinned_message_index].pinMessage()
+        jump_to_pin_message(None)
+
+
+#move to previous pinned message
+def pin_move_up():
+    global pinned_messages, pinned_message_index
+
+    if pinned_message_index - 1 >= 0:
+        pinned_message_index -= 1
+        pinned_messages[pinned_message_index].pinMessage()
+        jump_to_pin_message(None)
+
+
+# unpin the current pinned message which is currently shown in pinFrame
 def unpin_message():
+    global pinned_messages, pinned_message_index
+
     message_id = int(widgets.pinLabel.toolTip())
     if message_id in messages_dict:
         message_widget = messages_dict[message_id]
         message = message_widget.message
 
-        widgets.pinFrame.hide()
+        pinned_messages.remove(message_widget)
         widgets.pinLabel.setToolTip(str(-1))
+        pinned_message_index = len(pinned_messages) - 1
+        if len(pinned_messages):
+            pinned_messages[-1].pinMessage()
+        else:
+            widgets.pinFrame.hide()
 
         for widget in messages_dict.values():
             if widget.message.pinned:
@@ -1217,6 +1280,8 @@ def unpin_message():
             send_broadcast(f"reload_message {message.id}")
 
 
+# MessageWidget is the main QFrame for each message in the UI,
+# including a MessageCoreWidget and a RepliedWidget (if this message is a reply to another message)
 class MessageWidget(QFrame):
     def __init__(self, message: Message, widgets: Ui_MainWindow):
         super().__init__()
@@ -1261,21 +1326,31 @@ class MessageWidget(QFrame):
         self.setFocus()
 
     def pinMessage(self):
+        global pinned_messages, pinned_message_index
+
+        if self not in pinned_messages:
+            pinned_messages.append(self)
+            pinned_messages.sort(key=lambda x: x.message.id)
+
+        pinned_message_index = pinned_messages.index(self)
+        widgets.pinCounterLabel.setText(f"{pinned_message_index + 1}/{len(pinned_messages)}")
+
         # check if no later message is already pinned
-        if self.message.id > int(widgets.pinLabel.toolTip()):
-            # put message in pin frame
-            widgets.pinLabel.setText(self.message.short_text())
-            widgets.pinLabel.setToolTip(str(self.message.id))
+        # if self.message.id >= int(widgets.pinLabel.toolTip()):
 
-            # show pin frame
-            widgets.pinFrame.show()
+        # put message in pin frame
+        widgets.pinLabel.setText(self.message.short_text())
+        widgets.pinLabel.setToolTip(str(self.message.id))
 
-            # blur the pin message if the message is itself blured
-            if self.message_core.graphicsEffect() is not None:
-                self.pin_blur_effect = QGraphicsBlurEffect(blurRadius=15)
-                widgets.pinLabel.setGraphicsEffect(self.pin_blur_effect)
-            else:
-                widgets.pinLabel.setGraphicsEffect(None)
+        # show pin frame
+        widgets.pinFrame.show()
+
+        # blur the pin message if the message is itself blured
+        if self.message_core.graphicsEffect() is not None:
+            self.pin_blur_effect = QGraphicsBlurEffect(blurRadius=15)
+            widgets.pinLabel.setGraphicsEffect(self.pin_blur_effect)
+        else:
+            widgets.pinLabel.setGraphicsEffect(None)
 
     def updateMessage(self):
         conf.session.commit()
@@ -1283,7 +1358,8 @@ class MessageWidget(QFrame):
 
         if self.message.pinned:
             self.pinMessage()
-        elif widgets.pinLabel.toolTip() == str(self.message.id):
+        # elif widgets.pinLabel.toolTip() == str(self.message.id):
+        elif self in pinned_messages:
             unpin_message()
 
         if self.message.deleted:
@@ -1434,6 +1510,7 @@ class MessageWidget(QFrame):
         send_broadcast(f"reload_message {self.message.id}")
 
 
+# MessageCoreWidget is child of MessageWidget
 class MessageCoreWidget(QFrame):
     def __init__(self, messageWidget: MessageWidget):
         super().__init__()
@@ -1482,6 +1559,7 @@ class MessageCoreWidget(QFrame):
                 send_broadcast(f"reload_message {self.messageWidget.message.id}")
 
 
+# This class is used for text part of MessageWidget, and its size is automatically adjusted base on size of text
 class MessageTextWidget(AutoResizingTextEdit):
     def __init__(self, messageWidget: MessageWidget):
         super().__init__()
@@ -1498,6 +1576,8 @@ class MessageTextWidget(AutoResizingTextEdit):
             super().mousePressEvent(e)
 
 
+# This widget is used if the messageWidget is a reply to another message
+# If you click on this widget, it will jump to that message
 class RepliedWidget(AutoResizingTextEdit):
     def __init__(self, message: Message, messageWidget: MessageWidget):
         # create the replied box
@@ -1623,6 +1703,7 @@ class VoiceWidget(QFrame):
         self.slider.setRange(0, duration)
 
 
+# show only first 20 characters of a text
 def short_text(text, length=20):
     the_text = text.replace("\n", " ")
     if len(the_text) > length:
@@ -1630,6 +1711,7 @@ def short_text(text, length=20):
     return the_text
 
 
+# this class writes the text LINK or COPY vertically
 class VerticalLabel(QLabel):
 
     def __init__(self, *args):
@@ -1924,6 +2006,7 @@ class FileWidget(QFrame):
             super().mousePressEvent(e)
 
 
+# this class is used for slider of voice message and jumps to diferent part of voice if user click on the slider
 class ClickSlider(QSlider):
     """A slider with a signal that emits its position when it is pressed.
     Created to get around the slider only updating when the handle is dragged, but not when a new position is clicked"""
@@ -1939,12 +2022,14 @@ class ClickSlider(QSlider):
             self.sliderMoved.emit(value)
 
 
+# this function adds to counter if given hwnd window title starts with given keyword
 def enum_callback(hwnd, keyword):
     global count
     if win32gui.GetWindowText(hwnd).startswith(keyword):
         count += 1
 
 
+# returns number of opened messenger windows in the system
 def count_messenger_windows():
     global count
     count = 0
@@ -1970,7 +2055,6 @@ def reloadTasks():
             widgets.userTasksTableWidget.setItem(rowPosition, 2, QTableWidgetItem(task.description))
 
 
-# Step 1: Create a worker class
 class Worker(QObject):
     finished = Signal()
     progress = Signal(str)
@@ -1982,11 +2066,13 @@ class Worker(QObject):
         self.finished.emit()
 
 
+# when a new socket-programming message is received, do the proper action
 def actionOnBroadcast(msg: str):
     global target_username
 
     command = msg.split(" ")
 
+    # if there is a new message, call newMessage function
     if command[0] == "new_message":
         if command[1] == user.username:
             if command[2] == target_username:
@@ -1996,6 +2082,7 @@ def actionOnBroadcast(msg: str):
             if command[1] == target_username:
                 newMessage(int(command[3]))
 
+    # if a message is edited/deleted/pinned/... call the updateMessage method
     elif command[0] == "reload_message":
         message_id = int(command[1])
         if message_id in messages_dict:
@@ -2005,13 +2092,16 @@ def actionOnBroadcast(msg: str):
                 print("reloading message...")
                 message_widget.updateMessage()
 
+    # if a user's typing status is updated, call the updateUser method
     elif command[0] == "reload_user":
         user_username = command[1]
         if target_username == user_username:
             widgets.contactUserButton.updateUser()
 
 
+# make a QThread to capture network socket-programming packets
 def prepareClientThread():
+    # Step 1: Create a worker class
     # Step 2: Create a QThread object
     widgets.thread = QThread()
     # Step 3: Create a worker object
@@ -2028,6 +2118,7 @@ def prepareClientThread():
     widgets.thread.start()
 
 
+# clear a layout (Vbox or Hbox) and removing all its child widgets
 def clearLayout(layout):
     while layout.count():
         child = layout.takeAt(0)
