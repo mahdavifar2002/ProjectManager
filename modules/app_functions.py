@@ -39,32 +39,35 @@ from model.user import User
 from modules.server import send_broadcast
 from modules.client import receive_broadcast, check_share, check_online
 
-widgets: Optional[Ui_MainWindow] = None
-mainWindow: Optional[MainWindow] = None
-user: Optional[User] = None
-messages_dict: Dict[int, QWidget] = {}
-messages_dict_full: bool = False
-search_messages_dict: Dict[int, QWidget] = {}
-search_messages_dict_full: bool = False
-target_username: Optional[str] = None
-last_user_update: datetime.datetime = datetime.datetime.now()
+widgets: Optional[Ui_MainWindow] = None         # class containing all widgets in the UI
+mainWindow: Optional[MainWindow] = None         # reference to MainWindow object from main.py
+user: Optional[User] = None                     # logged-in user
+messages_dict: Dict[int, QWidget] = {}          # list of all QWidgets of messages that has been loaded
+messages_dict_full: bool = False                # True, if there are no more messages to be loaded by scrolling
+search_messages_dict: Dict[int, QWidget] = {}   # list of all QWidgets that are result of searching
+search_messages_dict_full: bool = False         # True, if there are no more search results to be loaded by scrolling
+target_username: Optional[str] = None           # target (مخاطب) of current chat
+last_user_update: datetime.datetime = datetime.datetime.now()   # last time that user typing status has been updated
 
-image_me: Optional[QImage] = None
-image_them: Optional[QImage] = None
+image_me: Optional[QImage] = None               # QImage of current user profile picture
+image_them: Optional[QImage] = None             # QImage of target user profile image
 
+# objects for recording audio or screenshot
 audioInput: Optional[QAudioInput] = None
 recorder: Optional[QMediaRecorder] = None
 captureSession: Optional[QMediaCaptureSession] = None
 snippingWindow = None
 
+# list of all emojis
 emojis_list = "😀😃😄😁😆😅😂🤣😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛😝😜🤪🤨🧐🤓😎🤩" \
               "🥳😏😒😞😔😟😕🙁😣😖😫😩🥺😢😭😤😠😡🤬🤯😳🥵🥶😶😱😨😰😥😓🤗" \
               "🤔🤭🤫🤥😶😐😑😬🙄😯😦😧😮😲🥱😴🤤😪😮😵😵💫🤐🥴🤢🤮🤧😷🤒🤕" \
               "🤑🤠😈👿👹👺🤡👻💀👽👾🤖🎃😺😸😹😻😼😽🙀😿😾🤲👐🙌👏🤝👍👎👊" \
               "✊🤛🤜🤞🤟🤘👌🤏👈👉👆👇✋🤚🖐🖖👋🤙💪🙏"
 
-frequent_emojis = []
-frequent_stickers = []
+# list of most used emojis and stickers, for quick access
+frequent_emojis = []    # this list is saved at "Messenger/frequent/emojis.txt"
+frequent_stickers = []  # this list is saved at "Messenger/frequent/stickers.txt"
 
 
 # WITH ACCESS TO MAIN WINDOW WIDGETS
@@ -104,6 +107,7 @@ class AppFunctions(MainWindow):
             widgets.contactInfoBox.setStyleSheet("background-color: rgb(33, 37, 43); color: #ffffff;")
 
 
+# If no user is logged-in, this function will hide access messenger page, and will show log-in panel
 def updateHomepageVisibilities():
     if user is None:
         widgets.logOutArea.hide()
@@ -115,6 +119,7 @@ def updateHomepageVisibilities():
         widgets.leftMenuBg.show()
 
 
+# connect buttons of login/logout to corresponding functions
 def prepareHomePage():
     try:
         with open("userpass.txt", "r") as file:
@@ -130,25 +135,34 @@ def prepareHomePage():
     updateHomepageVisibilities()
 
 
+# this function will be called when logOut button is clicked
 def logoutUser():
     global user
     global target_username
 
+    # reset user object to None
     user = None
     MainWindow.setUser(user)
+    # hide messenger
     updateHomepageVisibilities()
 
+    # clear chat page
     reloadChat(None)
 
+    # clear userpass.txt file after logout
     with open("userpass.txt", "w") as file:
         file.write(str(['', '']))
 
+    # show ok message to user
     widgets.loginResult.setStyleSheet("color: green;")
     widgets.loginResult.setText("You logged out successfully")
 
     widgets.btn_sync.hide()
 
 
+# this function is called when
+# 1) user clicks on loginButton, or
+# 2) new messenger page is going to be opened
 def loginUser(by_GUI=True) -> bool:
     global user
 
@@ -232,6 +246,7 @@ def setUsersForAddTask():
         widgets.assignUserComboBox.addItem(other_user.username)
 
 
+# this class is for QTextEdit that user types the new message
 class MessengerTextEdit(AutoResizingTextEdit):
     def __init__(self, parent):
         self.old_keyboard_layout = '00000429'
@@ -239,7 +254,9 @@ class MessengerTextEdit(AutoResizingTextEdit):
         self.setMinimumLines(3)
 
     def focusInEvent(self, e):
+        # save old keyboard language
         self.old_keyboard_layout = win32api.GetKeyboardLayout()
+        # change keyboard language to Persian
         win32api.LoadKeyboardLayout('00000429', 1)
         super().focusInEvent(e)
 
@@ -251,10 +268,10 @@ class MessengerTextEdit(AutoResizingTextEdit):
         if self.old_keyboard_layout == 0x4090409:
             win32api.LoadKeyboardLayout('00000409', 1)
 
-            # win32api.LoadKeyboardLayout(self.old_keyboard_layout, 1)
         super().focusOutEvent(e)
 
 
+# initialize the messenger (chat) page when app is opened
 def prepareMessengerPage():
     new_text_edit = MessengerTextEdit(widgets.chatTextBox)
     new_text_edit.setStyleSheet(widgets.messengerTextEdit.styleSheet())
@@ -262,8 +279,6 @@ def prepareMessengerPage():
     widgets.chatTextBoxVerticalLayout.replaceWidget(widgets.messengerTextEdit, new_text_edit)
     widgets.messengerTextEdit.deleteLater()
     widgets.messengerTextEdit = new_text_edit
-
-    # reload_contacts_list()
 
     # Prepare send button
     widgets.chatSendButton.clicked.connect(sendMessage)
@@ -276,7 +291,7 @@ def prepareMessengerPage():
               widgets.messengerTextEdit,
               sendMessage)
 
-    # Prepare snipping button
+    # Prepare snipping (screenshot) button
     widgets.snippingButton.clicked.connect(snippingTool)
     widgets.snippingButton.setToolTip("screenshot")
 
@@ -318,9 +333,6 @@ def prepareMessengerPage():
     # Prepare handling scroll to top to fetch new search messages
     widgets.contactsScrollArea.verticalScrollBar().actionTriggered.connect(on_search_scroll)
 
-    # # Prepare 'load more messages' button
-    # widgets.loadMoreButton.clicked.connect(fetch_ten_messages)
-
     # Prepare drag and drop of image
     prepareDragAndDrop()
 
@@ -340,11 +352,6 @@ def prepareMessengerPage():
         add_frequent_sticker_button(sticker_path)
     widgets.closeFreqStickerButton.clicked.connect(lambda: widgets.freqStickerFrame.hide())
 
-    # # Overlapping contact
-    # child = widgets.chatPageGridLayout.removeWidget(widgets.chatScrollArea)
-    # widgets.chatPageGridLayout.addWidget(widgets.chatScrollArea, 0, 0)
-    # widgets.chatScrollArea.stackUnder(widgets.contactInfoBox)
-
     # # Overlapping toEnd button
     # widgets.chatPageGridLayout.removeWidget(widgets.toEndVerticalWidget)
     # widgets.chatPageGridLayout.addWidget(widgets.toEndVerticalWidget, 1, 0)
@@ -355,6 +362,7 @@ def prepareMessengerPage():
     widgets.toEndVerticalWidget.hide()
 
 
+# sync users with Works Manager (sync with '//alireza/E/Works Manager/List/Account.lst' file)
 def sync_users():
     new_usernames = init_users.insert()
     print(new_usernames)

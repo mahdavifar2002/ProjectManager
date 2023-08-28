@@ -1512,7 +1512,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 274, 218))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 218, 218))
         self.scrollAreaWidgetContents.setStyleSheet(u" QScrollBar:vertical {\n"
 "	border: none;\n"
 "    background: rgb(52, 59, 72);\n"
@@ -2012,15 +2012,50 @@ class Ui_MainWindow(object):
 "	border-color: gray;\n"
 "}")
         self.horizontalLayout_18 = QHBoxLayout(self.pinFrame)
+        self.horizontalLayout_18.setSpacing(0)
         self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
+        self.pinCounterLabel = QLabel(self.pinFrame)
+        self.pinCounterLabel.setObjectName(u"pinCounterLabel")
+        sizePolicy6 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.pinCounterLabel.sizePolicy().hasHeightForWidth())
+        self.pinCounterLabel.setSizePolicy(sizePolicy6)
+
+        self.horizontalLayout_18.addWidget(self.pinCounterLabel)
+
+        self.pinUpButton = QPushButton(self.pinFrame)
+        self.pinUpButton.setObjectName(u"pinUpButton")
+        sizePolicy4.setHeightForWidth(self.pinUpButton.sizePolicy().hasHeightForWidth())
+        self.pinUpButton.setSizePolicy(sizePolicy4)
+        self.pinUpButton.setStyleSheet(u"border: 0;")
+        icon13 = QIcon()
+        icon13.addFile(u":/icons/images/icons/cil-arrow-top.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pinUpButton.setIcon(icon13)
+        self.pinUpButton.setIconSize(QSize(32, 16))
+
+        self.horizontalLayout_18.addWidget(self.pinUpButton)
+
+        self.pinDownButton = QPushButton(self.pinFrame)
+        self.pinDownButton.setObjectName(u"pinDownButton")
+        sizePolicy4.setHeightForWidth(self.pinDownButton.sizePolicy().hasHeightForWidth())
+        self.pinDownButton.setSizePolicy(sizePolicy4)
+        self.pinDownButton.setStyleSheet(u"border: 0;")
+        icon14 = QIcon()
+        icon14.addFile(u":/icons/images/icons/cil-arrow-bottom.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pinDownButton.setIcon(icon14)
+        self.pinDownButton.setIconSize(QSize(32, 16))
+
+        self.horizontalLayout_18.addWidget(self.pinDownButton)
+
         self.pinIconButton = QPushButton(self.pinFrame)
         self.pinIconButton.setObjectName(u"pinIconButton")
         sizePolicy4.setHeightForWidth(self.pinIconButton.sizePolicy().hasHeightForWidth())
         self.pinIconButton.setSizePolicy(sizePolicy4)
         self.pinIconButton.setStyleSheet(u"border: 0;")
-        icon13 = QIcon()
-        icon13.addFile(u":/icons/images/icons/cil-pin.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.pinIconButton.setIcon(icon13)
+        icon15 = QIcon()
+        icon15.addFile(u":/icons/images/icons/cil-pin.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.pinIconButton.setIcon(icon15)
         self.pinIconButton.setIconSize(QSize(32, 16))
 
         self.horizontalLayout_18.addWidget(self.pinIconButton)
@@ -2086,11 +2121,11 @@ class Ui_MainWindow(object):
 
         self.toEndHorizontalWidget = QWidget(self.toEndVerticalWidget)
         self.toEndHorizontalWidget.setObjectName(u"toEndHorizontalWidget")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.toEndHorizontalWidget.sizePolicy().hasHeightForWidth())
-        self.toEndHorizontalWidget.setSizePolicy(sizePolicy6)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.toEndHorizontalWidget.sizePolicy().hasHeightForWidth())
+        self.toEndHorizontalWidget.setSizePolicy(sizePolicy7)
         self.toEndHorizontalWidget.setMaximumSize(QSize(16777215, 50))
         self.toEndHorizontalWidget.setStyleSheet(u"background-color: transparent;")
         self.toEndHorizontalLayout = QHBoxLayout(self.toEndHorizontalWidget)
@@ -2110,8 +2145,6 @@ class Ui_MainWindow(object):
 " max-height:30px;\n"
 " min-width:30px;\n"
 " min-height:30px;")
-        icon14 = QIcon()
-        icon14.addFile(u":/icons/images/icons/cil-arrow-bottom.png", QSize(), QIcon.Normal, QIcon.Off)
         self.toEndPushButton.setIcon(icon14)
 
         self.toEndHorizontalLayout.addWidget(self.toEndPushButton)
@@ -2585,6 +2618,9 @@ class Ui_MainWindow(object):
         self.recordButton.setText("")
         self.chatSendButton.setText("")
         self.contactUserButton.setText(QCoreApplication.translate("MainWindow", u"Contact user button here", None))
+        self.pinCounterLabel.setText(QCoreApplication.translate("MainWindow", u"1/2", None))
+        self.pinUpButton.setText("")
+        self.pinDownButton.setText("")
         self.pinIconButton.setText("")
         self.pinLabel.setText(QCoreApplication.translate("MainWindow", u"Pin message", None))
         self.closePinButton.setText("")
